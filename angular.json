@@ -1,6 +1,56 @@
 {
   "version": 1,
   "projects": {
+    "dungeon-back": {
+      "root": "apps/dungeon-back",
+      "sourceRoot": "apps/dungeon-back/src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/dungeon-back",
+            "main": "apps/dungeon-back/src/main.ts",
+            "tsConfig": "apps/dungeon-back/tsconfig.app.json",
+            "assets": ["apps/dungeon-back/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/dungeon-back/src/environments/environment.ts",
+                  "with": "apps/dungeon-back/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "dungeon-back:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/dungeon-back/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/dungeon-back"],
+          "options": {
+            "jestConfig": "apps/dungeon-back/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "dungeon-front": {
       "projectType": "application",
       "root": "apps/dungeon-front",
@@ -67,7 +117,10 @@
               "browserTarget": "dungeon-front:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "apps/dungeon-front/proxy.conf.json"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

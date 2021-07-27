@@ -27,6 +27,9 @@
     ]
   },
   "projects": {
+    "dungeon-back": {
+      "tags": []
+    },
     "dungeon-front": {
       "tags": []
     },
