@@ -21,7 +21,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "into-the-dungeon",
+            "prefix": "dungeon",
             "style": "kebab-case"
           }
         ]

@@ -55,7 +55,7 @@
       "projectType": "application",
       "root": "apps/dungeon-front",
       "sourceRoot": "apps/dungeon-front/src",
-      "prefix": "into-the-dungeon",
+      "prefix": "dungeon",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
