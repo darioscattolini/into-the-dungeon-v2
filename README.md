@@ -31,6 +31,7 @@ Nx chosen presets make use of:
 
 Other libraries and dependencies I use:
 * [Angular Material](https://material.angular.io/) for theming.
+* [jest-extended](https://github.com/jest-community/jest-extended) for additional Jest matchers.
 
 ## Status
 _in progress_
