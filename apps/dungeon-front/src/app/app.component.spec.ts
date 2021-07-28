@@ -1,10 +1,21 @@
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+
+@Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'router-outlet',
+  template: '',
+})
+class RouterOutletStubComponent { }
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      declarations: [
+        AppComponent,
+        RouterOutletStubComponent
+      ],
     }).compileComponents();
   });
 
@@ -14,6 +25,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
+  /* FROM BOILERPLATE, LEFT AS INDICATION FOR FURTHER TESTS
   it(`should have as title 'dungeon-front'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
@@ -28,4 +40,5 @@ describe('AppComponent', () => {
       'Welcome to dungeon-front!'
     );
   });
+  */
 });

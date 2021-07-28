@@ -1,0 +1,48 @@
+.container {
+  height: 100vh;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 50px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media(min-width: 400px) {
+  .container {
+    padding: 50px 7%;
+  }
+}
+
+header {
+  margin-bottom: 50px;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: inherit;
+}
+
+h2 {
+  font-size: 18px;
+  text-align: center;
+}
+
+ol {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+li {
+  margin-bottom: 0.4em;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+button {
+  min-width: 130px;
+}

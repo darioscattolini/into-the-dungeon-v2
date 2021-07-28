@@ -1,0 +1,34 @@
+<div class="container">
+  <div id="description">
+    <header>
+      <h1>Into the Dungeon</h1>
+      <p>
+        Multi-player game to play online or sharing a single device
+      </p>
+    </header>
+
+    <ol>
+      <li>Pick the hero who will enter the dungeon</li>
+      <li>Fill the dungeon with monsters</li>
+      <li>Remove pieces of the hero's equipment</li>
+      <li>Run away or dare to enter the dungeon</li>
+      <li>Survive two dungeons or get other players killed</li>
+    </ol>
+  </div>
+
+  <div class="start">
+    <h2>Choose how to play</h2>
+    <div class="buttons">
+      <button
+        mat-raised-button
+        color="accent"
+        routerLink="{{ paths.oneDevice }}"
+      >
+        One Device
+      </button>
+      <button mat-raised-button color="accent" routerLink="{{ paths.online }}">
+        Online
+      </button>
+    </div>
+  </div>
+</div>
