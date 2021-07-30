@@ -15,8 +15,8 @@ global.randomInteger = () => Math.round(Math.random() * 10000);
 /**
  * Builds an extension of the provided class with an additional property called
  * `uniqueId` of type `Symbol`, which uniquely identifies a class instance. 
- * This can help create mocks that don't incur in false positives in matchers 
- * that check for equality rather than identity of objects. 
+ * This can help create test doubles that don't incur in false positives in 
+ * matchers that check for equality rather than identity of objects. 
  * 
  * Example:
  * 
