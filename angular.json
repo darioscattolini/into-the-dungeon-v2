@@ -173,6 +173,27 @@
         }
       }
     },
+    "util-common": {
+      "root": "libs/util-common",
+      "sourceRoot": "libs/util-common/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/util-common/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/util-common"],
+          "options": {
+            "jestConfig": "libs/util-common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "util-testing": {
       "root": "libs/util-testing",
       "sourceRoot": "libs/util-testing/src",

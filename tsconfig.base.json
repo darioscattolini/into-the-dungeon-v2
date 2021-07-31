@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@into-the-dungeon/util-common": ["libs/util-common/src/index.ts"],
       "@into-the-dungeon/util-testing": ["libs/util-testing/src/index.ts"]
     }
   },

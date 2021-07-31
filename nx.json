@@ -37,6 +37,9 @@
       "tags": [],
       "implicitDependencies": ["dungeon-front"]
     },
+    "util-common": {
+      "tags": []
+    },
     "util-testing": {
       "tags": []
     }
