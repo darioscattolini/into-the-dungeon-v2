@@ -36,6 +36,9 @@
     "dungeon-front-e2e": {
       "tags": [],
       "implicitDependencies": ["dungeon-front"]
+    },
+    "util-testing": {
+      "tags": []
     }
   }
 }

@@ -1,5 +1,10 @@
-type ConcreteConstructor = new(...args: any[]) => {};
-type AbstractConstructor = abstract new(...args: any[]) => {};
+// eslint-disable-next-line @typescript-eslint/ban-types
+type ConcreteConstructor = new(...args: unknown[]) => {};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+type AbstractConstructor = abstract new(...args: unknown[]) => {};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
 type Constructor = ConcreteConstructor | AbstractConstructor;
 
 /**
@@ -8,9 +13,9 @@ type Constructor = ConcreteConstructor | AbstractConstructor;
  * 
  * @returns number
  */
-declare function randomInteger(): number;
-
-global.randomInteger = () => Math.round(Math.random() * 10000);
+export function randomInteger(): number {
+  return Math.round(Math.random() * 10000);
+}
 
 /**
  * Builds an extension of the provided class with an additional property called
@@ -25,10 +30,7 @@ global.randomInteger = () => Math.round(Math.random() * 10000);
  * @param BaseClass Constructor
  * @returns ConcreteConstructor
  */
-declare function Unique(BaseClass: Constructor): ConcreteConstructor;
-
-global.Unique = 
-  <Base extends Constructor>(BaseClass: Base): ConcreteConstructor => {
+export function Unique(BaseClass: Constructor): ConcreteConstructor {
     return class extends BaseClass {
       public readonly mockId = Symbol();
     };

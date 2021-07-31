@@ -172,6 +172,27 @@
           }
         }
       }
+    },
+    "util-testing": {
+      "root": "libs/util-testing",
+      "sourceRoot": "libs/util-testing/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/util-testing/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/util-testing"],
+          "options": {
+            "jestConfig": "libs/util-testing/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

@@ -14,7 +14,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@into-the-dungeon/util-testing": ["libs/util-testing/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
