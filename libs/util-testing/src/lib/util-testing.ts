@@ -1,12 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
-type ConcreteConstructor = new(...args: unknown[]) => {};
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type AbstractConstructor = abstract new(...args: unknown[]) => {};
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type Constructor = ConcreteConstructor | AbstractConstructor;
-
 /**
  * Builds a random integer between 0 and 10000. This value can be used for
  * mocking.
@@ -17,6 +8,18 @@ export function randomInteger(): number {
   return Math.round(Math.random() * 10000);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+type ConcreteConstructor<T = {}> = new(...args: any[]) => T;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+type AbstractConstructor<T = {}> = abstract new(...args: any[]) => T;
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+type Constructor<T = {}> = ConcreteConstructor<T> | AbstractConstructor<T>;
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+type WithId<T extends {}> = T & { readonly uniqueId: symbol };
+
 /**
  * Builds an extension of the provided class with an additional property called
  * `uniqueId` of type `Symbol`, which uniquely identifies a class instance. 
@@ -25,13 +28,14 @@ export function randomInteger(): number {
  * 
  * Example:
  * 
- * `const mockInstance = new (Unique(MockUser))();`
+ * `const mockInstance = new (Identified(MockUser))();`
  * 
  * @param BaseClass Constructor
  * @returns ConcreteConstructor
  */
-export function Unique(BaseClass: Constructor): ConcreteConstructor {
-    return class extends BaseClass {
-      public readonly mockId = Symbol();
-    };
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function Identified<T extends object>(BaseClass: Constructor<T>) {
+    return class Unique extends BaseClass /*implements IUnique<T>*/ {
+      public readonly uniqueId = Symbol();
+    } as ConcreteConstructor<WithId<T>>;
   }
