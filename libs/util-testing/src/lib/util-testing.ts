@@ -1,11 +1,12 @@
 /**
- * Builds a random integer between 0 and 10000. This value can be used for
- * mocking.
+ * Outputs a random positive integer between 0 and and provided max number. This
+ * value can be used to avoid hard-coding dummies.
  * 
+ * @param max number
  * @returns number
  */
-export function randomInteger(): number {
-  return Math.round(Math.random() * 10000);
+export function randomInteger(max: number): number {
+  return Math.round(Math.random() * max);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
