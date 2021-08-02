@@ -46,5 +46,5 @@ export type TestDouble<T extends {}> = T & { readonly uniqueId: symbol };
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type TestDoubleClass<T extends {}> = {
-  createStub: () => TestDouble<T>;
+  createDouble: () => TestDouble<T>;
 };
