@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
-import { AddedPlayers, PlayerRequirements } from '../../models/models';
+import { Player, PlayerRequirements } from '../../models/models';
 
 @Injectable({
   providedIn: OneDeviceModule
@@ -8,8 +8,8 @@ import { AddedPlayers, PlayerRequirements } from '../../models/models';
 export class PlayersService {
   public async getJoiningPlayers(
     required: PlayerRequirements
-  ): Promise<AddedPlayers> {
+  ): Promise<Player[]> {
     // minimum required implementation
-    return new AddedPlayers();
+    return [ new Player(), new Player()];
   }
 }

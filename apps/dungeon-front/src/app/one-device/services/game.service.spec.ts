@@ -6,11 +6,11 @@ import { PlayersService } from './players.service';
 import { BiddingService } from './bidding.service';
 import { RaidService } from './raid.service';
 import { 
-  Game, BiddingResult, RaidResult,
-  Player, PlayerRequirements, AddedPlayers
+  Game, BiddingPlayersRound, BiddingResult, RaidResult,
+  Player, PlayerRequirements
 } from '../../models/models';
 import { 
-  PlayerDouble, AddedPlayersDouble, 
+  PlayerDouble, BiddingPlayersRoundDouble, 
   HeroDouble, EquipmentPackDouble, MonsterDouble, buildPlayerRequirementsDummy 
 } from '../../models/test-doubles';
 
@@ -52,12 +52,12 @@ describe('GameService', () => {
 
   describe('game creation', () => {
     let requirementsDummy: PlayerRequirements;
-    let playersDummy: AddedPlayers;
+    let playersDummy: Player[];
 
     beforeEach(() => {
       requirementsDummy = buildPlayerRequirementsDummy();
   
-      playersDummy = AddedPlayersDouble.createDouble();
+      playersDummy = [PlayerDouble.createDouble(), PlayerDouble.createDouble()];
   
       jest.spyOn(Game, 'getPlayerRequirements')
         .mockReturnValue(requirementsDummy);
@@ -128,25 +128,16 @@ describe('GameService', () => {
   });
 
   describe('round execution', () => {
-    let biddingPlayersDummy1: Player[];
-    let biddingPlayersDummy2: Player[];
-    let biddingStarterDummy1: Player;
-    let biddingStarterDummy2: Player;
+    let biddingPlayersDummy1: BiddingPlayersRound;
+    let biddingPlayersDummy2: BiddingPlayersRound;
     let biddingResultDummy1: BiddingResult;
     let biddingResultDummy2: BiddingResult;
     let raidResultDummy1: RaidResult;
     let raidResultDummy2: RaidResult;
 
     beforeEach(() => {
-      biddingPlayersDummy1 = [
-        PlayerDouble.createDouble(), PlayerDouble.createDouble()
-      ];
-      biddingPlayersDummy2 = [
-        PlayerDouble.createDouble(), PlayerDouble.createDouble()
-      ];
-
-      biddingStarterDummy1 = PlayerDouble.createDouble();
-      biddingStarterDummy2 = PlayerDouble.createDouble();
+      biddingPlayersDummy1 = BiddingPlayersRoundDouble.createDouble();
+      biddingPlayersDummy2 = BiddingPlayersRoundDouble.createDouble();
       
       biddingResultDummy1 = {
         raider: PlayerDouble.createDouble(),
@@ -176,13 +167,9 @@ describe('GameService', () => {
         .mockReturnValueOnce(true)
         .mockReturnValueOnce(true);
 
-      jest.spyOn(Game.prototype, 'getActivePlayers')
+      jest.spyOn(Game.prototype, 'getBiddingPlayersRound')
         .mockReturnValueOnce(biddingPlayersDummy1)
         .mockReturnValueOnce(biddingPlayersDummy2);
-
-      jest.spyOn(Game.prototype, 'getBiddingStarter')
-        .mockReturnValueOnce(biddingStarterDummy1)
-        .mockReturnValueOnce(biddingStarterDummy2);
     
       jest.spyOn(biddingService, 'playBidding')
         .mockResolvedValueOnce(biddingResultDummy1)
@@ -199,10 +186,10 @@ describe('GameService', () => {
       await gameService.play();
 
       expect(biddingService.playBidding)
-        .toHaveBeenNthCalledWith(1, biddingPlayersDummy1, biddingStarterDummy1);
+        .toHaveBeenNthCalledWith(1, biddingPlayersDummy1);
 
       expect(biddingService.playBidding)
-        .toHaveBeenNthCalledWith(2, biddingPlayersDummy2, biddingStarterDummy2);
+        .toHaveBeenNthCalledWith(2, biddingPlayersDummy2);
     });
 
     test('raid is called with values returned from bidding', async () => {

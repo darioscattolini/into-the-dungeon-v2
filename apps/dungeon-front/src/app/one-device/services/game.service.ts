@@ -42,9 +42,8 @@ export class GameService {
   }
 
   private async playBidding(game: Game): Promise<BiddingResult> {
-    const players = game.getActivePlayers();
-    const starter = game.getBiddingStarter();
-    const result = await this.biddingService.playBidding(players, starter);
+    const players = game.getBiddingPlayersRound();
+    const result = await this.biddingService.playBidding(players);
 
     return result;
   }

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { PlayersService } from './players.service';
-import { AddedPlayers, PlayerRequirements } from '../../models/models';
+import { Player, PlayerRequirements } from '../../models/models';
 import { buildPlayerRequirementsDummy } from '../../models/test-doubles';
 
 describe('PlayersService', () => {
@@ -33,7 +33,7 @@ describe('PlayersService', () => {
       const addedPlayers = 
         await playersService.getJoiningPlayers(requirementsDummy);
 
-      expect(addedPlayers).toBeInstanceOf(AddedPlayers);
+      expect(addedPlayers).toSatisfyAll(player => player instanceof Player);
     });
   });
 });

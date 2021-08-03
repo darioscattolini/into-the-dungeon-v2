@@ -1,4 +1,7 @@
-import { Player, PlayerRequirements, AddedPlayers, RaidResult } from '../models';
+import { BiddingPlayersRound } from './bidding-players-round';
+import { 
+  Player, PlayerRequirements, RaidResult 
+} from '../models';
 
 // Provisional in case some sort of round notification is needed
 type RoundResult = Record<string, never>;
@@ -7,7 +10,7 @@ export class Game {
   public get winner() { return this._winner; }
   private _winner?: Player;
 
-  constructor(players: AddedPlayers) {
+  constructor(players: Player[]) {
     //
   }
 
@@ -24,18 +27,13 @@ export class Game {
     return {};
   }
 
-  public getActivePlayers(): Player[] {
+  public getBiddingPlayersRound(): BiddingPlayersRound {
     // minimum required implementation
-    return [new Player(), new Player()];
+    return new BiddingPlayersRound();
   }
 
   public goesOn(): boolean {
     // minimum required implementation
     return true;
-  }
-
-  public getBiddingStarter(): Player {
-    // minimum required implementation
-    return new Player();
   }
 }

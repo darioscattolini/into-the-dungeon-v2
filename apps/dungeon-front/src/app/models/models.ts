@@ -1,16 +1,16 @@
 // GAME MECHANICS
 import { Game } from './game-mechanics/game';
+import { BiddingPlayersRound } from "./game-mechanics/bidding-players-round";
 import { BiddingResult } from './game-mechanics/bidding-result';
 import { RaidResult } from './game-mechanics/raid-result';
 
-export { Game, BiddingResult, RaidResult }
+export { Game, BiddingPlayersRound, BiddingResult, RaidResult }
 
 // PLAYER
 import { Player } from "./player/player";
-import { AddedPlayers } from "./player/added-players";
 import { PlayerRequirements } from "./player/player-requirements";
 
-export { Player, AddedPlayers, PlayerRequirements }
+export { Player, PlayerRequirements }
 
 // HERO
 import { Hero } from "./hero/hero";

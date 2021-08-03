@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
 import { 
-  Player, BiddingResult, Hero, EquipmentPack, Monster 
+  Player, BiddingPlayersRound, BiddingResult, Hero, EquipmentPack, Monster
 } from '../../models/models';
 
 @Injectable({
   providedIn: OneDeviceModule
 })
 export class BiddingService {
-  public async playBidding(
-    players: Player[], starter: Player
-  ): Promise<BiddingResult> {
+  public async playBidding(players: BiddingPlayersRound): Promise<BiddingResult> {
     // minimum required implementation
     const raider = new Player();
     const hero = new Hero();

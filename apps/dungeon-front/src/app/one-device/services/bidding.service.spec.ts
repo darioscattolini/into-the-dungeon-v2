@@ -1,8 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BiddingService } from './bidding.service';
-import { Player, Hero, EquipmentPack, Monster } from '../../models/models';
-import { PlayerDouble } from '../../models/test-doubles';
+import { 
+  Player, BiddingPlayersRound, Hero, EquipmentPack, Monster 
+} from '../../models/models';
+import { BiddingPlayersRoundDouble } from '../../models/test-doubles';
 
 describe('BiddingService', () => {
   let biddingService: BiddingService;
@@ -21,25 +23,17 @@ describe('BiddingService', () => {
   });
 
   describe('playBidding', () => {
-    let playersDummy: Player[];
-    let starterDummy: Player;
+    let playersDummy: BiddingPlayersRound;
 
     beforeEach(() => {
-      playersDummy = [
-        PlayerDouble.createDouble(), 
-        PlayerDouble.createDouble(), 
-        PlayerDouble.createDouble()
-      ];
-
-      const randomIndex = Math.floor(Math.random() * playersDummy.length);
-      starterDummy = playersDummy[randomIndex];
+      playersDummy = BiddingPlayersRoundDouble.createDouble();
     });
 
     test('it returns an instance of BiddingResult', async () => {
       expect.assertions(6);
 
       const biddingResult = 
-        await biddingService.playBidding(playersDummy, starterDummy);
+        await biddingService.playBidding(playersDummy);
 
       expect(biddingResult).toContainAllKeys([
         'raider', 'hero', 'equipment', 'enemies'
