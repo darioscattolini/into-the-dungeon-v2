@@ -2,7 +2,7 @@ import {
   Player, PlayerRequirements, BiddingPlayersRound, Hero, EquipmentPack, Monster 
 } from './models';
 import { 
-  TestDouble, TestDoubleClass, Identified, randomInteger
+  TestDouble, TestDoubleClass, Identified, randomInteger, randomString
 } from '@into-the-dungeon/util-testing';
 import { staticImplements } from '@into-the-dungeon/util-common';
 
@@ -19,7 +19,8 @@ class PlayerDouble {
   }
 
   public static createDouble(): TestDouble<Player> {
-    return new (Identified(Player))();
+    const name = randomString(6);
+    return new (Identified(Player))(name);
   }
 }
 

@@ -10,7 +10,7 @@ import {
 export class BiddingService {
   public async playBidding(players: BiddingPlayersRound): Promise<BiddingResult> {
     // minimum required implementation
-    const raider = new Player();
+    const raider = new Player('player');
     const hero = new Hero();
     const equipment = new EquipmentPack();
     const enemies = [new Monster(), new Monster()];
