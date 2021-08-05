@@ -9,6 +9,27 @@ export function randomInteger(max: number): number {
   return Math.round(Math.random() * max);
 }
 
+/**
+ * Outputs a random string of specified length, using only uppercase, lowercase
+ * and number characters. This value can be used to avoid hard-coding dummies.
+ * 
+ * @param length number
+ * @returns string
+ */
+export function randomString(length: number): string {
+  const allowedCharacters 
+    = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const allowedCharactersAmount = allowedCharacters.length;
+
+  let randomString = '';
+  
+  for (let i = 0; i < length; i++ ) {
+    const charIndex = Math.floor(Math.random() * allowedCharactersAmount);
+    randomString += allowedCharacters.charAt(charIndex);
+ }
+  return randomString;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
 type Constructor<T = {}> = abstract new(...args: any[]) => T;
 
