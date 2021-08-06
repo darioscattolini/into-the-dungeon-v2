@@ -17,11 +17,6 @@ import { Hero } from "./hero/hero";
 
 export { Hero }
 
-// EQUIPMENT
-import { EquipmentPack } from './equipment/equipment-pack';
-
-export { EquipmentPack }
-
 // MONSTER
 import { Monster } from './monster/monster';
 

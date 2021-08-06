@@ -1,9 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BiddingService } from './bidding.service';
-import { 
-  Player, BiddingPlayersRound, Hero, EquipmentPack, Monster 
-} from '../../models/models';
+import { Player, BiddingPlayersRound, Hero, Monster } from '../../models/models';
 import { BiddingPlayersRoundDouble } from '../../models/test-doubles';
 
 describe('BiddingService', () => {
@@ -30,17 +28,14 @@ describe('BiddingService', () => {
     });
 
     test('it returns an instance of BiddingResult', async () => {
-      expect.assertions(6);
+      expect.assertions(5);
 
       const biddingResult = 
         await biddingService.playBidding(playersDummy);
 
-      expect(biddingResult).toContainAllKeys([
-        'raider', 'hero', 'equipment', 'enemies'
-      ]);
+      expect(biddingResult).toContainAllKeys(['raider', 'hero', 'enemies']);
       expect(biddingResult.raider).toBeInstanceOf(Player);
       expect(biddingResult.hero).toBeInstanceOf(Hero);
-      expect(biddingResult.equipment).toBeInstanceOf(EquipmentPack);
       expect(biddingResult.enemies).toBeArray();
       expect(biddingResult.enemies).toSatisfyAll(e => e instanceof Monster);
     });

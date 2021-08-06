@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
 import { 
-  Player, BiddingPlayersRound, BiddingResult, Hero, EquipmentPack, Monster
+  Player, BiddingPlayersRound, BiddingResult, Hero, Monster
 } from '../../models/models';
 
 @Injectable({
@@ -12,9 +12,8 @@ export class BiddingService {
     // minimum required implementation
     const raider = new Player('player');
     const hero = new Hero();
-    const equipment = new EquipmentPack();
     const enemies = [new Monster(), new Monster()];
 
-    return { raider, hero, equipment, enemies };
+    return { raider, hero, enemies };
   }
 }

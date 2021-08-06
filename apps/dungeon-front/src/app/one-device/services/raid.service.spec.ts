@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { RaidService } from './raid.service';
 import { BiddingResult, Player } from '../../models/models';
 import { 
-  PlayerDouble, HeroDouble, EquipmentPackDouble,MonsterDouble
+  PlayerDouble, HeroDouble, MonsterDouble
 } from '../../models/test-doubles';
 
 describe('RaidService', () => {
@@ -28,14 +28,13 @@ describe('RaidService', () => {
     beforeEach(() => {
       const raider = PlayerDouble.createDouble();
       const hero = HeroDouble.createDouble();
-      const equipment = EquipmentPackDouble.createDouble();
       const enemies = [
         MonsterDouble.createDouble(),
         MonsterDouble.createDouble(),
         MonsterDouble.createDouble()
       ];
 
-      participantsDummy = { raider, hero, equipment, enemies };
+      participantsDummy = { raider, hero, enemies };
     });
 
     test('it returns an instance of RaidResult', async () => {

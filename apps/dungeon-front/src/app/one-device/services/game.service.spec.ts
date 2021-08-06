@@ -11,7 +11,7 @@ import {
 } from '../../models/models';
 import { 
   PlayerDouble, BiddingPlayersRoundDouble, 
-  HeroDouble, EquipmentPackDouble, MonsterDouble, buildPlayerRequirementsDummy 
+  HeroDouble, MonsterDouble, buildPlayerRequirementsDummy 
 } from '../../models/test-doubles';
 
 jest.mock('./players.service');
@@ -142,13 +142,11 @@ describe('GameService', () => {
       biddingResultDummy1 = {
         raider: PlayerDouble.createDouble(),
         hero: HeroDouble.createDouble(),
-        equipment: EquipmentPackDouble.createDouble(),
         enemies: [MonsterDouble.createDouble(), MonsterDouble.createDouble()]
       };
       biddingResultDummy2 = {
         raider: PlayerDouble.createDouble(),
         hero: HeroDouble.createDouble(),
-        equipment: EquipmentPackDouble.createDouble(),
         enemies: [MonsterDouble.createDouble(), MonsterDouble.createDouble()]
       };
       

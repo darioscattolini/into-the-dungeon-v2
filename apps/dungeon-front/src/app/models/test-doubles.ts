@@ -1,5 +1,5 @@
 import { 
-  Player, PlayerRequirements, BiddingPlayersRound, Hero, EquipmentPack, Monster 
+  Player, PlayerRequirements, BiddingPlayersRound, Hero, Monster 
 } from './models';
 import { 
   TestDouble, TestDoubleClass, Identified, randomInteger, randomString
@@ -9,7 +9,6 @@ import { staticImplements } from '@into-the-dungeon/util-common';
 jest.mock('./player/player.ts');
 jest.mock('./game-mechanics/bidding-players-round.ts');
 jest.mock('./hero/hero.ts');
-jest.mock('./equipment/equipment-pack.ts');
 jest.mock('./monster/monster.ts');
 
 @staticImplements<TestDoubleClass<Player>>()
@@ -46,17 +45,6 @@ class HeroDouble {
   }
 }
 
-@staticImplements<TestDoubleClass<EquipmentPack>>()
-class EquipmentPackDouble {
-  private constructor() {
-    //
-  }
-
-  public static createDouble(): TestDouble<EquipmentPack> {
-    return new (Identified(EquipmentPack))();
-  }
-}
-
 @staticImplements<TestDoubleClass<Monster>>()
 class MonsterDouble {
   private constructor() {
@@ -80,6 +68,6 @@ function buildPlayerRequirementsDummy(): PlayerRequirements {
 export { 
   PlayerDouble, buildPlayerRequirementsDummy,
   BiddingPlayersRoundDouble,
-  HeroDouble, EquipmentPackDouble, 
+  HeroDouble,
   MonsterDouble 
 }
