@@ -399,7 +399,8 @@ describe('BiddingService', () => {
         expect.assertions(1);
   
         await expect(biddingService.playBidding(playersDummy))
-          .rejects.toThrow('Chosen weapon not included among eligible options');
+          .rejects
+          .toThrow('Chosen equipment not included among eligible options');
       });
 
       test(
