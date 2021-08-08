@@ -8,6 +8,7 @@ import {
   MonsterAdditionRequest, MonsterAdditionResponse,
   EquipmentRemovalRequest, EquipmentRemovalResponse
 } from './game-mechanics/bidding-interactions';
+import { Raid } from './game-mechanics/raid';
 import { RaidParticipants } from './game-mechanics/raid-participants';
 import { RaidResult } from './game-mechanics/raid-result';
 
@@ -18,7 +19,7 @@ export {
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,
   EquipmentRemovalRequest, EquipmentRemovalResponse,
-  RaidParticipants, RaidResult 
+  Raid, RaidParticipants, RaidResult 
 }
 
 // PLAYER

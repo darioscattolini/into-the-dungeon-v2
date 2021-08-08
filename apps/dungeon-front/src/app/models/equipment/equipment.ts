@@ -1,4 +1,4 @@
-import { EquipmentName } from "./equipment-name";
+import { EquipmentName } from './equipment-name';
 
 export class Equipment {
   public readonly name: EquipmentName;

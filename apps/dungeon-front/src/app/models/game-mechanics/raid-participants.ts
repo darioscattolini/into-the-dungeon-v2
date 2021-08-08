@@ -1,4 +1,4 @@
-import { Hero, Monster, Player } from "../models";
+import { Hero, Monster, Player } from '../models';
 
 export interface RaidParticipants {
   raider: Player;

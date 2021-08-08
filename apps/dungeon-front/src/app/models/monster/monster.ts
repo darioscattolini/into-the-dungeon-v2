@@ -1,4 +1,4 @@
-import { MonsterType } from "./monster-type";
+import { MonsterType } from './monster-type';
 
 export class Monster {
   public readonly type: MonsterType
