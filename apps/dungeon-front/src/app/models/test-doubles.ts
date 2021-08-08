@@ -1,5 +1,7 @@
 import { 
-  Player, PlayerRequirements, BiddingPlayersRound, Hero, Monster 
+  Player, PlayerRequirements, BiddingPlayersRound, 
+  Hero, EquipmentName, equipmentNames,
+  Monster, MonsterType, monsterTypes
 } from './models';
 import { 
   TestDouble, TestDoubleClass, Identified, randomInteger, randomString
@@ -52,7 +54,9 @@ class MonsterDouble {
   }
 
   public static createDouble(): TestDouble<Monster> {
-    return new (Identified(Monster))();
+    const [type] = pickRandomMonsterTypes(1);
+
+    return new (Identified(Monster))(type);
   }
 }
 
@@ -65,9 +69,35 @@ function buildPlayerRequirementsDummy(): PlayerRequirements {
   };
 }
 
+function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
+  const chosenItems: T[] = [];
+
+  while(chosenItems.length < length) {
+    const randomIndex = randomInteger(options.length, false);
+    const chosenItem = unique 
+      ? options.splice(randomIndex, 1)[0]
+      : options[randomIndex];
+    
+    chosenItems.push(chosenItem);
+  }
+  return chosenItems;
+}
+
+function pickRandomMonsterTypes(amount: number, unique = true): MonsterType[] {
+  const options = Array.from(monsterTypes);
+
+  return buildRandomArray(options, amount, unique);
+}
+
+function pickRandomEquipmentNames(amount: number, unique = true): EquipmentName[] {
+  const options = Array.from(equipmentNames);
+  
+  return buildRandomArray(options, amount, unique);
+}
+
 export { 
   PlayerDouble, buildPlayerRequirementsDummy,
   BiddingPlayersRoundDouble,
-  HeroDouble,
-  MonsterDouble 
+  HeroDouble, pickRandomEquipmentNames,
+  MonsterDouble, pickRandomMonsterTypes
 }
