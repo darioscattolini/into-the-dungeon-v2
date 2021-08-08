@@ -84,6 +84,10 @@ export class BiddingService {
     const response
       = await this.uiMediator.requestEquipmentRemoval(player, options);
     
+    if (!options.includes(response)) {
+      throw new Error('Chosen weapon not included among eligible options');
+    }
+
     return { 
       type: request.type, 
       content: response 

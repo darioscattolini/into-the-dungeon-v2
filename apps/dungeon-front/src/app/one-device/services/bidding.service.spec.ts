@@ -331,6 +331,8 @@ describe('BiddingService', () => {
       beforeEach(() => {
         requestTargetDummy = PlayerDouble.createDouble();
         equipmentOptionsDummy = pickRandomEquipmentNames(randomInteger(4) + 2);
+        const randomIndex = randomInteger(equipmentOptionsDummy.length, false);
+        const chosenEquipmentDummy = equipmentOptionsDummy[randomIndex];
 
         makeLoopRunTimes(1);
 
@@ -340,6 +342,9 @@ describe('BiddingService', () => {
             player: requestTargetDummy,
             content: equipmentOptionsDummy
           });
+
+        jest.spyOn(uiMediator, 'requestEquipmentRemoval')
+          .mockResolvedValue(chosenEquipmentDummy);
       });
 
       test('it requests equipment removal after getActionRequest', async () => {
@@ -376,6 +381,26 @@ describe('BiddingService', () => {
             .toHaveBeenCalledWith(expect.toBeObject(), equipmentOptionsDummy);
         }
       );
+
+      test('it throws error if chosen equipment wasnt in options', async () => {
+        const optionsDummy: EquipmentName[] = ['chaperone', 'katana', 'suitor'];
+        const wrongChoice: EquipmentName = 'royal sceptre';
+        
+        jest.spyOn(Bidding.prototype, 'getActionRequest')
+          .mockReturnValue({
+            type: 'remove-equipment',
+            player: requestTargetDummy,
+            content: optionsDummy
+          });
+
+        jest.spyOn(uiMediator, 'requestEquipmentRemoval')
+          .mockResolvedValue(wrongChoice);
+          
+        expect.assertions(1);
+  
+        await expect(biddingService.playBidding(playersDummy))
+          .rejects.toThrow('Chosen weapon not included among eligible options');
+      });
 
       test(
         'it calls bidding.onResponse after requesting equipment removal', 
@@ -414,7 +439,8 @@ describe('BiddingService', () => {
       test(
         'bidding.onResponse is called with chosen equipment from uiMediator', 
         async () => {
-          const [chosenEquipment] = pickRandomEquipmentNames(1)
+          const randomIndex = randomInteger(equipmentOptionsDummy.length, false);
+          const chosenEquipment = equipmentOptionsDummy[randomIndex];
           
           jest.spyOn(uiMediator, 'requestEquipmentRemoval')
             .mockResolvedValue(chosenEquipment);
