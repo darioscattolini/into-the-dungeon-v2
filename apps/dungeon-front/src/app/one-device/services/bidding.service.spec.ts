@@ -72,13 +72,6 @@ describe('BiddingService', () => {
       jest.spyOn(uiMediator, 'requestHeroChoice').mockResolvedValue(heroDummy);
       jest.spyOn(monstersService, 'getMonstersPack')
         .mockReturnValue(monstersPackDummy);
-
-      // move to tests requiring this
-      jest.spyOn(Bidding.prototype, 'getActionRequest')
-        .mockReturnValue({
-          type: 'play-bidding',
-          player: PlayerDouble.createDouble()
-        });
     });
 
     test('Bidding is instantiated with the right parameters', async () => {
@@ -98,6 +91,13 @@ describe('BiddingService', () => {
     });
 
     test('Bidding is instantiated only once', async () => {
+      // stubbed dependency
+      jest.spyOn(Bidding.prototype, 'getActionRequest')
+        .mockReturnValue({
+          type: 'play-bidding',
+          player: PlayerDouble.createDouble()
+        });
+
       makeLoopRunTimes(3);
 
       expect.assertions(1);
@@ -108,6 +108,13 @@ describe('BiddingService', () => {
     });
 
     test('loop runs as many times as bidding.goesOn is true', async () => {
+      // stubbed dependency
+      jest.spyOn(Bidding.prototype, 'getActionRequest')
+        .mockReturnValue({
+          type: 'play-bidding',
+          player: PlayerDouble.createDouble()
+        });
+
       const times = randomInteger(5) + 2;
       makeLoopRunTimes(times);
 
