@@ -1,20 +1,27 @@
 /**
- * Outputs a random positive integer between 0 and and provided max number. This
- * value can be used to avoid hard-coding dummies.
+ * Generates a random positive integer that can be used to avoid hard-coding 
+ * dummies.
  * 
- * @param max number
- * @returns number
+ * @param {number} max Upper boundary of range from which integer will be picked
+ * @param {boolean} [ceil=true] True by default. Setting it to false excludes
+ * `max` from possible outputs, allowing the use of an array's length to get 
+ * a random index
+ * @returns {number} Random integer between 0 and `max`
  */
-export function randomInteger(max: number): number {
-  return Math.round(Math.random() * max);
+export function randomInteger(max: number, ceil = true): number {
+  let integer = Math.round(Math.random() * max);
+
+  if (!ceil && integer === max && integer !== 0) integer--;
+
+  return integer;
 }
 
 /**
- * Outputs a random string of specified length, using only uppercase, lowercase
- * and number characters. This value can be used to avoid hard-coding dummies.
+ * Outputs a random string that can be used to avoid hard-coding dummies.
  * 
- * @param length number
- * @returns string
+ * @param {number} length Length of returned string
+ * @returns {string} String consisting only of uppercase, lowercase and number 
+ * characters.
  */
 export function randomString(length: number): string {
   const allowedCharacters 
@@ -24,29 +31,30 @@ export function randomString(length: number): string {
   let randomString = '';
   
   for (let i = 0; i < length; i++ ) {
-    const charIndex = Math.floor(Math.random() * allowedCharactersAmount);
+    const charIndex = randomInteger(allowedCharactersAmount, false);
     randomString += allowedCharacters.charAt(charIndex);
  }
   return randomString;
 }
 
+
+/**
+ * A general type for any class
+ * 
+ * @typedef {function} Constructor
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
 type Constructor<T = {}> = abstract new(...args: any[]) => T;
 
 /**
- * Builds an extension of the provided class with an additional property called
- * `uniqueId` of type `Symbol`, which uniquely identifies a class instance. 
- * This can help create test doubles that don't incur in false positives in 
- * matchers that check for equality rather than identity of objects. 
+ * Extends a class so that instances are uniquely identified. This can help 
+ * create test doubles that don't incur in false positives in matchers that 
+ * check for equality rather than identity of objects. 
  * 
- * Example:
- * 
- * `const mockInstance = new (Identified(MockUser))();`
- * 
- * @param BaseClass Constructor
- * @returns ConcreteConstructor
+ * @param {Constructor} BaseClass Abstract or concrete class
+ * @returns {Constructor} `BaseClass` extended with property `uniqueId` of type 
+ * `Symbol`
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function Identified<C extends Constructor>(BaseClass: C) {
   abstract class UniqueClass extends BaseClass {
     public readonly uniqueId = Symbol();
