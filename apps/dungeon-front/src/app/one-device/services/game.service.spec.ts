@@ -118,12 +118,11 @@ describe('GameService', () => {
 
       await gameService.play();
 
+      const [gameMock] = GameMock.mock.instances;
+
       expect(biddingService.playBidding).toHaveBeenCalledTimes(loopRuns);
-
       expect(raidService.playRaid).toHaveBeenCalledTimes(loopRuns);
-
-      expect(GameMock.mock.instances[0].goesOn)
-        .toHaveBeenCalledTimes(loopRuns + 1);
+      expect(gameMock.goesOn).toHaveBeenCalledTimes(loopRuns + 1);
     });
   });
 
@@ -210,7 +209,6 @@ describe('GameService', () => {
       const game = GameMock.mock.instances[0];
 
       expect(game.endRound).toHaveBeenNthCalledWith(1, raidResultDummy1);
-      
       expect(game.endRound).toHaveBeenNthCalledWith(2, raidResultDummy2);
     });
   });
