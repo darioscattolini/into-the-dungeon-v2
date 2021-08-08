@@ -2,7 +2,7 @@ import { BiddingPlayersRound } from "./bidding-players-round";
 import { 
   BiddingActionRequest, BiddingActionResponse 
 } from "./bidding-interactions";
-import { BiddingResult } from "./bidding-result";
+import { RaidParticipants } from "./raid-participants";
 import { Player, Hero, Monster } from "../models";
 import { StateUpdate } from "../state/state-update";
 
@@ -20,7 +20,7 @@ export class Bidding {
     }
   }
 
-  public getResult(): BiddingResult {
+  public getResult(): RaidParticipants {
     // minimum required implementation
     const raider = new Player('player');
     const hero = new Hero();

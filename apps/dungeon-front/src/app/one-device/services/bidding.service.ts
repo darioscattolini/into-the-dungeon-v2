@@ -3,11 +3,12 @@ import { OneDeviceModule } from '../one-device.module';
 import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Bidding, BiddingPlayersRound, BiddingResult,
+  Bidding, BiddingPlayersRound, 
   BiddingActionRequest as ActionRequest, BiddingActionResponse as ActionResponse,
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,
   EquipmentRemovalRequest, EquipmentRemovalResponse,
+  RaidParticipants
 } from '../../models/models';
 
 @Injectable({
@@ -20,7 +21,9 @@ export class BiddingService {
     private monstersService: MonstersService
   ) { }
 
-  public async playBidding(players: BiddingPlayersRound): Promise<BiddingResult> {
+  public async playBidding(
+    players: BiddingPlayersRound
+  ): Promise<RaidParticipants> {
     const bidding = await this.setBiddingUp(players);
     const result = await this.manageBidding(bidding);
     
@@ -40,7 +43,7 @@ export class BiddingService {
     };
   }
 
-  private async manageBidding(bidding: Bidding): Promise<BiddingResult> {
+  private async manageBidding(bidding: Bidding): Promise<RaidParticipants> {
     while (bidding.goesOn()) {
       const request = bidding.getActionRequest();
       const response = await this.makeRequest(request);

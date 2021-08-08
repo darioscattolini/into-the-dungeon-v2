@@ -6,7 +6,7 @@ import { PlayersService } from './players.service';
 import { BiddingService } from './bidding.service';
 import { RaidService } from './raid.service';
 import { 
-  Game, BiddingPlayersRound, BiddingResult, RaidResult,
+  Game, BiddingPlayersRound, RaidParticipants, RaidResult,
   Player, PlayerRequirements
 } from '../../models/models';
 import { 
@@ -129,8 +129,8 @@ describe('GameService', () => {
   describe('round execution', () => {
     let biddingPlayersDummy1: BiddingPlayersRound;
     let biddingPlayersDummy2: BiddingPlayersRound;
-    let biddingResultDummy1: BiddingResult;
-    let biddingResultDummy2: BiddingResult;
+    let biddingResultDummy1: RaidParticipants;
+    let biddingResultDummy2: RaidParticipants;
     let raidResultDummy1: RaidResult;
     let raidResultDummy2: RaidResult;
 

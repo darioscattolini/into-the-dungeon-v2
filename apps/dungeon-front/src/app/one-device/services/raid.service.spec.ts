@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { RaidService } from './raid.service';
-import { BiddingResult, Player } from '../../models/models';
+import { RaidParticipants, Player } from '../../models/models';
 import { 
   PlayerDouble, HeroDouble, MonsterDouble
 } from '../../models/test-doubles';
@@ -23,7 +23,7 @@ describe('RaidService', () => {
   });
 
   describe('playRaid', () => {
-    let participantsDummy: BiddingResult;
+    let participantsDummy: RaidParticipants;
 
     beforeEach(() => {
       const raider = PlayerDouble.createDouble();

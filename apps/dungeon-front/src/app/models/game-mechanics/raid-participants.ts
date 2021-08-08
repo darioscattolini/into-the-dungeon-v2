@@ -1,6 +1,6 @@
 import { Hero, Monster, Player } from "../models";
 
-export interface BiddingResult {
+export interface RaidParticipants {
   raider: Player;
   hero: Hero;
   enemies: Monster[];
