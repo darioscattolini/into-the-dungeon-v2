@@ -3,7 +3,7 @@ import { OneDeviceModule } from '../one-device.module';
 import { PlayersService } from './players.service';
 import { BiddingService } from './bidding.service';
 import { RaidService } from './raid.service';
-import { Game, BiddingResult } from '../../models/models';
+import { Game, RaidParticipants } from '../../models/models';
 
 @Injectable({
   providedIn: OneDeviceModule
@@ -41,14 +41,14 @@ export class GameService {
     // NOTIFY WINNER
   }
 
-  private async playBidding(game: Game): Promise<BiddingResult> {
+  private async playBidding(game: Game): Promise<RaidParticipants> {
     const players = game.getBiddingPlayersRound();
     const result = await this.biddingService.playBidding(players);
 
     return result;
   }
 
-  private async playRaid(participants: BiddingResult, game: Game) {
+  private async playRaid(participants: RaidParticipants, game: Game) {
     const raidResult = await this.raidService.playRaid(participants);        
     const roundResult = game.endRound(raidResult);
     
