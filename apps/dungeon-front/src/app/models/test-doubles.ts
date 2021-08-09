@@ -1,6 +1,6 @@
 import { 
   Player, PlayerRequirements, BiddingPlayersRound, 
-  Hero, EquipmentName, equipmentNames,
+  Hero, EquipmentName, equipmentNames, WeaponName, weaponNames,
   Monster, MonsterType, monsterTypes
 } from './models';
 import { 
@@ -95,9 +95,15 @@ function pickRandomEquipmentNames(amount: number, unique = true): EquipmentName[
   return buildRandomArray(options, amount, unique);
 }
 
+function pickRandomWeaponNames(amount: number, unique = true): WeaponName[] {
+  const options = Array.from(weaponNames);
+  
+  return buildRandomArray(options, amount, unique);
+}
+
 export { 
   PlayerDouble, buildPlayerRequirementsDummy,
   BiddingPlayersRoundDouble,
-  HeroDouble, pickRandomEquipmentNames,
+  HeroDouble, pickRandomEquipmentNames, pickRandomWeaponNames,
   MonsterDouble, pickRandomMonsterTypes
 }

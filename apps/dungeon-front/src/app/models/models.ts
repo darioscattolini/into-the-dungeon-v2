@@ -10,6 +10,8 @@ import {
 } from './game-mechanics/bidding-interactions';
 import { Raid } from './game-mechanics/raid';
 import { RaidParticipants } from './game-mechanics/raid-participants';
+import { Encounter } from './game-mechanics/encounter';
+import { ChosenWeapon } from './game-mechanics/encounter';
 import { RaidResult } from './game-mechanics/raid-result';
 
 export { 
@@ -19,7 +21,7 @@ export {
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,
   EquipmentRemovalRequest, EquipmentRemovalResponse,
-  Raid, RaidParticipants, RaidResult 
+  Raid, RaidParticipants, Encounter, ChosenWeapon, RaidResult 
 }
 
 // PLAYER
@@ -37,8 +39,10 @@ export { Hero }
 import { Equipment } from './equipment/equipment';
 import { EquipmentName } from './equipment/equipment-name';
 import { equipmentNames } from './equipment/equipment-name';
+import { WeaponName } from './equipment/equipment-name';
+import { weaponNames } from './equipment/equipment-name';
 
-export { Equipment, EquipmentName, equipmentNames }
+export { Equipment, EquipmentName, equipmentNames, WeaponName, weaponNames }
 
 // MONSTER
 import { Monster } from './monster/monster';

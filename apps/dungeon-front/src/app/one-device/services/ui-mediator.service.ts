@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
-import { Player, Hero, MonsterType, EquipmentName } from '../../models/models';
+import { 
+  Player, Hero, MonsterType, EquipmentName, WeaponName, ChosenWeapon
+} from '../../models/models';
 
 @Injectable({
   providedIn: OneDeviceModule
@@ -24,7 +26,7 @@ export class UiMediatorService {
     player: Player, options: EquipmentName[]
   ): Promise<EquipmentName> {
     // minimum required implementation
-    return 'someName';
+    return 'chaperone';
   }
 
   public async requestHeroChoice(player: Player): Promise<Hero> {
@@ -47,5 +49,12 @@ export class UiMediatorService {
   public async requestPlayerName(): Promise<string> {
     // minimum required implementation
     return 'John';
+  }
+
+  public async requestWeaponChoice(
+    player: Player, options: WeaponName[]
+  ): Promise<ChosenWeapon> {
+    // minimum required implementation
+    return 'katana';
   }
 }

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 import { UiMediatorService } from './ui-mediator.service';
-import { Hero, EquipmentName } from '../../models/models';
+import { Hero, EquipmentName, WeaponName } from '../../models/models';
 import { PlayerDouble, pickRandomMonsterTypes } from '../../models/test-doubles';
 
 describe('UiMediatorService', () => {
@@ -101,6 +101,20 @@ describe('UiMediatorService', () => {
       const name = await uiMediator.requestPlayerName();
 
       expect(name).toBeString();
+    });
+  });
+
+  describe('requestWeaponChoice', () => {
+    test('it returns a string', async () => {
+      const playerDummy = PlayerDouble.createDouble();
+      const optionsDummy: WeaponName[] = [];
+
+      expect.assertions(1);
+
+      const itemName = 
+        await uiMediator.requestWeaponChoice(playerDummy, optionsDummy);
+
+      expect(itemName).toBeString();
     });
   });
 });
