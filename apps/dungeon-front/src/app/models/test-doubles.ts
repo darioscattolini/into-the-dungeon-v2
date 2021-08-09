@@ -55,8 +55,9 @@ class MonsterDouble {
 
   public static createDouble(): TestDouble<Monster> {
     const [type] = pickRandomMonsterTypes(1);
+    const damage = randomInteger(10);
 
-    return new (Identified(Monster))(type);
+    return new (Identified(Monster))(type, damage);
   }
 }
 

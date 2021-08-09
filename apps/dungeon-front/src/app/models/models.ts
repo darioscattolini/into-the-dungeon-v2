@@ -48,8 +48,9 @@ export { Equipment, EquipmentName, equipmentNames, WeaponName, weaponNames }
 import { Monster } from './monster/monster';
 import { MonsterType } from './monster/monster-type';
 import { monsterTypes } from './monster/monster-type';
+import { monsterData } from './monster/monster-data';
 
-export { Monster, MonsterType, monsterTypes }
+export { Monster, MonsterType, monsterTypes, monsterData }
 
 // STATE
 import { StateUpdate } from './state/state-update';
