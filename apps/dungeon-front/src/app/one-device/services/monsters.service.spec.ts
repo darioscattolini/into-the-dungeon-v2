@@ -84,7 +84,7 @@ describe('MonstersService', () => {
         variations.push(unrepeatedTypes.length);
       }
       
-      expect(variations).toSatisfyAll(number => number >= 9);
+      expect(variations).toSatisfyAll(number => number >= 8);
     });
   });
 });
