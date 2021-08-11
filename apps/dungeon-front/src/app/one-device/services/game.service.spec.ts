@@ -27,6 +27,8 @@ describe('GameService', () => {
   let raidService: RaidService;
   let playersService: PlayersService;
 
+  const roundLoopController = jest.spyOn(GameMock.prototype, 'getWinner');
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -40,6 +42,9 @@ describe('GameService', () => {
     biddingService = TestBed.inject(BiddingService);
     raidService = TestBed.inject(RaidService);
     playersService = TestBed.inject(PlayersService);
+
+    // set up return value making round loop end (runs once by default)
+    roundLoopController.mockReturnValue(PlayerDouble.createDouble());
   });
 
   afterEach(() => {
@@ -64,10 +69,6 @@ describe('GameService', () => {
       
       jest.spyOn(playersService, 'getJoiningPlayers')
         .mockResolvedValue(playersDummy);
-
-      // rounds loop does not start
-      jest.spyOn(GameMock.prototype, 'goesOn')
-        .mockReturnValue(false);
     });
 
     test('it asks Game class for player requirements', async () => {
@@ -99,17 +100,12 @@ describe('GameService', () => {
     });
   });
 
-  describe.each([
-    [0], [1], [2], [3]
-  ])('round iteration', loopRuns => {
+  describe.each([1, 2, 3, 4])('round iteration', loopRuns => {
 
     beforeEach(() => {
-      // set up round loop to run loopRuns times
-      let loopController = jest.spyOn(Game.prototype, 'goesOn')
-        .mockReturnValue(false);
-      
-      for (let i = 0; i < loopRuns; i++) {
-        loopController = loopController.mockReturnValueOnce(true);
+      // make round loop run loopRuns times
+      for (let i = 0; i < loopRuns - 1; i++) {
+        roundLoopController.mockReturnValueOnce(undefined);
       }
     });
 
@@ -122,7 +118,7 @@ describe('GameService', () => {
 
       expect(biddingService.playBidding).toHaveBeenCalledTimes(loopRuns);
       expect(raidService.playRaid).toHaveBeenCalledTimes(loopRuns);
-      expect(gameMock.goesOn).toHaveBeenCalledTimes(loopRuns + 1);
+      expect(gameMock.getWinner).toHaveBeenCalledTimes(loopRuns);
     });
   });
 
@@ -158,11 +154,8 @@ describe('GameService', () => {
         survived: false
       };
 
-      // round loop designed to run loopRuns times
-      jest.spyOn(Game.prototype, 'goesOn')
-        .mockReturnValue(false)
-        .mockReturnValueOnce(true)
-        .mockReturnValueOnce(true);
+      // make round loop run twice
+      roundLoopController.mockReturnValueOnce(undefined);
 
       jest.spyOn(Game.prototype, 'getBiddingPlayersRound')
         .mockReturnValueOnce(biddingPlayersDummy1)

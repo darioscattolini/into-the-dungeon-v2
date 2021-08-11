@@ -3,7 +3,7 @@ import { OneDeviceModule } from '../one-device.module';
 import { PlayersService } from './players.service';
 import { BiddingService } from './bidding.service';
 import { RaidService } from './raid.service';
-import { Game, RaidParticipants } from '../../models/models';
+import { Game, Player } from '../../models/models';
 
 @Injectable({
   providedIn: OneDeviceModule
@@ -19,13 +19,19 @@ export class GameService {
   public async play(): Promise<void> {
     const game = await this.buildNewGame();
     
-    while(game.goesOn()) {
-      const raidParticipants = await this.playBidding(game);
-      const roundResult = await this.playRaid(raidParticipants, game);
-      // NOTIFICATION REQUIRED?
-    }
+    let winner: Player | undefined;
 
-    this.declareWinner(game);
+    while(!winner) {
+      const biddingPlayers = game.getBiddingPlayersRound();
+      const raidParticipants 
+        = await this.biddingService.playBidding(biddingPlayers);
+      const raidResult = await this.raidService.playRaid(raidParticipants);        
+      const roundResult = game.endRound(raidResult);
+      // NOTIFY PLAYER OUT OF GAME
+      winner = game.getWinner();
+    }
+    
+    // NOTIFY WINNER
   }
 
   private async buildNewGame(): Promise<Game> {
@@ -34,25 +40,6 @@ export class GameService {
     const game = new Game(players);
     
     return game;
-  }
-
-  private declareWinner(game: Game) {
-    const winner = game.winner;
-    // NOTIFY WINNER
-  }
-
-  private async playBidding(game: Game): Promise<RaidParticipants> {
-    const players = game.getBiddingPlayersRound();
-    const result = await this.biddingService.playBidding(players);
-
-    return result;
-  }
-
-  private async playRaid(participants: RaidParticipants, game: Game) {
-    const raidResult = await this.raidService.playRaid(participants);        
-    const roundResult = game.endRound(raidResult);
-    
-    return roundResult;
   }
 }
 
