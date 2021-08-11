@@ -1,7 +1,7 @@
 import { BiddingPlayersRound } from './bidding-players-round';
 import { 
   BiddingActionRequest, BiddingActionResponse 
-} from './bidding-interactions';
+} from './bidding-action';
 import {
   Player, Hero, Monster, RaidParticipants, StateUpdate 
 } from '../../models';
@@ -15,7 +15,7 @@ export class Bidding {
   public getActionRequest(): BiddingActionRequest {
     // minimum required implementation
     return {
-      type: 'play-bidding',
+      action: 'play-bidding',
       player: new Player('player')
     }
   }

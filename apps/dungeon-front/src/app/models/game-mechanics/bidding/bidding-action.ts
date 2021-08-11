@@ -1,34 +1,34 @@
 import { MonsterType, EquipmentName, Player } from '../../models';
 
 export interface BidParticipationRequest {
-  type: 'play-bidding';
+  action: 'play-bidding';
   player: Player;
 }
 
 export interface MonsterAdditionRequest {
-  type: 'add-monster';
+  action: 'add-monster';
   player: Player;
   content: MonsterType;
 }
 
 export interface EquipmentRemovalRequest {
-  type: 'remove-equipment';
+  action: 'remove-equipment';
   player: Player;
   content: EquipmentName[];
 }
 
 export interface BidParticipationResponse {
-  type: 'play-bidding';
+  action: 'play-bidding';
   content: boolean
 }
 
 export interface MonsterAdditionResponse {
-  type: 'add-monster';
+  action: 'add-monster';
   content: boolean
 }
 
 export interface EquipmentRemovalResponse {
-  type: 'remove-equipment';
+  action: 'remove-equipment';
   content: EquipmentName
 }
 
@@ -41,3 +41,5 @@ export type BiddingActionResponse =
   | BidParticipationResponse 
   | MonsterAdditionResponse 
   | EquipmentRemovalResponse;
+
+export type BiddingAction = BiddingActionRequest['action'];

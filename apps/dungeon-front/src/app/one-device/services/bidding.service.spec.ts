@@ -94,7 +94,7 @@ describe('BiddingService', () => {
       // stubbed dependency
       jest.spyOn(Bidding.prototype, 'getActionRequest')
         .mockReturnValue({
-          type: 'play-bidding',
+          action: 'play-bidding',
           player: PlayerDouble.createDouble()
         });
 
@@ -111,7 +111,7 @@ describe('BiddingService', () => {
       // stubbed dependency
       jest.spyOn(Bidding.prototype, 'getActionRequest')
         .mockReturnValue({
-          type: 'play-bidding',
+          action: 'play-bidding',
           player: PlayerDouble.createDouble()
         });
 
@@ -137,7 +137,7 @@ describe('BiddingService', () => {
 
         jest.spyOn(Bidding.prototype, 'getActionRequest')
           .mockReturnValue({
-            type: 'play-bidding',
+            action: 'play-bidding',
             player: requestTargetDummy
           });
       });
@@ -181,7 +181,7 @@ describe('BiddingService', () => {
         }
       );
 
-      test('bidding.onResponse is called with play-bidding type', async () => {
+      test('bidding.onResponse is called with play-bidding action', async () => {
         expect.assertions(1);
 
         await biddingService.playBidding(playersDummy);
@@ -191,7 +191,7 @@ describe('BiddingService', () => {
         expect(biddingMock.onResponse)
           .toHaveBeenCalledWith(
             expect.toContainEntry(
-              ['type', 'play-bidding']
+              ['action', 'play-bidding']
             )
           );
       });
@@ -230,7 +230,7 @@ describe('BiddingService', () => {
 
         jest.spyOn(Bidding.prototype, 'getActionRequest')
           .mockReturnValue({
-            type: 'add-monster',
+            action: 'add-monster',
             player: requestTargetDummy,
             content: monsterTypeDummy
           });
@@ -287,7 +287,7 @@ describe('BiddingService', () => {
         }
       );
 
-      test('bidding.onResponse is called with add-monster type', async () => {
+      test('bidding.onResponse is called with add-monster action', async () => {
         expect.assertions(1);
 
         await biddingService.playBidding(playersDummy);
@@ -297,7 +297,7 @@ describe('BiddingService', () => {
         expect(biddingMock.onResponse)
           .toHaveBeenCalledWith(
             expect.toContainEntry(
-              ['type', 'add-monster']
+              ['action', 'add-monster']
             )
           );
       });
@@ -338,7 +338,7 @@ describe('BiddingService', () => {
 
         jest.spyOn(Bidding.prototype, 'getActionRequest')
           .mockReturnValue({
-            type: 'remove-equipment',
+            action: 'remove-equipment',
             player: requestTargetDummy,
             content: equipmentOptionsDummy
           });
@@ -388,7 +388,7 @@ describe('BiddingService', () => {
         
         jest.spyOn(Bidding.prototype, 'getActionRequest')
           .mockReturnValue({
-            type: 'remove-equipment',
+            action: 'remove-equipment',
             player: requestTargetDummy,
             content: optionsDummy
           });
@@ -420,7 +420,7 @@ describe('BiddingService', () => {
       );
 
       test(
-        'bidding.onResponse is called with remove-equipment type', 
+        'bidding.onResponse is called with remove-equipment action', 
         async () => {
           expect.assertions(1);
 
@@ -431,7 +431,7 @@ describe('BiddingService', () => {
           expect(biddingMock.onResponse)
             .toHaveBeenCalledWith(
               expect.toContainEntry(
-                ['type', 'remove-equipment']
+                ['action', 'remove-equipment']
               )
             );
         }

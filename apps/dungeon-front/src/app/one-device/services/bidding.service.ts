@@ -31,7 +31,7 @@ export class BiddingService {
   }
 
   private async makeRequest(request: ActionRequest): Promise<ActionResponse> {  
-    switch (request.type) {
+    switch (request.action) {
       case 'play-bidding': 
         return await this.requestBidParticipation(request);
       case 'add-monster':
@@ -70,7 +70,7 @@ export class BiddingService {
     const response = await this.uiMediator.requestBidParticipation(player);
     
     return { 
-      type: request.type, 
+      action: request.action, 
       content: response 
     };
   }
@@ -89,7 +89,7 @@ export class BiddingService {
     }
 
     return { 
-      type: request.type, 
+      action: request.action, 
       content: response 
     };
   }
@@ -104,7 +104,7 @@ export class BiddingService {
       = await this.uiMediator.requestMonsterAddition(player, monster);
     
     return { 
-      type: request.type, 
+      action: request.action, 
       content: response
     };
   }

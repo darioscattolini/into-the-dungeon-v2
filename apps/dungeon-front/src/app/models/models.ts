@@ -5,12 +5,13 @@ import { Bidding } from './game-mechanics/bidding/bidding';
 import { 
   BiddingPlayersRound 
 } from "./game-mechanics/bidding/bidding-players-round";
-import { 
+import {
+  BiddingAction,
   BiddingActionRequest, BiddingActionResponse,
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,
   EquipmentRemovalRequest, EquipmentRemovalResponse
-} from './game-mechanics/bidding/bidding-interactions';
+} from './game-mechanics/bidding/bidding-action';
 import { Raid } from './game-mechanics/raid/raid';
 import { RaidParticipants } from './game-mechanics/raid/raid-participants';
 import { Encounter } from './game-mechanics/raid/encounter';
@@ -19,7 +20,7 @@ import { RaidResult } from './game-mechanics/raid/raid-result';
 
 export { 
   Game, PlayerRequirements,
-  Bidding, BiddingPlayersRound, 
+  Bidding, BiddingPlayersRound, BiddingAction,
   BiddingActionRequest, BiddingActionResponse,
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,
