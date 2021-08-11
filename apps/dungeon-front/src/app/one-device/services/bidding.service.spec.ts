@@ -74,6 +74,21 @@ describe('BiddingService', () => {
         .mockReturnValue(monstersPackDummy);
     });
 
+    test('Hero is chosen by starting player', async () => {
+      makeLoopRunTimes(0);
+
+      const starterDummy = PlayerDouble.createDouble();
+
+      jest.spyOn(BiddingPlayersRound.prototype, 'starter', 'get')
+        .mockReturnValue(starterDummy);
+
+      expect.assertions(1);
+
+      await biddingService.playBidding(playersDummy);
+
+      expect(uiMediator.requestHeroChoice).toHaveBeenCalledWith(starterDummy);
+    });
+
     test('Bidding is instantiated with the right parameters', async () => {
       makeLoopRunTimes(0);
 
