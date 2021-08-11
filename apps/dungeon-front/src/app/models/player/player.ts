@@ -2,7 +2,10 @@ export class Player {
   public readonly name: string;
 
   constructor(name: string) {
-    // validation on empty names: add here in case of bug, real check in form component
+    if (name === '') {
+      throw new Error('Player\'s names should have at least one character');
+    }
+
     this.name = name;
   }
 }
