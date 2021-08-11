@@ -1,4 +1,4 @@
-import { MonsterType, EquipmentName, Player } from '../models';
+import { MonsterType, EquipmentName, Player } from '../../models';
 
 export interface BidParticipationRequest {
   type: 'play-bidding';

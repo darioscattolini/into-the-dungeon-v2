@@ -1,5 +1,5 @@
 import { Encounter, EncounterOutcome } from './encounter';
-import { Hero, Monster, ChosenWeapon } from '../models';
+import { Hero, Monster, ChosenWeapon } from '../../models';
 
 export class Raid {
   constructor(hero: Hero, enemies: Monster[]) {

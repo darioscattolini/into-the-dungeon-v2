@@ -2,7 +2,7 @@ import { Game } from './game';
 import { Player, RaidResult, BiddingPlayersRound } from '../models';
 import { PlayerDouble } from '../test-doubles';
 
-jest.mock('./bidding-players-round');
+jest.mock('./bidding/bidding-players-round');
 
 function buildPlayersDummy(amount: number): Player[] {
   const players = [];

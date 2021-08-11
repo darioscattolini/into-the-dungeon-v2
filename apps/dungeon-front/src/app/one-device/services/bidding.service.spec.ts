@@ -17,7 +17,7 @@ import {
 jest.mock('./ui-mediator.service.ts');
 jest.mock('./monsters.service.ts');
 
-jest.mock('../../models/game-mechanics/bidding.ts')
+jest.mock('../../models/game-mechanics/bidding/bidding');
 const BiddingMock = mocked(Bidding);
 
 function makeLoopRunTimes(times: number): void {

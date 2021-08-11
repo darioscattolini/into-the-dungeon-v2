@@ -9,7 +9,7 @@ import {
 import { staticImplements } from '@into-the-dungeon/util-common';
 
 jest.mock('./player/player.ts');
-jest.mock('./game-mechanics/bidding-players-round.ts');
+jest.mock('./game-mechanics/bidding/bidding-players-round.ts');
 jest.mock('./hero/hero.ts');
 jest.mock('./monster/monster.ts');
 

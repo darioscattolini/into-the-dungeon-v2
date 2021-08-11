@@ -1,4 +1,4 @@
-import { Player } from '../player/player';
+import { Player } from '../../models';
 
 export class BiddingPlayersRound {
   constructor(activePlayers: Player[]) {

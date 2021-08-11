@@ -1,21 +1,24 @@
 // GAME MECHANICS
 import { Game } from './game-mechanics/game';
-import { Bidding } from './game-mechanics/bidding';
-import { BiddingPlayersRound } from "./game-mechanics/bidding-players-round";
+import { PlayerRequirements } from "./game-mechanics/player-requirements";
+import { Bidding } from './game-mechanics/bidding/bidding';
+import { 
+  BiddingPlayersRound 
+} from "./game-mechanics/bidding/bidding-players-round";
 import { 
   BiddingActionRequest, BiddingActionResponse,
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,
   EquipmentRemovalRequest, EquipmentRemovalResponse
-} from './game-mechanics/bidding-interactions';
-import { Raid } from './game-mechanics/raid';
-import { RaidParticipants } from './game-mechanics/raid-participants';
-import { Encounter } from './game-mechanics/encounter';
-import { ChosenWeapon } from './game-mechanics/encounter';
-import { RaidResult } from './game-mechanics/raid-result';
+} from './game-mechanics/bidding/bidding-interactions';
+import { Raid } from './game-mechanics/raid/raid';
+import { RaidParticipants } from './game-mechanics/raid/raid-participants';
+import { Encounter } from './game-mechanics/raid/encounter';
+import { ChosenWeapon } from './game-mechanics/raid/encounter';
+import { RaidResult } from './game-mechanics/raid/raid-result';
 
 export { 
-  Game, 
+  Game, PlayerRequirements,
   Bidding, BiddingPlayersRound, 
   BiddingActionRequest, BiddingActionResponse,
   BidParticipationRequest, BidParticipationResponse,
@@ -26,9 +29,8 @@ export {
 
 // PLAYER
 import { Player } from "./player/player";
-import { PlayerRequirements } from "./player/player-requirements";
 
-export { Player, PlayerRequirements }
+export { Player }
 
 // HERO
 import { Hero } from "./hero/hero";

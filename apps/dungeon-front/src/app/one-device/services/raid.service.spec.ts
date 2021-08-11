@@ -13,7 +13,7 @@ import {
 
 jest.mock('./ui-mediator.service.ts');
 
-jest.mock('../../models/game-mechanics/raid.ts')
+jest.mock('../../models/game-mechanics/raid/raid')
 const RaidMock = mocked(Raid);
 
 function makeLoopRunTimes(times: number): void {

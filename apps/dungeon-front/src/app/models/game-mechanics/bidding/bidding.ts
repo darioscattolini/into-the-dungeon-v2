@@ -2,9 +2,9 @@ import { BiddingPlayersRound } from './bidding-players-round';
 import { 
   BiddingActionRequest, BiddingActionResponse 
 } from './bidding-interactions';
-import { RaidParticipants } from './raid-participants';
-import { Player, Hero, Monster } from '../models';
-import { StateUpdate } from '../state/state-update';
+import {
+  Player, Hero, Monster, RaidParticipants, StateUpdate 
+} from '../../models';
 
 export class Bidding {
   

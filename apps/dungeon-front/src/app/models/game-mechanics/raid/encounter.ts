@@ -1,4 +1,4 @@
-import { MonsterType, WeaponName } from '../models';
+import { MonsterType, WeaponName } from '../../models';
 
 export interface Encounter {
   enemy: MonsterType;
