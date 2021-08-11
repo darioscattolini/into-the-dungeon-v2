@@ -75,7 +75,10 @@ describe('Game', () => {
 
       // BiddingPlayersRound created with Game parameter members in the same order
       expect(BiddingPlayersRound)
-        .toHaveBeenCalledWith([playerDummy1, playerDummy2, playerDummy3]);
+        .toHaveBeenCalledWith(
+          [playerDummy1, playerDummy2, playerDummy3],
+          expect.toBeBoolean()
+        );
     });
 
     test('BiddingPlayersRound creation: first player inactive', () => {
@@ -87,7 +90,7 @@ describe('Game', () => {
 
       //BiddingPlayersRound created with Game parameter members but player1 in the same order
       expect(BiddingPlayersRound)
-        .toHaveBeenCalledWith([playerDummy2, playerDummy3]);
+        .toHaveBeenCalledWith([playerDummy2, playerDummy3], expect.toBeBoolean());
     });
 
     test('BiddingPlayersRound creation: middle player inactive', () => {
@@ -99,8 +102,40 @@ describe('Game', () => {
 
       //BiddingPlayersRound created with Game parameter members but player2 in the same order
       expect(BiddingPlayersRound)
-        .toHaveBeenCalledWith([playerDummy1, playerDummy3]);
+        .toHaveBeenCalledWith([playerDummy1, playerDummy3], expect.toBeBoolean());
     });
+
+    test('BiddingPlayersRound creation: random starter in 1st round', () => {
+      game.getBiddingPlayersRound();
+
+      // first round should have random first player
+      const expectedRandomStarter = true;
+
+      expect(BiddingPlayersRound)
+        .toHaveBeenCalledWith(expect.toBeArray(), expectedRandomStarter);
+    });
+
+    test.each([2, 3, 4, 5])(
+      'BiddingPlayersRound creation: non random starter in round %i', 
+      round => {
+        const players: Player[] = [
+          playerDummy1, playerDummy2, playerDummy3, playerDummy1, playerDummy2
+        ];
+    
+        for (let i = 1; i <= round; i++) {
+          const [raider] = players.splice(0, 1);
+          addRaidResult(game, raider, i % 2 === 0);
+        }
+
+        game.getBiddingPlayersRound();
+
+        // rounds other than 1st should not have random starting player
+        const expectedRandomStarter = false;
+
+        expect(BiddingPlayersRound)
+          .toHaveBeenCalledWith(expect.toBeArray(), expectedRandomStarter);
+      }
+    );
 
     test('it returns instance of BiddingPlayersRound', () => {
       const round = game.getBiddingPlayersRound();

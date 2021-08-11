@@ -1,7 +1,7 @@
 import { Player } from '../../models';
 
 export class BiddingPlayersRound {
-  constructor(activePlayers: Player[]) {
+  constructor(activePlayers: Player[], randomStarter: boolean) {
     //
   }
 

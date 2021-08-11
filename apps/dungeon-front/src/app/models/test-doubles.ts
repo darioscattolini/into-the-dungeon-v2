@@ -32,7 +32,7 @@ class BiddingPlayersRoundDouble {
   }
 
   public static createDouble(): TestDouble<BiddingPlayersRound> {
-    return new (Identified(BiddingPlayersRound))([]);
+    return new (Identified(BiddingPlayersRound))([], false);
   }
 }
 
