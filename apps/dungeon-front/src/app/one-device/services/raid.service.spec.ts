@@ -11,7 +11,7 @@ import {
   PlayerDouble, HeroDouble, MonsterDouble, pickRandomWeaponNames
 } from '../../models/test-doubles';
 
-jest.mock('./ui-mediator.service.ts');
+jest.mock('./ui-mediator.service');
 
 jest.mock('../../models/game-mechanics/raid/raid')
 const RaidMock = mocked(Raid);

@@ -15,8 +15,8 @@ import {
 } from '../../models/test-doubles';
 
 jest.mock('./players.service');
-jest.mock('./bidding.service.ts');
-jest.mock('./raid.service.ts');
+jest.mock('./bidding.service');
+jest.mock('./raid.service');
 
 jest.mock('../../models/game-mechanics/game.ts');
 const GameMock = mocked(Game, true);

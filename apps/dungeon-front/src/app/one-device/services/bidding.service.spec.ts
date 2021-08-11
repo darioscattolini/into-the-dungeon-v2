@@ -14,8 +14,8 @@ import {
   HeroDouble, pickRandomEquipmentNames, MonsterDouble, pickRandomMonsterTypes
 } from '../../models/test-doubles';
 
-jest.mock('./ui-mediator.service.ts');
-jest.mock('./monsters.service.ts');
+jest.mock('./ui-mediator.service');
+jest.mock('./monsters.service');
 
 jest.mock('../../models/game-mechanics/bidding/bidding');
 const BiddingMock = mocked(Bidding);
