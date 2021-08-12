@@ -48,7 +48,8 @@ describe('GameService', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    GameMock.mockRestore();
   });
   
   test('it is created', () => {

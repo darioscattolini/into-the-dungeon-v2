@@ -24,7 +24,7 @@ describe('PlayersService', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('should be created', () => {

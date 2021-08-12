@@ -52,6 +52,7 @@ describe('Game', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+    BiddingPlayersRoundMock.mockRestore();
   });
 
   test('Game.getPlayerRequirements returns correct requirements', () => {

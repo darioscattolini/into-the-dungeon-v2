@@ -42,7 +42,8 @@ describe('RaidService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.restoreAllMocks();
+    RaidMock.mockRestore();
   });
 
   it('should be created', () => {

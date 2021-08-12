@@ -49,7 +49,8 @@ describe('BiddingService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.restoreAllMocks();
+    BiddingMock.mockRestore();
   });
 
   it('should be created', () => {
