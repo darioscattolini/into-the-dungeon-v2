@@ -1,8 +1,16 @@
+import { mocked } from 'ts-jest/utils';
+
 import { Game } from './game';
 import { Player, RaidResult, BiddingPlayersRound } from '../models';
-import { PlayerDouble } from '../test-doubles';
+import { BiddingPlayersRoundDouble, PlayerDouble } from '../test-doubles';
 
 jest.mock('./bidding/bidding-players-round');
+const BiddingPlayersRoundMock = mocked(BiddingPlayersRound);
+
+function addRaidResult(game: Game, raider: Player, survived: boolean): void {
+  const raidResult: RaidResult = { raider, survived };
+  game.endRound(raidResult);
+}
 
 function buildPlayersDummy(amount: number): Player[] {
   const players = [];
@@ -12,11 +20,6 @@ function buildPlayersDummy(amount: number): Player[] {
   }
 
   return players;
-}
-
-function addRaidResult(game: Game, raider: Player, survived: boolean) {
-  const raidResult: RaidResult = { raider, survived };
-  game.endRound(raidResult);
 }
 
 describe('Game', () => {
@@ -36,13 +39,19 @@ describe('Game', () => {
   let playerDummy1: Player;
   let playerDummy2: Player;
   let playerDummy3: Player;
+  let playersDummy: Player[];
   let game: Game;
     
   beforeEach(() => {
     playerDummy1 = PlayerDouble.createDouble();
     playerDummy2 = PlayerDouble.createDouble();
     playerDummy3 = PlayerDouble.createDouble();
-    game = new Game([playerDummy1, playerDummy2, playerDummy3]);
+    playersDummy = [playerDummy1, playerDummy2, playerDummy3];
+    game = new Game(playersDummy);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   test('Game.getPlayerRequirements returns correct requirements', () => {
@@ -70,18 +79,18 @@ describe('Game', () => {
   });
 
   describe('getBiddingPlayersRound as affected by endRound', () => {
-    test('BiddingPlayersRound creation: no inactive players yet', () => {
+    test('BiddingPlayersRound players with no inactive players yet', () => {
       game.getBiddingPlayersRound();
 
       // BiddingPlayersRound created with Game parameter members in the same order
       expect(BiddingPlayersRound)
         .toHaveBeenCalledWith(
           [playerDummy1, playerDummy2, playerDummy3],
-          expect.toBeBoolean()
+          expect.toBeNumber()
         );
     });
 
-    test('BiddingPlayersRound creation: first player inactive', () => {
+    test('BiddingPlayersRound players with first player inactive', () => {
       //inactivate player1
       addRaidResult(game, playerDummy1, false);
       addRaidResult(game, playerDummy1, false);
@@ -90,10 +99,10 @@ describe('Game', () => {
 
       //BiddingPlayersRound created with Game parameter members but player1 in the same order
       expect(BiddingPlayersRound)
-        .toHaveBeenCalledWith([playerDummy2, playerDummy3], expect.toBeBoolean());
+        .toHaveBeenCalledWith([playerDummy2, playerDummy3], expect.toBeNumber());
     });
 
-    test('BiddingPlayersRound creation: middle player inactive', () => {
+    test('BiddingPlayersRound players with second player inactive', () => {
       //inactivate player2
       addRaidResult(game, playerDummy2, false);
       addRaidResult(game, playerDummy2, false);
@@ -102,38 +111,131 @@ describe('Game', () => {
 
       //BiddingPlayersRound created with Game parameter members but player2 in the same order
       expect(BiddingPlayersRound)
-        .toHaveBeenCalledWith([playerDummy1, playerDummy3], expect.toBeBoolean());
+        .toHaveBeenCalledWith([playerDummy1, playerDummy3], expect.toBeNumber());
     });
 
-    test('BiddingPlayersRound creation: random starter in 1st round', () => {
+    /*  
+        NOTE ON RANDOMNESS TESTS
+        We only test:
+          -That all possible random values are eventually generated.
+          -That random values are within expected range.
+          -That Math.random function has been used.
+    */
+
+    test('BiddingPlayersRound has random starter in 1st round', () => {
+      const starters: number[] = [];
+      const expectedStarters = playersDummy.map((player, index) => index);
+      const indexChecks: boolean[] = [];
+      
+      const roundDummy = BiddingPlayersRoundDouble.createDouble();
+      const startersTracker = (players: Player[], starter: number) => {
+        starters.push(starter);
+        indexChecks.push(starter < players.length);
+        return roundDummy;
+      };
+            
+      BiddingPlayersRoundMock.mockImplementation(startersTracker);
+
+      while (!expectedStarters.every(starter => starters.includes(starter))) {
+        game.getBiddingPlayersRound();
+      }
+      
+      expect(expectedStarters)
+        .toSatisfyAll(starter => starters.includes(starter));
+
+      expect(indexChecks).toSatisfyAll(x => x === true);
+    });
+
+    test('Math.random is called in 1st round', () => {
+      jest.spyOn(global.Math, 'random');
+
       game.getBiddingPlayersRound();
-
-      // first round should have random first player
-      const expectedRandomStarter = true;
-
-      expect(BiddingPlayersRound)
-        .toHaveBeenCalledWith(expect.toBeArray(), expectedRandomStarter);
+      
+      expect(Math.random).toHaveBeenCalled();
     });
 
-    test.each([2, 3, 4, 5])(
-      'BiddingPlayersRound creation: non random starter in round %i', 
-      round => {
-        const players: Player[] = [
-          playerDummy1, playerDummy2, playerDummy3, playerDummy1, playerDummy2
-        ];
-    
-        for (let i = 1; i <= round; i++) {
-          const [raider] = players.splice(0, 1);
-          addRaidResult(game, raider, i % 2 === 0);
+    test('BiddingPlayersRound has random starter if last raider inactive', () => {
+      const starters: number[] = [];
+      const expectedStarters = playersDummy.map((player, index) => index);
+      const indexChecks: boolean[] = [];
+      
+      const roundDummy = BiddingPlayersRoundDouble.createDouble();
+      const startersTracker = (players: Player[], starter: number) => {
+        starters.push(starter);
+        indexChecks.push(starter < players.length);
+        return roundDummy;
+      };
+            
+      BiddingPlayersRoundMock.mockImplementation(startersTracker);
+
+      game.endRound({ raider: playerDummy2, survived: false });
+      game.endRound({ raider: playerDummy2, survived: false });
+      expectedStarters.splice(playersDummy.length - 1, 1);
+
+      while (!expectedStarters.every(starter => starters.includes(starter))) {
+        game.getBiddingPlayersRound();
+      }
+      
+      expect(expectedStarters)
+        .toSatisfyAll(starter => starters.includes(starter));
+
+      expect(indexChecks).toSatisfyAll(x => x === true);
+    });
+
+    test('Math.random is called if last raider inactive', () => {
+      jest.spyOn(global.Math, 'random');
+
+      game.endRound({ raider: playerDummy2, survived: false });
+      game.endRound({ raider: playerDummy2, survived: false });
+
+      game.getBiddingPlayersRound();
+      
+      expect(Math.random).toHaveBeenCalledTimes(1);
+    });
+
+    test.each([0, 1, 2])( // Indexes of playersDummy
+      'BiddingPlayersRound has last raider as starter (if active)', 
+      playerIndex => {
+        const expectedPlayersAmount = playersDummy.length;
+
+        // Checks that players in BPR match playersDummy in the same order
+        // Necessary to ensure that playerIndex is the same player in both arrays
+        const playersArrayChecker = (array: Player[]) => {
+          return array.length === expectedPlayersAmount
+            && array.every((player, index) => player === playersDummy[index]);
         }
+
+        game.endRound({ raider: playersDummy[playerIndex], survived: true });
 
         game.getBiddingPlayersRound();
 
-        // rounds other than 1st should not have random starting player
-        const expectedRandomStarter = false;
+        expect(BiddingPlayersRound).toHaveBeenCalledWith(
+          expect.toSatisfy(playersArrayChecker), 
+          expect.toSatisfy(x => x === playerIndex)
+        );
 
-        expect(BiddingPlayersRound)
-          .toHaveBeenCalledWith(expect.toBeArray(), expectedRandomStarter);
+        expect(BiddingPlayersRound).toHaveBeenCalledWith(
+          expect.toSatisfy(playersArrayChecker), 
+          expect.toSatisfy(x => x === playerIndex)
+        );
+
+        expect(BiddingPlayersRound).toHaveBeenCalledWith(
+          expect.toBeArrayOfSize(expectedPlayersAmount), 
+          expect.toBeWithin(0, expectedPlayersAmount)
+        );
+      }
+    );
+
+    test.each([0, 1, 2])( // Indexes of playersDummy
+      'Math.random is not called if last raider is starter', 
+      playerIndex => {
+        jest.spyOn(global.Math, 'random');
+
+        game.endRound({ raider: playersDummy[playerIndex], survived: true });
+
+        game.getBiddingPlayersRound();
+
+        expect(Math.random).not.toHaveBeenCalled();
       }
     );
 

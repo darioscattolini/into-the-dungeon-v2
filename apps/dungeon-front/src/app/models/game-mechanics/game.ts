@@ -12,7 +12,7 @@ export class Game {
   private static readonly minPlayers = 2;
   private static readonly maxPlayers = 4;
 
-  private currentRound = 1;
+  private lastRaider: Player | undefined;
   private orderedPlayers: Readonly<Player[]>;
   private raidSuccessTracker: RaidResultTracker = [[], [], []];
   private raidFailureTracker: RaidResultTracker = [[], [], []];
@@ -42,7 +42,7 @@ export class Game {
 
     const outOfGame = this.getRaidFailures(player) >= 2;
 
-    this.currentRound++;
+    this.lastRaider = player;
 
     return outOfGame ? { outOfGame: player } : {};
   }
@@ -53,8 +53,13 @@ export class Game {
     }
 
     const activePlayers = this.getActivePlayers();
-
-    const randomStarter = this.currentRound === 1;
+    let randomStarter: number;
+    
+    if (!this.lastRaider || !activePlayers.includes(this.lastRaider)) {
+      randomStarter = Math.floor(Math.random() * activePlayers.length);
+    } else {
+      randomStarter = activePlayers.indexOf(this.lastRaider);
+    }
 
     return new BiddingPlayersRound(activePlayers, randomStarter);
   }
