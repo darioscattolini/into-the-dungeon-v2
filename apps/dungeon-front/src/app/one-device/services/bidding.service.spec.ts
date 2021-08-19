@@ -80,7 +80,7 @@ describe('BiddingService', () => {
 
       const starterDummy = PlayerDouble.createDouble();
 
-      jest.spyOn(BiddingPlayersRound.prototype, 'starter', 'get')
+      jest.spyOn(BiddingPlayersRound.prototype, 'getCurrentPlayer')
         .mockReturnValue(starterDummy);
 
       expect.assertions(1);

@@ -54,8 +54,3 @@ import { monsterTypes } from './monster/monster-type';
 import { monsterData } from './monster/monster-data';
 
 export { Monster, MonsterType, monsterTypes, monsterData }
-
-// STATE
-import { StateUpdate } from './state/state-update';
-
-export { StateUpdate }

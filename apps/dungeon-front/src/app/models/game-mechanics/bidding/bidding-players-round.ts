@@ -5,9 +5,31 @@ export class BiddingPlayersRound {
     // verify index is included in players
   }
 
-  public get starter(): Player { 
+  public get remainingPlayersAmount(): number {
     // minimum required implementation
-    // should return players[0]
+    return 2;
+  }
+
+  public advanceToNextPlayer(): Player {
+    // minimun required implementation
+    return new Player('player');
+  }
+
+  public currentPlayerWithdraws(): void {
+    // inactivates round if only 1 left
+  }
+
+  public declareCurrentPlayerRaider(): void {
+    // inactivates round
+  }
+
+  public getCurrentPlayer(): Player {
+    // minimum required implementation
+    return new Player('player');
+  }
+
+  public getRaider(): Player {
+    // minimum required implementation
     return new Player('player');
   }
 }

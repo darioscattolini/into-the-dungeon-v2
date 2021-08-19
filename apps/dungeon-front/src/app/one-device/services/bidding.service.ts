@@ -55,8 +55,9 @@ export class BiddingService {
   }
 
   private async setBiddingUp(players: BiddingPlayersRound): Promise<Bidding> {
+    const starter = players.getCurrentPlayer();
     // Notify who is first player
-    const hero = await this.uiMediator.requestHeroChoice(players.starter);
+    const hero = await this.uiMediator.requestHeroChoice(starter);
     const monstersPack = this.monstersService.getMonstersPack();
         
     return new Bidding(players, hero, monstersPack);
