@@ -18,8 +18,10 @@ jest.mock('./players.service');
 jest.mock('./bidding.service');
 jest.mock('./raid.service');
 
-jest.mock('../../models/game-mechanics/game.ts');
+jest.mock('../../models/game-mechanics/game');
 const GameMock = mocked(Game, true);
+
+jest.mock('../../models/game-mechanics/bidding/bidding-players-round');
 
 describe('GameService', () => {
   let gameService: GameService;

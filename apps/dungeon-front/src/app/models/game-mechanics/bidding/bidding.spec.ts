@@ -703,9 +703,13 @@ describe('Bidding', () => {
 
     describe.each([3, 4])('%i (more than 2) players left', playersAmount => {
       beforeEach(() => {
-        jest.spyOn(
-          BiddingPlayersRound.prototype, 'remainingPlayersAmount', 'get'
-        ).mockReturnValue(playersAmount);
+        Object.defineProperty(playersMock, 'remainingPlayersAmount', {
+          get: jest.fn(() => playersAmount),
+        });
+        
+        /* THIS SHOULD WORK BUT DOESN'T
+        jest.spyOn(playersMock, 'remainingPlayersAmount', 'get')
+          .mockReturnValue(playersAmount); */
 
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
         bidding.getActionRequest();

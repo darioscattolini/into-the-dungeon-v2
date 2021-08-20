@@ -20,6 +20,8 @@ jest.mock('./monsters.service');
 jest.mock('../../models/game-mechanics/bidding/bidding');
 const BiddingMock = mocked(Bidding);
 
+jest.mock('../../models/game-mechanics/bidding/bidding-players-round');
+
 function makeLoopRunTimes(times: number): void {
   let loopController = jest.spyOn(Bidding.prototype, 'goesOn')
     .mockReturnValue(false);
