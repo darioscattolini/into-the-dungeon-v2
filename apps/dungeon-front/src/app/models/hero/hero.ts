@@ -11,7 +11,7 @@ export class Hero {
     const pieceIndex = this.equipment
       .findIndex(piece => piece.name === pieceName);
     
-    if (pieceIndex > 0) {
+    if (pieceIndex >= 0) {
       this.equipment.splice(pieceIndex, 1);
     } else {
       throw new Error(`${pieceName} not included in hero's equipment.`)
