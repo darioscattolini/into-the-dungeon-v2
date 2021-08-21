@@ -1,6 +1,6 @@
 import { 
   Player, PlayerRequirements, BiddingPlayersRound, 
-  Hero, EquipmentName, equipmentNames, WeaponName, weaponNames,
+  Hero, Equipment, EquipmentName, equipmentNames, WeaponName, weaponNames,
   Monster, MonsterType, monsterTypes
 } from './models';
 import { 
@@ -44,7 +44,7 @@ class HeroDouble {
   }
 
   public static createDouble(): TestDouble<Hero> {
-    return new (Identified(Hero))();
+    return new (Identified(Hero))([]);
   }
 }
 
@@ -85,6 +85,15 @@ function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
   return chosenItems;
 }
 
+function buildEquipmentPackDouble(amount: number): Equipment[] {
+  const pack: Equipment[] = [];
+  const names = pickRandomEquipmentNames(amount);
+
+  for (const name of names) pack.push(new Equipment(name));
+
+  return pack;
+}
+
 function pickRandomMonsterTypes(amount: number, unique = true): MonsterType[] {
   const options = Array.from(monsterTypes);
 
@@ -106,6 +115,7 @@ function pickRandomWeaponNames(amount: number, unique = true): WeaponName[] {
 export { 
   PlayerDouble, buildPlayerRequirementsDummy,
   BiddingPlayersRoundDouble,
-  HeroDouble, pickRandomEquipmentNames, pickRandomWeaponNames,
+  HeroDouble, pickRandomEquipmentNames, pickRandomWeaponNames, 
+  buildEquipmentPackDouble,
   MonsterDouble, pickRandomMonsterTypes
 }
