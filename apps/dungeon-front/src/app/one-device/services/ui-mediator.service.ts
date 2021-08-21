@@ -31,7 +31,7 @@ export class UiMediatorService {
 
   public async requestHeroChoice(player: Player): Promise<Hero> {
     // minimum required implementation
-    return new Hero([]);
+    return new Hero();
   }
 
   public async requestMonsterAddition(

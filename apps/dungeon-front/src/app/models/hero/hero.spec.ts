@@ -6,52 +6,51 @@ import {
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 describe('Hero', () => {
-  let equipmentDummy: Equipment[];
   let hero: Hero;
+  let equipment: Equipment[];
+  let equipmentNames: EquipmentName[];
 
   beforeEach(() => {
-    equipmentDummy = buildEquipmentPackDouble(3);
+    hero = new Hero();
+    equipment = buildEquipmentPackDouble(3);
+    equipmentNames = equipment.map(piece => piece.name);
+    
+    for (const piece of equipment) {
+      hero.mountEquipmentPiece(piece);
+    }
   });
 
   test('it is created', () => {
-    hero = new Hero(equipmentDummy);
+    hero = new Hero();
 
     expect(hero).toBeTruthy();
   });
 
-  test('getMountedEquipment returns original equipment names', () => {
-    hero = new Hero(equipmentDummy);
-    const mountedEquipment = hero.getMountedEquipment();
-    const expectedNames = equipmentDummy.map(piece => piece.name);
+  test('getMountedEquipment returns mounted equipment names', () => {
+    const returnedEquipmentNames = hero.getMountedEquipment();
 
-    expect(mountedEquipment).toIncludeSameMembers(expectedNames);
+    expect(returnedEquipmentNames).toIncludeSameMembers(equipmentNames);
   });
 
   test('discardEquipmentPiece removes selected equipment', () => {
-    hero = new Hero(equipmentDummy);
-    
-    const discardedIndex = randomInteger(equipmentDummy.length, false);
-    const discardedName = equipmentDummy[discardedIndex].name;
-    const expectedNames = equipmentDummy
-      .map(piece => piece.name)
+    const discardedIndex = randomInteger(equipment.length, false);
+    const discardedName = equipment[discardedIndex].name;
+    const expectedNames = equipmentNames
       .filter(name => name !== discardedName);
 
     hero.discardEquipmentPiece(discardedName);
     
-    const mountedEquipment = hero.getMountedEquipment();
+    const returnedEquipment = hero.getMountedEquipment();
     
-    expect(mountedEquipment).toIncludeSameMembers(expectedNames);
+    expect(returnedEquipment).toIncludeSameMembers(expectedNames);
   });
 
   test('discardEquipmentPiece throws error for non held piece', () => {
-    hero = new Hero(equipmentDummy);
-    
-    const heldPiecesNames = equipmentDummy.map(piece => piece.name);
     let nonHeldPieceName: EquipmentName;
     
     do {
       [nonHeldPieceName] = pickRandomEquipmentNames(1);
-    } while (heldPiecesNames.includes(nonHeldPieceName));
+    } while (equipmentNames.includes(nonHeldPieceName));
 
     expect(() => { hero.discardEquipmentPiece(nonHeldPieceName); })
       .toThrowError(`${nonHeldPieceName} not included in hero's equipment.`);

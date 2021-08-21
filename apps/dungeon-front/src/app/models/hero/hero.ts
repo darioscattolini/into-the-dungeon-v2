@@ -1,11 +1,7 @@
 import { Equipment, EquipmentName } from '../models';
 
 export class Hero {
-  private equipment: Equipment[];
-
-  constructor(equipment: Equipment[]) {
-    this.equipment = Array.from(equipment);
-  }
+  private equipment: Equipment[] = [];
 
   public discardEquipmentPiece(pieceName: EquipmentName): void {
     const pieceIndex = this.equipment
@@ -20,5 +16,9 @@ export class Hero {
 
   public getMountedEquipment(): EquipmentName[] {
     return this.equipment.map(piece => piece.name);
+  }
+
+  public mountEquipmentPiece(piece: Equipment): void {
+    this.equipment.push(piece);
   }
 }

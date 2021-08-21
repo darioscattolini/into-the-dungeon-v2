@@ -44,7 +44,7 @@ class HeroDouble {
   }
 
   public static createDouble(): TestDouble<Hero> {
-    return new (Identified(Hero))([]);
+    return new (Identified(Hero))();
   }
 }
 
