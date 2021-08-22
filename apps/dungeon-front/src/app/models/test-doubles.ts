@@ -1,6 +1,7 @@
 import { 
   Player, PlayerRequirements, BiddingPlayersRound, 
-  Hero, Equipment, EquipmentName, equipmentNames, WeaponName, weaponNames,
+  Hero, Equipment, EquipmentName, equipmentNames, 
+  Weapon, WeaponName, weaponNames, Protection, ProtectionName, protectionNames,
   Monster, MonsterType, monsterTypes
 } from './models';
 import { 
@@ -89,9 +90,18 @@ function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
 
 function buildEquipmentPackDouble(amount: number): Equipment[] {
   const pack: Equipment[] = [];
-  const names = pickRandomEquipmentNames(amount);
+  const protectionAmount = Math.ceil(amount / 3);
+  const weaponsAmount = amount - protectionAmount;
+  const protectionNames = pickRandomProtectionNames(protectionAmount);
+  const weaponNames = pickRandomWeaponNames(weaponsAmount);
 
-  for (const name of names) pack.push(new Equipment(name));
+  for (const name of protectionNames) {
+    pack.push(new Protection(name));
+  }
+
+  for (const name of weaponNames) {
+    pack.push(new Weapon(name));
+  }
 
   return pack;
 }
@@ -102,7 +112,9 @@ function pickRandomMonsterTypes(amount: number, unique = true): MonsterType[] {
   return buildRandomArray(options, amount, unique);
 }
 
-function pickRandomEquipmentNames(amount: number, unique = true): EquipmentName[] {
+function pickRandomEquipmentNames(
+  amount: number, unique = true
+): EquipmentName[] {
   const options = Array.from(equipmentNames);
   
   return buildRandomArray(options, amount, unique);
@@ -110,6 +122,14 @@ function pickRandomEquipmentNames(amount: number, unique = true): EquipmentName[
 
 function pickRandomWeaponNames(amount: number, unique = true): WeaponName[] {
   const options = Array.from(weaponNames);
+  
+  return buildRandomArray(options, amount, unique);
+}
+
+function pickRandomProtectionNames(
+  amount: number, unique = true
+): ProtectionName[] {
+  const options = Array.from(protectionNames);
   
   return buildRandomArray(options, amount, unique);
 }

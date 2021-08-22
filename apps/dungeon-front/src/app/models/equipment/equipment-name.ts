@@ -58,11 +58,18 @@ type PrincessProtectionName = typeof princessProtectionNames[number];
 type PrincessWeaponName = typeof princessWeaponNames[number];
 type PrincessEquipmentName = PrincessProtectionName | PrincessWeaponName;
 
-type ProtectionName =
+export type ProtectionName =
   | BardProtectionName
   | MageProtectionName
   | NinjaProtectionName
   | PrincessProtectionName;
+
+export const protectionNames = [
+  ...bardProtectionNames, 
+  ...mageProtectionNames, 
+  ...ninjaProtectionNames, 
+  ...princessProtectionNames
+] as const;
 
 export type WeaponName =
   | BardWeaponName

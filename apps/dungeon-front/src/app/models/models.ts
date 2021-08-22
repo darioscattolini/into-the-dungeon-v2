@@ -40,12 +40,20 @@ export { Hero }
 
 // EQUIPMENT
 import { Equipment } from './equipment/equipment';
+import { Protection } from './equipment/protection';
+import { Weapon } from './equipment/weapon';
 import { EquipmentName } from './equipment/equipment-name';
 import { equipmentNames } from './equipment/equipment-name';
 import { WeaponName } from './equipment/equipment-name';
 import { weaponNames } from './equipment/equipment-name';
+import { ProtectionName } from './equipment/equipment-name';
+import { protectionNames } from './equipment/equipment-name';
 
-export { Equipment, EquipmentName, equipmentNames, WeaponName, weaponNames }
+export { 
+  Equipment, EquipmentName, equipmentNames,
+  Protection, ProtectionName, protectionNames,
+  Weapon, WeaponName, weaponNames
+}
 
 // MONSTER
 import { Monster } from './monster/monster';
