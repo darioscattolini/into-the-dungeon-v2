@@ -270,14 +270,15 @@ describe('RaidService', () => {
       );
     });
 
-    describe('return value', () => {
-      let survivedDummy: boolean;
-
+    describe.each([0, 1, 2, 3, 4])('return value', heroHitPoints => {
       beforeEach(() => {
-        survivedDummy = Math.random() >= 0.5;
-
-        jest.spyOn(Raid.prototype, 'hasHeroSurvived')
-          .mockReturnValue(survivedDummy);
+        Object.defineProperty(Raid.prototype, 'heroHitPoints', {
+          get: jest.fn(() => heroHitPoints)
+        });
+        
+        /* THIS SHOULD WORK BUT DOESN'T
+        jest.spyOn(Raid.prototype, 'heroHitPoints', 'get')
+          .mockReturnValue(heroHitPoints); */
       });
 
       test('it is an instance of RaidResult', async () => {
@@ -298,12 +299,13 @@ describe('RaidService', () => {
         expect(raidResult.raider).toBe(raiderDummy);
       });
 
-      test('it returns survived value from raid.hasHeroSurvived', async () => {
+      test('it returns survived value depending on heroHitPoints', async () => {
         expect.assertions(1);
-  
+        
+        const survivedExpectation = heroHitPoints > 0;
         const raidResult = await raidService.playRaid(participantsDummy);
 
-        expect(raidResult.survived).toBe(survivedDummy);
+        expect(raidResult.survived).toBe(survivedExpectation);
       });
     });
   });

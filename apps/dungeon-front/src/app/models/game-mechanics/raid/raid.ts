@@ -1,31 +1,68 @@
 import { Encounter, EncounterOutcome } from './encounter';
-import { Hero, Monster, ChosenWeapon } from '../../models';
+import { Hero, EquipmentName, Monster, ChosenWeapon } from '../../models';
 
 export class Raid {
+  public get heroHitPoints(): number {
+    return this.hero.hitPoints;
+  }
+
+  public get heroEquipment(): EquipmentName[] {
+    return this.hero.getMountedEquipment();
+  }
+
+  public get enemiesLeft(): number {
+    return this.enemies.length + (this.currentEnemy ? 1 : 0);
+  } 
+
+  private currentEnemy?: Monster;
+  private enemies: Monster[];
+  private hero: Hero;
+
   constructor(hero: Hero, enemies: Monster[]) {
-    //
+    this.hero = hero;
+    this.enemies = Array.from(enemies);
   }
 
   public getCurrentEncounter(): Encounter {
-    // minimum required implementation
-    return {
-      enemy: 'demon',
-      weapons: []
-    };
+    if (!this.currentEnemy) this.pickCurrentEnemy();
+    
+    const currentEnemy = this.currentEnemy as Monster;
+    
+    const enemy = currentEnemy.type;
+    const weapons = this.hero.getWeaponsAgainst(currentEnemy);
+
+    return { enemy, weapons };
   }
 
   public goesOn(): boolean {
-    // minimun required implementation
-    return false;
-  }
-
-  public hasHeroSurvived(): boolean {
-    // minimum required implementation
-    return true;
+    return this.heroHitPoints > 0 && this.enemiesLeft > 0;
   }
 
   public resolveCurrentEncounter(weapon: ChosenWeapon): EncounterOutcome {
-    // minimum required implementation
-    return { hitPointsChange: 2 };
+    if (!this.currentEnemy) {
+      throw new Error(
+        'No enemy picked. Method should be called after getCurrentEncounter.'
+      );
+    }
+
+    let outcome: EncounterOutcome;
+    
+    if (weapon === 'NO_WEAPON') {
+      outcome = this.hero.takeDamageFrom(this.currentEnemy);
+    } else {
+      outcome = this.hero.useWeaponAgainst(weapon, this.currentEnemy);
+    }
+
+    this.currentEnemy = undefined;
+
+    return outcome;
+  }
+
+  private pickCurrentEnemy(): void {
+    if (this.enemies.length === 0) {
+      throw new Error('No enemies left. Raid should have ended.');
+    }
+
+    this.currentEnemy = this.enemies.shift();
   }
 }

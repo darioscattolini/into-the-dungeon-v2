@@ -11,8 +11,8 @@ import { staticImplements } from '@into-the-dungeon/util-common';
 // this appears no have no effect on modules importing doubles
 jest.mock('./player/player');
 jest.mock('./game-mechanics/bidding/bidding-players-round');
-jest.mock('./hero/hero');
-jest.mock('./monster/monster');
+// jest.mock('./hero/hero');
+// jest.mock('./monster/monster');
 
 @staticImplements<TestDoubleClass<Player>>()
 class PlayerDouble {
@@ -44,7 +44,9 @@ class HeroDouble {
   }
 
   public static createDouble(): TestDouble<Hero> {
-    return new (Identified(Hero))();
+    const hitPoints = randomInteger(5);
+
+    return new (Identified(Hero))(hitPoints);
   }
 }
 

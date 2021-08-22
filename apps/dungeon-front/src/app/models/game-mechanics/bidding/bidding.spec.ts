@@ -104,6 +104,10 @@ describe('Bidding', () => {
 
     jest.spyOn(heroMock, 'getMountedEquipment')
       .mockReturnValue(equipmentOptions);
+    
+    // avoid coupling test to method's constraints
+    jest.spyOn(heroMock, 'discardEquipmentPiece')
+      .mockImplementation(jest.fn());
   });
 
   afterEach(() => {
@@ -1667,9 +1671,9 @@ describe('Bidding', () => {
       }
 
       jest.spyOn(heroMock, 'discardEquipmentPiece')
-      .mockImplementation((piece: EquipmentName) => {
-        removedEquipment.push(piece);
-      });
+        .mockImplementation((piece: EquipmentName) => {
+          removedEquipment.push(piece);
+        });
 
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
 

@@ -33,7 +33,7 @@ export class RaidService {
       // notify outcome
     }
     
-    const survived = raid.hasHeroSurvived();
+    const survived = raid.heroHitPoints > 0;
 
     return { raider, survived };
   }

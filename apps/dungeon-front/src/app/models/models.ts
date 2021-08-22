@@ -14,7 +14,7 @@ import {
 } from './game-mechanics/bidding/bidding-action';
 import { Raid } from './game-mechanics/raid/raid';
 import { RaidParticipants } from './game-mechanics/raid/raid-participants';
-import { Encounter } from './game-mechanics/raid/encounter';
+import { Encounter, EncounterOutcome } from './game-mechanics/raid/encounter';
 import { ChosenWeapon } from './game-mechanics/raid/encounter';
 import { RaidResult } from './game-mechanics/raid/raid-result';
 
@@ -25,7 +25,7 @@ export {
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,
   EquipmentRemovalRequest, EquipmentRemovalResponse,
-  Raid, RaidParticipants, Encounter, ChosenWeapon, RaidResult 
+  Raid, RaidParticipants, Encounter, EncounterOutcome, ChosenWeapon, RaidResult 
 }
 
 // PLAYER
