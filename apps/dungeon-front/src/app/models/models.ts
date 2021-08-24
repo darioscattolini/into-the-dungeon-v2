@@ -57,9 +57,9 @@ export {
 }
 
 // MONSTER
-import { Monster } from './monster/monster';
+import { Monster, AnyMonster } from './monster/monster';
 import { MonsterType } from './monster/monster-type';
 import { monsterTypes } from './monster/monster-type';
 import { monsterData } from './monster/monster-data';
 
-export { Monster, MonsterType, monsterTypes, monsterData }
+export { Monster, AnyMonster, MonsterType, monsterTypes, monsterData }

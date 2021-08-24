@@ -1,5 +1,5 @@
 import { Encounter, EncounterOutcome } from './encounter';
-import { Hero, EquipmentName, Monster, ChosenWeapon } from '../../models';
+import { Hero, EquipmentName, AnyMonster, ChosenWeapon } from '../../models';
 
 export class Raid {
   public get heroHitPoints(): number {
@@ -14,11 +14,11 @@ export class Raid {
     return this.enemies.length + (this.currentEnemy ? 1 : 0);
   } 
 
-  private currentEnemy?: Monster;
-  private enemies: Monster[];
+  private currentEnemy?: AnyMonster;
+  private enemies: AnyMonster[];
   private hero: Hero;
 
-  constructor(hero: Hero, enemies: Monster[]) {
+  constructor(hero: Hero, enemies: AnyMonster[]) {
     this.hero = hero;
     this.enemies = Array.from(enemies);
   }
@@ -26,7 +26,7 @@ export class Raid {
   public getCurrentEncounter(): Encounter {
     if (!this.currentEnemy) this.pickCurrentEnemy();
     
-    const currentEnemy = this.currentEnemy as Monster;
+    const currentEnemy = this.currentEnemy as AnyMonster;
     
     const enemy = currentEnemy.type;
     const weapons = this.hero.getWeaponsAgainst(currentEnemy);

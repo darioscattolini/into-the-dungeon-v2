@@ -2,7 +2,7 @@ import {
   Player, PlayerRequirements, BiddingPlayersRound, 
   Hero, HeroType, EquipmentName, equipmentNames, 
   Weapon, WeaponName, weaponNames, Protection, ProtectionName, protectionNames,
-  Monster, MonsterType, monsterTypes
+  Monster, AnyMonster, MonsterType, monsterTypes
 } from './models';
 import { 
   TestDouble, TestDoubleClass, Identified, randomInteger, randomString
@@ -63,7 +63,7 @@ class WeaponDouble {
     const [name] = pickRandomWeaponNames(1);
     const availableUses = randomInteger(3);
 
-    return new (Identified(Weapon))(name, availableUses);
+    return new (Identified(Weapon))(name, availableUses, {});
   }
 }
 
@@ -81,13 +81,13 @@ class ProtectionDouble {
   }
 }
 
-@staticImplements<TestDoubleClass<Monster>>()
+@staticImplements<TestDoubleClass<AnyMonster>>()
 class MonsterDouble {
   private constructor() {
     //
   }
 
-  public static createDouble(): TestDouble<Monster> {
+  public static createDouble(): TestDouble<AnyMonster> {
     const [type] = pickRandomMonsterTypes(1);
     const damage = randomInteger(10);
 

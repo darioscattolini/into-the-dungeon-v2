@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { MonstersService } from './monsters.service';
-import { Monster } from '../../models/models';
+import { Monster, AnyMonster } from '../../models/models';
 
 describe('MonstersService', () => {
   let monstersService: MonstersService;
@@ -20,7 +20,7 @@ describe('MonstersService', () => {
   });
 
   describe('getMonstersPack', () => {
-    let monstersPack: Monster[];
+    let monstersPack: AnyMonster[];
     
     beforeEach(() => {
       monstersPack = monstersService.getMonstersPack();
@@ -49,7 +49,7 @@ describe('MonstersService', () => {
       ['demon', 1, 7],
       ['dragon', 1, 9],
     ])('%s requirements', (type, maxAmount, damage,) => {
-      let instances: Monster[];
+      let instances: AnyMonster[];
 
       beforeAll(() => {
         instances = monstersPack.filter(monster => monster.type === type);
@@ -61,7 +61,7 @@ describe('MonstersService', () => {
 
       test(`instances of ${type} have damage amount of ${damage}`, () => {        
         expect(instances)
-          .toSatisfyAll((instance: Monster) => instance.damage === damage);
+          .toSatisfyAll((instance: AnyMonster) => instance.damage === damage);
       });
     });
 

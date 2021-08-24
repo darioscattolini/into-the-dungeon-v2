@@ -1,5 +1,5 @@
 import { Raid } from './raid';
-import { Hero, Monster, ChosenWeapon } from '../../models';
+import { Hero, AnyMonster, ChosenWeapon } from '../../models';
 import { 
   HeroDouble, MonsterDouble, pickRandomEquipmentNames, pickRandomWeaponNames 
 } from '../../test-doubles';
@@ -15,7 +15,7 @@ function playPreviousRounds(raid: Raid, round: number) {
 describe('Raid', () => {
   let raid: Raid;
   let heroMock: Hero;
-  let enemiesDummy: Monster[];
+  let enemiesDummy: AnyMonster[];
 
   beforeEach(() => {
     heroMock = HeroDouble.createDouble();

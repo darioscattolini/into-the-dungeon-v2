@@ -4,7 +4,7 @@ import {
 } from './bidding-action';
 import { BiddingNotification } from './bidding-notification';
 import {
-  Player, Hero, EquipmentName, Monster, MonsterType, RaidParticipants 
+  Player, Hero, EquipmentName, AnyMonster, MonsterType, RaidParticipants 
 } from '../../models';
 
 export class Bidding {
@@ -29,13 +29,13 @@ export class Bidding {
   private hasEnded = false;
   private currentAction: BiddingAction = 'play-bidding';
   private hero: Hero;
-  private monstersInDungeon: Monster[] = [];
-  private monstersPack: Monster[];
-  private pickedMonster: Monster | undefined;
+  private monstersInDungeon: AnyMonster[] = [];
+  private monstersPack: AnyMonster[];
+  private pickedMonster: AnyMonster | undefined;
   private players: BiddingPlayersRound;
   private responsePending = false;
   
-  constructor(players: BiddingPlayersRound, hero: Hero, monsters: Monster[]) {
+  constructor(players: BiddingPlayersRound, hero: Hero, monsters: AnyMonster[]) {
     this.players = players;
     this.hero = hero;
     this.monstersPack = monsters;
@@ -353,7 +353,7 @@ export class Bidding {
       throw new Error('There are no monsters in pack, bidding should have ended.');
     }
 
-    const pickedMonster = this.monstersPack.pop() as Monster;
+    const pickedMonster = this.monstersPack.pop() as AnyMonster;
     this.pickedMonster = pickedMonster;
 
     return pickedMonster.type;

@@ -7,7 +7,7 @@ import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
 import { 
   Player, BiddingPlayersRound, Bidding,
-  Hero, EquipmentName, Monster, MonsterType
+  Hero, EquipmentName, Monster, AnyMonster, MonsterType
 } from '../../models/models';
 import { 
   PlayerDouble, BiddingPlayersRoundDouble, 
@@ -62,7 +62,7 @@ describe('BiddingService', () => {
   describe('playBidding', () => {
     let playersDummy: BiddingPlayersRound;
     let heroDummy: Hero;
-    let monstersPackDummy: Monster[];
+    let monstersPackDummy: AnyMonster[];
 
     beforeEach(() => {
       playersDummy = BiddingPlayersRoundDouble.createDouble();
@@ -483,7 +483,7 @@ describe('BiddingService', () => {
     describe('return value', () => {
       let raiderDummy: Player;
       let heroDummy: Hero;
-      let enemiesDummy: Monster[];
+      let enemiesDummy: AnyMonster[];
 
       beforeEach(() => {
         raiderDummy = PlayerDouble.createDouble();

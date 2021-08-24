@@ -1,6 +1,6 @@
 import { Hero } from './hero';
 import { HeroType } from './hero-type';
-import { Equipment, Protection, Weapon, Monster } from '../models';
+import { Equipment, Protection, Weapon, AnyMonster } from '../models';
 import { 
   ProtectionDouble, WeaponDouble, 
   pickRandomEquipmentNames, pickRandomWeaponNames, buildUniqueWeaponDoublesArray,
@@ -14,7 +14,7 @@ function mountRandomEquipment(hero: Hero, amount: number): void {
 
   for (let i = 0; i < amount; i++) {
     let piece: Equipment; 
-    const PieceClass = Math.random() > 0.66 ? ProtectionDouble : WeaponDouble;
+    const PieceClass = i % 2 === 0 ? ProtectionDouble : WeaponDouble;
     
     do {
       piece = PieceClass.createDouble();
@@ -204,7 +204,7 @@ describe('Hero', () => {
   });
 
   describe('facing monsters', () => {
-    let enemyDummy: Monster;
+    let enemyDummy: AnyMonster;
     let weaponDoubles: Weapon[];
 
     beforeEach(() => {
@@ -252,7 +252,9 @@ describe('Hero', () => {
 
     test('useWeaponAgainst calls weapon.useAgainst enemy', () => {
       const weaponMock = weaponDoubles[3];
-      jest.spyOn(weaponMock, 'useAgainst');
+      jest.spyOn(weaponMock, 'isUsefulAgainst').mockReturnValue(true);
+      // override to avoid errors from method execution
+      jest.spyOn(weaponMock, 'useAgainst').mockImplementation(jest.fn());
       
       hero.useWeaponAgainst(weaponMock.name, enemyDummy);
 
@@ -285,6 +287,10 @@ describe('Hero', () => {
         jest.spyOn(weaponStub, 'availableUses', 'get')
           .mockReturnValue(availableUses); */
 
+        jest.spyOn(weaponStub, 'isUsefulAgainst').mockReturnValue(true);
+        // override to avoid errors from method execution
+        jest.spyOn(weaponStub, 'useAgainst').mockImplementation(jest.fn());
+
         const outcome = hero.useWeaponAgainst(weaponStub.name, enemyDummy);
 
         if (availableUses > 0) {
@@ -298,7 +304,12 @@ describe('Hero', () => {
     );
 
     test('useWeaponAgainst returns EncounterOutcome object', () => {
-      const outcome = hero.useWeaponAgainst(weaponDoubles[3].name, enemyDummy);
+      const weaponStub = weaponDoubles[3];
+      jest.spyOn(weaponStub, 'isUsefulAgainst').mockReturnValue(true);
+      // override to avoid errors from method execution
+      jest.spyOn(weaponStub, 'useAgainst').mockImplementation(jest.fn());
+
+      const outcome = hero.useWeaponAgainst(weaponStub.name, enemyDummy);
 
       expect(outcome).toContainAllKeys(['hitPointsChange', 'discardedWeapon']);
     });

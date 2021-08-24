@@ -1,7 +1,7 @@
 import { HeroType } from './hero-type';
 import { 
   Equipment, EquipmentName, Protection, Weapon, WeaponName, 
-  Monster, EncounterOutcome
+  AnyMonster, EncounterOutcome
 } from '../models';
 
 export class Hero {
@@ -40,7 +40,7 @@ export class Hero {
     }
   }
 
-  public getWeaponsAgainst(enemy: Monster): WeaponName[] {
+  public getWeaponsAgainst(enemy: AnyMonster): WeaponName[] {
     this.checkIfReady();
 
     const usefulWeapons = this.weapons
@@ -77,7 +77,7 @@ export class Hero {
     }
   }
 
-  public takeDamageFrom(enemy: Monster): EncounterOutcome {
+  public takeDamageFrom(enemy: AnyMonster): EncounterOutcome {
     this.checkIfReady();
 
     const damage = enemy.damage;
@@ -87,7 +87,7 @@ export class Hero {
   }
 
   public useWeaponAgainst(
-    weaponName: WeaponName, enemy: Monster
+    weaponName: WeaponName, enemy: AnyMonster
   ): EncounterOutcome {
     this.checkIfReady();
 

@@ -4,7 +4,7 @@ import {
   BiddingActionResponse,
   BidParticipationResponse, MonsterAdditionResponse, EquipmentRemovalResponse
 } from './bidding-action';
-import { Player, Hero, Monster, EquipmentName } from '../../models';
+import { Player, Hero, AnyMonster, EquipmentName } from '../../models';
 import { 
   BiddingPlayersRoundDouble, HeroDouble, MonsterDouble, PlayerDouble,
   pickRandomEquipmentNames
@@ -53,11 +53,11 @@ function buildAllResponseDummies(): BiddingActionResponse[] {
 describe('Bidding', () => {
   let playersMock: BiddingPlayersRound;
   let heroMock: Hero;
-  let monstersPackDummy: Monster[];
+  let monstersPackDummy: AnyMonster[];
   let bidding: Bidding;
   let currentPlayerDummy: Player;
   let nextPlayerDummy: Player;
-  let pickedMonster: Monster;
+  let pickedMonster: AnyMonster;
   let equipmentOptions: EquipmentName[];
   let raider: Player;
   let previousState: BiddingPublicState;

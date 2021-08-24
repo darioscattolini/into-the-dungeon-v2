@@ -5,7 +5,7 @@ import { randomInteger } from '@into-the-dungeon/util-testing';
 import { RaidService } from './raid.service';
 import { UiMediatorService } from './ui-mediator.service';
 import { 
-  Raid, RaidParticipants, Player, Hero, WeaponName, Monster, MonsterType 
+  Raid, RaidParticipants, Player, Hero, WeaponName, AnyMonster, MonsterType 
 } from '../../models/models';
 import { 
   PlayerDouble, HeroDouble, MonsterDouble, pickRandomWeaponNames
@@ -54,7 +54,7 @@ describe('RaidService', () => {
     let participantsDummy: RaidParticipants;
     let raiderDummy: Player;
     let heroDummy: Hero;
-    let enemiesDummy: Monster[];
+    let enemiesDummy: AnyMonster[];
 
     beforeEach(() => {
       raiderDummy = PlayerDouble.createDouble();
