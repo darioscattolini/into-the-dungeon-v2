@@ -19,8 +19,8 @@ describe('Protection', () => {
     expect(protection).toBeTruthy();
   });
 
-  test('it is instance of Equipment', () => {
-    expect(protection).toBeInstanceOf(Equipment);
+  test('it is of type Protection', () => {
+    expect(protection.type).toBe('protection');
   });
 
   test('it has name passed as constructor parameter', () => {

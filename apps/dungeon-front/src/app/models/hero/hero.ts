@@ -65,10 +65,10 @@ export class Hero {
       throw new Error(`Hero has already mounted a piece of ${piece.name}.`);
     }
 
-    if (piece instanceof Protection) {
+    if (piece.type === 'protection') {
       this.protection.push(piece);
       this._hitPoints += piece.hitPoints;
-    } else if (piece instanceof Weapon) {
+    } else {
       this.weapons.push(piece);
     }
 

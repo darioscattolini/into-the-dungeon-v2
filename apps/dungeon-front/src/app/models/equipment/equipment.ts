@@ -1,5 +1,4 @@
-import { EquipmentName } from './equipment-name';
+import { Protection } from './protection';
+import { Weapon } from './weapon';
 
-export abstract class Equipment {
-  public abstract readonly name: EquipmentName;
-}
+export type Equipment = Protection | Weapon;

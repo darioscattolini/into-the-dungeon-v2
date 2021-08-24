@@ -1,15 +1,15 @@
-import { Equipment } from './equipment';
+import { EquipmentBase } from './equipment-base';
 import { WeaponName } from './equipment-name';
 import { Monster } from '../models';
 
-export class Weapon extends Equipment {
+export class Weapon implements EquipmentBase<'weapon'> {
   public get availableUses() { return this._availableUses; }
   protected _availableUses: number;
   
   public readonly name: WeaponName;
+  public readonly type = 'weapon';
   
   constructor(name: WeaponName, availableUses: number) {
-    super();
     this.name = name;
     this._availableUses = availableUses;
   }
