@@ -166,6 +166,7 @@ export {
   PlayerDouble, buildPlayerRequirementsDummy,
   BiddingPlayersRoundDouble,
   HeroDouble, ProtectionDouble, WeaponDouble, 
-  pickRandomEquipmentNames, pickRandomWeaponNames, buildUniqueWeaponDoublesArray,
+  pickRandomEquipmentNames, pickRandomProtectionNames, pickRandomWeaponNames,
+  buildUniqueWeaponDoublesArray,
   MonsterDouble, pickRandomMonsterTypes
 }
