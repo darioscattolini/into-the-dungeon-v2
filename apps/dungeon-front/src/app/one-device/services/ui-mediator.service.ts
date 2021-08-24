@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
+import { HeroesService } from './heroes.service';
 import { 
-  Player, Hero, MonsterType, EquipmentName, WeaponName, ChosenWeapon
+  Player, Hero, HeroType, MonsterType, EquipmentName, WeaponName, ChosenWeapon
 } from '../../models/models';
 
 @Injectable({
@@ -9,9 +10,7 @@ import {
 })
 export class UiMediatorService {
 
-  constructor() {
-    //
-  }
+  constructor(public heroesService: HeroesService) { }
 
   public notifyError(error: string): void {
     //
@@ -30,8 +29,13 @@ export class UiMediatorService {
   }
 
   public async requestHeroChoice(player: Player): Promise<Hero> {
-    // minimum required implementation
-    return new Hero('bard', 5);
+    // partial implementation
+    this.heroesService.getHeroOptions();
+    // expect choice from player;
+    const choice: HeroType = 'bard';
+    const hero = this.heroesService.createHero(choice);
+    
+    return hero;
   }
 
   public async requestMonsterAddition(
