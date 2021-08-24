@@ -3,7 +3,6 @@ import { Hero, Monster, ChosenWeapon } from '../../models';
 import { 
   HeroDouble, MonsterDouble, pickRandomEquipmentNames, pickRandomWeaponNames 
 } from '../../test-doubles';
-import { EncounterOutcome } from './encounter';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 function playPreviousRounds(raid: Raid, round: number) {
@@ -166,6 +165,10 @@ describe('Raid', () => {
       }
 
       raid = new Raid(heroMock, enemiesDummy);
+
+      // overrides to avoid coupling tests to Hero methods constraints
+      jest.spyOn(heroMock, 'getWeaponsAgainst').mockImplementation(() => []);
+      jest.spyOn(heroMock, 'takeDamageFrom').mockImplementation(jest.fn());
     });
 
     test('it throws error if there are no enemies left', () => {
@@ -218,7 +221,7 @@ describe('Raid', () => {
       const expectedWeapons = pickRandomWeaponNames(3);
 
       jest.spyOn(heroMock, 'getWeaponsAgainst')
-        .mockReturnValue(expectedWeapons);
+        .mockImplementation(() => expectedWeapons);
 
       const encounter = raid.getCurrentEncounter();
 
@@ -232,11 +235,10 @@ describe('Raid', () => {
     let chosenWeapon: ChosenWeapon;
     
     beforeEach(() => {
-      // avoid coupling test to methods' constraints
-      jest.spyOn(heroMock, 'takeDamageFrom')
-        .mockImplementation(jest.fn());
-      jest.spyOn(heroMock, 'useWeaponAgainst')
-        .mockImplementation(jest.fn());
+      // overrides to avoid coupling tests to Hero methods constraints
+      jest.spyOn(heroMock, 'getWeaponsAgainst').mockImplementation(() => []);
+      jest.spyOn(heroMock, 'takeDamageFrom').mockImplementation(jest.fn());
+      jest.spyOn(heroMock, 'useWeaponAgainst').mockImplementation(jest.fn());
 
       raid = new Raid(heroMock, enemiesDummy);
       chosenWeapon = useWeapon ? pickRandomWeaponNames(1)[0] : 'NO_WEAPON';

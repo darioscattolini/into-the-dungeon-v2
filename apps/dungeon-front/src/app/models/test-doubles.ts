@@ -1,6 +1,6 @@
 import { 
   Player, PlayerRequirements, BiddingPlayersRound, 
-  Hero, Equipment, EquipmentName, equipmentNames, 
+  Hero, HeroType, EquipmentName, equipmentNames, 
   Weapon, WeaponName, weaponNames, Protection, ProtectionName, protectionNames,
   Monster, MonsterType, monsterTypes
 } from './models';
@@ -45,9 +45,39 @@ class HeroDouble {
   }
 
   public static createDouble(): TestDouble<Hero> {
+    const types: HeroType[] = ['bard', 'mage', 'ninja', 'princess'];
+    const type = types[randomInteger(types.length, false)];
     const hitPoints = randomInteger(5);
 
-    return new (Identified(Hero))(hitPoints);
+    return new (Identified(Hero))(type, hitPoints);
+  }
+}
+
+@staticImplements<TestDoubleClass<Weapon>>()
+class WeaponDouble {
+  private constructor() {
+    //
+  }
+
+  public static createDouble(): TestDouble<Weapon> {
+    const [name] = pickRandomWeaponNames(1);
+    const availableUses = randomInteger(3);
+
+    return new (Identified(Weapon))(name, availableUses);
+  }
+}
+
+@staticImplements<TestDoubleClass<Protection>>()
+class ProtectionDouble {
+  private constructor() {
+    //
+  }
+
+  public static createDouble(): TestDouble<Protection> {
+    const [name] = pickRandomProtectionNames(1);
+    const hitPoints = randomInteger(5);
+
+    return new (Identified(Protection))(name, hitPoints);
   }
 }
 
@@ -88,24 +118,6 @@ function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
   return chosenItems;
 }
 
-function buildEquipmentPackDouble(amount: number): Equipment[] {
-  const pack: Equipment[] = [];
-  const protectionAmount = Math.ceil(amount / 3);
-  const weaponsAmount = amount - protectionAmount;
-  const protectionNames = pickRandomProtectionNames(protectionAmount);
-  const weaponNames = pickRandomWeaponNames(weaponsAmount);
-
-  for (const name of protectionNames) {
-    pack.push(new Protection(name));
-  }
-
-  for (const name of weaponNames) {
-    pack.push(new Weapon(name));
-  }
-
-  return pack;
-}
-
 function pickRandomMonsterTypes(amount: number, unique = true): MonsterType[] {
   const options = Array.from(monsterTypes);
 
@@ -134,10 +146,26 @@ function pickRandomProtectionNames(
   return buildRandomArray(options, amount, unique);
 }
 
+function buildUniqueWeaponDoublesArray(amount: number): Weapon[] {
+  const weapons: Weapon[] = [];
+  
+  for (let i = 0; i < amount; i++) {
+    let newWeapon: Weapon;
+
+    do {
+      newWeapon = WeaponDouble.createDouble();
+    } while (weapons.find(weapon => weapon.name === newWeapon.name));
+
+    weapons.push(newWeapon);
+  }
+
+  return weapons;
+}
+
 export { 
   PlayerDouble, buildPlayerRequirementsDummy,
   BiddingPlayersRoundDouble,
-  HeroDouble, pickRandomEquipmentNames, pickRandomWeaponNames, 
-  buildEquipmentPackDouble,
+  HeroDouble, ProtectionDouble, WeaponDouble, 
+  pickRandomEquipmentNames, pickRandomWeaponNames, buildUniqueWeaponDoublesArray,
   MonsterDouble, pickRandomMonsterTypes
 }

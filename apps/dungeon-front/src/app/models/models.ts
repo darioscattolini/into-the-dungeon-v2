@@ -35,8 +35,9 @@ export { Player }
 
 // HERO
 import { Hero } from "./hero/hero";
+import { HeroType } from "./hero/hero-type";
 
-export { Hero }
+export { Hero, HeroType }
 
 // EQUIPMENT
 import { Equipment } from './equipment/equipment';
