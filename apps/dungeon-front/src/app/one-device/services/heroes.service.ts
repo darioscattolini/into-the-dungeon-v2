@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
-import { HeroView } from '../../view-data/view-data';
-import { Hero, HeroType } from '../../models/models';
+import { Hero, HeroType, AnyHeroViewData } from '../../models/models';
 
 @Injectable({
   providedIn: OneDeviceModule
 })
 export class HeroesService {
-  public getHeroOptions(): HeroView[] {
+  public getHeroOptions(): AnyHeroViewData[] {
     // minimum required implementation
     return [];
   }

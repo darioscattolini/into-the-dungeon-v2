@@ -63,3 +63,9 @@ import { monsterTypes } from './monster/monster-type';
 import { monsterData } from './monster/monster-data';
 
 export { Monster, AnyMonster, MonsterType, monsterTypes, monsterData }
+
+// VIEW DATA
+import { HeroViewData, AnyHeroViewData } from './view-data/hero-view-data';
+import { EquipmentViewData } from './view-data/equipment-view-data';
+
+export { HeroViewData, AnyHeroViewData, EquipmentViewData };
