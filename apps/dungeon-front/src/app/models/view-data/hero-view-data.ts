@@ -8,4 +8,7 @@ export interface HeroViewData<T extends HeroType> {
   readonly equipment: ReadonlyArray<EquipmentViewData>
 }
 
+export type PartialHeroViewData<T extends HeroType> 
+  = Omit<HeroViewData<T>, 'equipment'>;
+
 export type AnyHeroViewData = HeroViewData<HeroType>;
