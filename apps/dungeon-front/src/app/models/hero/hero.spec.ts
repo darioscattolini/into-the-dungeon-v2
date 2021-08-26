@@ -1,12 +1,13 @@
 import { Hero } from './hero';
 import { HeroType } from './hero-type';
-import { Equipment, Protection, Weapon, AnyMonster } from '../models';
+import { 
+  Equipment, EquipmentName, Protection, Weapon, WeaponName, AnyMonster 
+} from '../models';
 import { 
   ProtectionDouble, WeaponDouble, 
   pickRandomEquipmentNames, pickRandomWeaponNames, buildUniqueWeaponDoublesArray,
   MonsterDouble
 } from '../test-doubles';
-import { EquipmentName, WeaponName } from '../equipment/equipment-name';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 function mountRandomEquipment(hero: Hero, amount: number): void {

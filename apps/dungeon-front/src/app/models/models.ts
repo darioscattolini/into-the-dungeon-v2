@@ -44,12 +44,11 @@ export { Hero, HeroType, heroTypes, HeroData, heroData, HeroDataIT }
 import { Equipment } from './equipment/equipment';
 import { Protection } from './equipment/protection';
 import { Weapon } from './equipment/weapon';
-import { EquipmentName } from './equipment/equipment-name';
-import { equipmentNames } from './equipment/equipment-name';
-import { WeaponName } from './equipment/equipment-name';
-import { weaponNames } from './equipment/equipment-name';
-import { ProtectionName } from './equipment/equipment-name';
-import { protectionNames } from './equipment/equipment-name';
+import { 
+  EquipmentName, equipmentNames,
+  WeaponName, weaponNames, 
+  ProtectionName, protectionNames
+} from './equipment/equipment-name';
 
 export { 
   Equipment, EquipmentName, equipmentNames,
@@ -59,8 +58,7 @@ export {
 
 // MONSTER
 import { Monster, AnyMonster } from './monster/monster';
-import { MonsterType } from './monster/monster-type';
-import { monsterTypes } from './monster/monster-type';
+import { MonsterType, monsterTypes } from './monster/monster-type';
 import { monsterData } from './monster/monster-data';
 
 export { Monster, AnyMonster, MonsterType, monsterTypes, monsterData }
