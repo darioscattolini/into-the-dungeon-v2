@@ -13,7 +13,7 @@ import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
 
 jest.mock('./equipment.service');
 
-describe('UiMediatorService', () => {
+describe('HeroesService', () => {
   let heroesService: HeroesService;
   let equipmentServiceMock: EquipmentService;
   let requiredEquipmentPieces: EquipmentName[];
