@@ -56,4 +56,4 @@ export const heroData: HeroData = {
   }
 } as const;
 
-export const HeroDataIT = new InjectionToken<HeroData>('heroViewDataMap');
+export const HeroDataIT = new InjectionToken<HeroData>('heroData');
