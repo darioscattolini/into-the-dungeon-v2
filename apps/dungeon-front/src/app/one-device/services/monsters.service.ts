@@ -1,15 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
 import { 
-  Monster, AnyMonster, monsterTypes, monsterData 
+  Monster, AnyMonster, monsterTypes, MonsterDataMap, MonsterDataMapIT
 } from '../../models/models';
 
 @Injectable({
   providedIn: OneDeviceModule
 })
 export class MonstersService {
+  private monsterData: MonsterDataMap;
   private monsterTypes = monsterTypes;
-  private monsterData = monsterData;
+  
+  constructor(@Inject(MonsterDataMapIT) monsterDataMap: MonsterDataMap) {
+    this.monsterData = monsterDataMap;
+  }
 
   public getMonstersPack(): AnyMonster[] {
     const pack = this.buildPack();

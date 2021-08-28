@@ -76,6 +76,11 @@ export {
 // MONSTER
 import { Monster, AnyMonster } from './monster/monster';
 import { MonsterType, monsterTypes } from './monster/monster-type';
-import { monsterData } from './monster/monster-data';
+import { 
+  MonsterDataMap, MonsterDataMapIT, monsterDataMap 
+} from './monster/monster-data';
 
-export { Monster, AnyMonster, MonsterType, monsterTypes, monsterData }
+export { 
+  Monster, AnyMonster, MonsterType, monsterTypes, 
+  MonsterDataMap, MonsterDataMapIT, monsterDataMap,
+}

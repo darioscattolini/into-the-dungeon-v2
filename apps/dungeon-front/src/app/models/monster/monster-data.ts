@@ -1,47 +1,25 @@
 import { MonsterType } from './monster-type';
+import { InjectionToken } from '@angular/core';
+import { fairy } from './data/fairy';
+import { goblin } from './data/goblin';
+import { skeleton } from './data/skeleton';
+import { orc } from './data/orc';
+import { vampire } from './data/vampire';
+import { golem } from './data/golem';
+import { litch } from './data/litch';
+import { demon } from './data/demon';
+import { dragon } from './data/dragon';
 
-type MonsterData = {
-  readonly [key in MonsterType]: {
-    readonly damage: number;
-    readonly maxAmount: number;
-  }
+export type MonsterData = {
+  readonly damage: number;
+  readonly maxAmount: number;
 };
 
-export const monsterData: MonsterData = {
-  fairy: {
-    damage: 0,
-    maxAmount: 2
-  },
-  goblin: {
-    damage: 1,
-    maxAmount: 2
-  },
-  skeleton: {
-    damage: 2,
-    maxAmount: 2
-  },
-  orc: {
-    damage: 3,
-    maxAmount: 2
-  },
-  vampire: {
-    damage: 4,
-    maxAmount: 2
-  },
-  golem: {
-    damage: 5,
-    maxAmount: 2
-  },
-  litch: {
-    damage: 6,
-    maxAmount: 1
-  },
-  demon: {
-    damage: 7,
-    maxAmount: 1
-  },
-  dragon: {
-    damage: 9,
-    maxAmount: 1
-  }
+export type MonsterDataMap = { readonly [key in MonsterType]: MonsterData };
+
+export const MonsterDataMapIT 
+  = new InjectionToken<MonsterDataMap>('monsterDataMap');
+
+export const monsterDataMap: MonsterDataMap = {
+  fairy, goblin, skeleton, orc, vampire, golem, litch, demon, dragon
 } as const;

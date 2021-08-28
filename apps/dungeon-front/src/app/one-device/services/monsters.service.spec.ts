@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
 import { MonstersService } from './monsters.service';
-import { Monster, AnyMonster } from '../../models/models';
+import { 
+  Monster, AnyMonster, monsterTypes, MonsterDataMapIT, monsterDataMap 
+} from '../../models/models';
 
 describe('MonstersService', () => {
   let monstersService: MonstersService;
@@ -9,7 +11,8 @@ describe('MonstersService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        MonstersService
+        MonstersService,
+        { provide: MonsterDataMapIT, useValue: monsterDataMap },
       ]
     });
     monstersService = TestBed.inject(MonstersService);
@@ -38,30 +41,23 @@ describe('MonstersService', () => {
       expect(monstersPack).toSatisfyAll(monster => monster instanceof Monster);
     });
 
-    describe.each([
-      ['fairy', 2, 0],
-      ['goblin', 2, 1],
-      ['skeleton', 2, 2],
-      ['orc', 2, 3],
-      ['vampire', 2, 4],
-      ['golem', 2, 5],
-      ['litch', 1, 6],
-      ['demon', 1, 7],
-      ['dragon', 1, 9],
-    ])('%s requirements', (type, maxAmount, damage,) => {
+    describe.each(monsterTypes)('%s requirements', type => {
       let instances: AnyMonster[];
 
       beforeAll(() => {
         instances = monstersPack.filter(monster => monster.type === type);
       });
       
-      test(`pack contains ${maxAmount} instances of ${type}`, () => {        
-        expect(instances).toHaveLength(maxAmount);
+      test('amount of instances is as specified in monsterDataMap', () => {        
+        expect(instances).toHaveLength(monsterDataMap[type].maxAmount);
       });
 
-      test(`instances of ${type} have damage amount of ${damage}`, () => {        
-        expect(instances)
-          .toSatisfyAll((instance: AnyMonster) => instance.damage === damage);
+      test('instances have damage amount specified in monsterDataMap', () => {
+        const expectedDamage = monsterDataMap[type].damage;
+
+        expect(instances).toSatisfyAll(
+          (instance: AnyMonster) => instance.damage === expectedDamage
+        );
       });
     });
 
