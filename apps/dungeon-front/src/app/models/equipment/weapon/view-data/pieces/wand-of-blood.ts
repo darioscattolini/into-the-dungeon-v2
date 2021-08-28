@@ -1,11 +1,11 @@
-import { EquipmentViewData } from '../../../models/models';
+import { WeaponViewData } from '../weapon-view-data';
 
 const description = `
   It absorbs a vampire's strength, transferring its damage value to the hero's
   hit points.
 `;
 
-export const wandOfBlood: EquipmentViewData<'wand of blood'> = {
+export const wandOfBlood: WeaponViewData<'wand of blood'> = {
   name: 'wand of blood',
   type: 'weapon',
   image: '...',

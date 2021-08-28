@@ -1,4 +1,6 @@
-import { EquipmentViewData, monsterTypes } from '../../../models/models';
+import { WeaponViewData } from '../weapon-view-data';
+import { monsterTypes } from '../../../../monster/monster-type';
+// importing monsterTypes from /models.ts imports undefined
 
 const description = `
   A relic from ancient kings that has the power to learn from defeated enemies.
@@ -14,7 +16,7 @@ const description = `
   6 hp - dragon
 `;
 
-export const royalSceptre: EquipmentViewData<'royal sceptre'> = {
+export const royalSceptre: WeaponViewData<'royal sceptre'> = {
   name: 'royal sceptre',
   type: 'weapon',
   image: '...',

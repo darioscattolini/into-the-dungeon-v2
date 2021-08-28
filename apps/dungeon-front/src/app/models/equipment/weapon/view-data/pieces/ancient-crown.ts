@@ -1,11 +1,13 @@
-import { EquipmentViewData, monsterTypes } from '../../../models/models';
+import { WeaponViewData } from '../weapon-view-data';
+import { monsterTypes } from '../../../../monster/monster-type';
+// importing monsterTypes from /models.ts imports undefined
 
 const description = `
   Its shine and beauty distracts all kinds of enemies, reducing their damage by 
   2.
 `;
 
-export const ancientCrown: EquipmentViewData<'ancient crown'> = {
+export const ancientCrown: WeaponViewData<'ancient crown'> = {
   name: 'ancient crown',
   type: 'weapon',
   image: '...',

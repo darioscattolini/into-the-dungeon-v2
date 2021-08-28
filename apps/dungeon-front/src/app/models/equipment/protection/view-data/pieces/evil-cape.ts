@@ -1,10 +1,10 @@
-import { EquipmentViewData } from '../../../models/models';
+import { ProtectionViewData } from '../protection-view-data';
 
 const description = `
   Piece of cloth from a fabric impregnated in some evil creature's blood.
 `;
 
-export const evilCape: EquipmentViewData<'evil cape'> = {
+export const evilCape: ProtectionViewData<'evil cape'> = {
   name: 'evil cape',
   type: 'protection',
   image: '...',

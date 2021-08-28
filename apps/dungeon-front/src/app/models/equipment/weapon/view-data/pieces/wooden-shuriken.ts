@@ -1,10 +1,10 @@
-import { EquipmentViewData } from '../../../models/models';
+import { WeaponViewData } from '../weapon-view-data';
 
 const description = `
   It defeats a vampire when directed straight at its heart.
 `;
 
-export const woodenShuriken: EquipmentViewData<'wooden shuriken'> = {
+export const woodenShuriken: WeaponViewData<'wooden shuriken'> = {
   name: 'wooden shuriken',
   type: 'weapon',
   image: '...',

@@ -1,9 +1,9 @@
-import { InjectionToken } from '@angular/core';
+import { ProtectionData } from './protection/data/protection-data';
+import { WeaponData } from './weapon/data/weapon-data';
 import { 
   EquipmentName, ProtectionName, WeaponName 
 } from '../equipment/equipment-name';
-import { ProtectionData } from './protection/data/protection-data';
-import { WeaponData } from './weapon/data/weapon-data';
+import { InjectionToken } from '@angular/core';
 import { ancientCrown } from './weapon/data/items/ancient-crown';
 import { blastingSpell } from './weapon/data/items/blasting-spell';
 import { broadSword } from './weapon/data/items/broad-sword';
@@ -29,12 +29,14 @@ import { wandOfBlood } from './weapon/data/items/wand-of-blood';
 import { woodenShuriken } from './weapon/data/items/wooden-shuriken';
 import { zombieCompanion } from './protection/data/items/zombie-companion';
 
+type EquipmentData<T extends EquipmentName> = T extends ProtectionName
+  ? ProtectionData
+  : T extends WeaponName
+  ? WeaponData
+  : never;
+
 export type EquipmentDataMap = {
-  readonly [key in EquipmentName]: key extends ProtectionName
-    ? ProtectionData
-    : key extends WeaponName
-    ? WeaponData
-    : never;
+  readonly [key in EquipmentName]: EquipmentData<key>;
 }
 
 export const EquipmentDataMapIT 

@@ -1,4 +1,4 @@
-import { EquipmentViewData } from '../../../models/models';
+import { ProtectionViewData } from '../protection-view-data';
 
 const description = `
   He wants to marry the princess and follows her everywhere she goes. The
@@ -6,7 +6,7 @@ const description = `
   take the hardest hits.
 `;
 
-export const suitor: EquipmentViewData<'suitor'> = {
+export const suitor: ProtectionViewData<'suitor'> = {
   name: 'suitor',
   type: 'protection',
   image: '...',

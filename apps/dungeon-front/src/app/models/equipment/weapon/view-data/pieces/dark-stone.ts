@@ -1,11 +1,11 @@
-import { EquipmentViewData } from '../../../models/models';
+import { WeaponViewData } from '../weapon-view-data';
 
 const description = `
   A magic infused stone capable of defeating minor living creatures such as
   goblins and orcs.
 `;
 
-export const darkStone: EquipmentViewData<'dark stone'> = {
+export const darkStone: WeaponViewData<'dark stone'> = {
   name: 'dark stone',
   type: 'weapon',
   image: '...',

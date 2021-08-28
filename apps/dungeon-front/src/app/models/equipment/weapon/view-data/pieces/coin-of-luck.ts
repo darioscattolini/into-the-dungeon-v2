@@ -1,4 +1,4 @@
-import { EquipmentViewData } from '../../../models/models';
+import { WeaponViewData } from '../weapon-view-data';
 
 const description = `
   A magic token with the power to dispel the spirits giving life to undead
@@ -7,7 +7,7 @@ const description = `
   once.
 `;
 
-export const coinOfLuck: EquipmentViewData<'coin of luck'> = {
+export const coinOfLuck: WeaponViewData<'coin of luck'> = {
   name: 'coin of luck',
   type: 'weapon',
   image: '...',

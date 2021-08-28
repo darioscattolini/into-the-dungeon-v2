@@ -1,11 +1,11 @@
-import { EquipmentViewData } from '../../../models/models';
+import { WeaponViewData } from '../weapon-view-data';
 
 const description = `
   Magic sword useful against golems, litches and demons. However, there is a 
   50% chance that it misses its hit.
 `;
 
-export const broadSword: EquipmentViewData<'broad sword'> = {
+export const broadSword: WeaponViewData<'broad sword'> = {
   name: 'broad sword',
   type: 'weapon',
   image: '...',

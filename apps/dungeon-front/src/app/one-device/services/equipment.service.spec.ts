@@ -2,13 +2,11 @@ import { TestBed } from '@angular/core/testing';
 
 import { EquipmentService } from './equipment.service';
 import { 
-  EquipmentName, equipmentNames, EquipmentDataIT, EquipmentData, 
-  EquipmentViewData, Protection, ProtectionName, protectionNames, 
+  EquipmentName, equipmentNames, EquipmentDataMapIT, EquipmentDataMap, 
+  EquipmentViewData, EquipmentViewDataMapIT, equipmentViewDataMap,
+  Protection, ProtectionName, protectionNames, 
   Weapon, WeaponName, weaponNames, monsterTypes,
 } from '../../models/models';
-import { 
-  EquipmentViewDataMapIT, equipmentViewDataMap 
-} from '../../view-data/view-data';
 import { 
   buildWeaponEffects, monsterDummyBuilder, pickRandomMonsterTypes 
 } from '../../models/test-doubles';
@@ -22,10 +20,10 @@ import { randomInteger } from '@into-the-dungeon/util-testing';
  */
 type Mutable<T> = { -readonly [P in keyof T]: T[P]; };
 
-function buildFakeEquipmentData(): EquipmentData {
+function buildFakeEquipmentData(): EquipmentDataMap {
   const weaponNamesList: EquipmentName[] = [...weaponNames];
 
-  const equipmentData: EquipmentData = equipmentNames.reduce((data, name) => {
+  const equipmentData: EquipmentDataMap = equipmentNames.reduce((data, name) => {
     if (weaponNamesList.includes(name)) {
       const weaponName = name as WeaponName;
       data[weaponName] = {
@@ -42,14 +40,14 @@ function buildFakeEquipmentData(): EquipmentData {
     }
 
     return data;
-  }, {} as Mutable<EquipmentData>);
+  }, {} as Mutable<EquipmentDataMap>);
 
   return equipmentData;
 }
 
 describe('EquipmentService', () => {
   let equipmentService: EquipmentService;
-  let fakeEquipmentData: EquipmentData;
+  let fakeEquipmentData: EquipmentDataMap;
 
   beforeAll(() => {
     fakeEquipmentData = buildFakeEquipmentData();
@@ -59,7 +57,7 @@ describe('EquipmentService', () => {
     TestBed.configureTestingModule({
       providers: [
         EquipmentService,
-        { provide: EquipmentDataIT, useValue: fakeEquipmentData },
+        { provide: EquipmentDataMapIT, useValue: fakeEquipmentData },
         { provide: EquipmentViewDataMapIT, useValue: equipmentViewDataMap }
       ]
     });

@@ -52,13 +52,19 @@ import {
 } from './equipment/equipment-name';
 import { 
   EquipmentDataMap, EquipmentDataMapIT, equipmentDataMap 
-} from './equipment/equipment-data-map';
+} from './equipment/equipment-data';
+import { 
+  EquipmentViewData, AnyEquipmentViewData,
+  EquipmentViewDataMap, EquipmentViewDataMapIT, equipmentViewDataMap 
+} from './equipment/equipment-view-data';
 
 export { 
   Equipment, EquipmentName, equipmentNames, 
   Protection, ProtectionName, protectionNames,
   Weapon, WeaponName, weaponNames, WeaponEffects,
-  EquipmentDataMap, EquipmentDataMapIT, equipmentDataMap
+  EquipmentDataMap, EquipmentDataMapIT, equipmentDataMap,
+  EquipmentViewData, AnyEquipmentViewData, 
+  EquipmentViewDataMap, EquipmentViewDataMapIT, equipmentViewDataMap
 }
 
 // MONSTER
@@ -72,11 +78,8 @@ export { Monster, AnyMonster, MonsterType, monsterTypes, monsterData }
 import { 
   HeroViewData, AnyHeroViewData, PartialHeroViewData 
 } from './view-data/hero-view-data';
-import { 
-  EquipmentViewData, AnyEquipmentViewData
-} from './view-data/equipment-view-data';
 
 export { 
   HeroViewData, AnyHeroViewData, PartialHeroViewData, 
-  EquipmentViewData, AnyEquipmentViewData
+  
 };

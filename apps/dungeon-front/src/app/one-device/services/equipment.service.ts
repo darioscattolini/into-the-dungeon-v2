@@ -1,12 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
 import { 
-  Equipment, EquipmentName, EquipmentData, EquipmentDataIT,
+  Equipment, EquipmentName, EquipmentDataMap, EquipmentDataMapIT, 
+  EquipmentViewDataMap, EquipmentViewDataMapIT,
   Protection, ProtectionName, protectionNames, Weapon, WeaponName, weaponNames
 } from '../../models/models';
-import { 
-  EquipmentViewDataMap, EquipmentViewDataMapIT 
-} from '../../view-data/view-data';
 
 type EquipmentConditional<T extends EquipmentName> = T extends ProtectionName
   ? Protection
@@ -18,14 +16,14 @@ type EquipmentConditional<T extends EquipmentName> = T extends ProtectionName
   providedIn: OneDeviceModule
 })
 export class EquipmentService {
-  private data: EquipmentData;
+  private data: EquipmentDataMap;
   private viewData: EquipmentViewDataMap;
 
   constructor(
-    @Inject(EquipmentDataIT) equipmentData: EquipmentData,
+    @Inject(EquipmentDataMapIT) equipmentDataMap: EquipmentDataMap,
     @Inject(EquipmentViewDataMapIT) equipmentViewDataMap: EquipmentViewDataMap
   ) {
-    this.data = equipmentData;
+    this.data = equipmentDataMap;
     this.viewData = equipmentViewDataMap;
   }
 

@@ -1,10 +1,10 @@
-import { EquipmentViewData } from '../../../models/models';
+import { ProtectionViewData } from '../protection-view-data';
 
 const description = `
   A potion drunk before battle that grants additional hit points.
 `;
 
-export const energeticPotion: EquipmentViewData<'energetic potion'> = {
+export const energeticPotion: ProtectionViewData<'energetic potion'> = {
   name: 'energetic potion',
   type: 'protection',
   image: '...',

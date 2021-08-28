@@ -1,4 +1,4 @@
-import { EquipmentViewData } from '../../../models/models';
+import { WeaponViewData } from '../weapon-view-data';
 
 const description = `
   A special treasure from the royal heritage, with the power to tame a dragon.
@@ -6,7 +6,7 @@ const description = `
   blood.
 `;
 
-export const dragonCollar: EquipmentViewData<'dragon collar'> = {
+export const dragonCollar: WeaponViewData<'dragon collar'> = {
   name: 'dragon collar',
   type: 'weapon',
   image: '...',

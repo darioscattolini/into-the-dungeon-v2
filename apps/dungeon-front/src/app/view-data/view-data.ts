@@ -5,9 +5,3 @@ import {
 
 export { HeroViewDataMap, heroViewDataMap, HeroViewDataMapIT }
 
-// EQUIPMENT
-import { 
-  EquipmentViewDataMap, equipmentViewDataMap, EquipmentViewDataMapIT 
-} from './equipment/equipment-view-data-map';
-
-export { EquipmentViewDataMap, equipmentViewDataMap, EquipmentViewDataMapIT }
