@@ -34,7 +34,7 @@ export interface BaseEquipmentViewData<T extends EquipmentName> {
   readonly type: 'protection' | 'weapon';
 }
 
-export type EquipmentViewData<T extends EquipmentName> 
+type EquipmentViewData<T extends EquipmentName> 
   = T extends ProtectionName 
     ? ProtectionViewData<T>
     : T extends WeaponName

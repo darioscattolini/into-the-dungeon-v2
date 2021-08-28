@@ -60,7 +60,7 @@ import {
   EquipmentDataMap, EquipmentDataMapIT, equipmentDataMap 
 } from './equipment/equipment-data';
 import { 
-  EquipmentViewData, AnyEquipmentViewData,
+  AnyEquipmentViewData,
   EquipmentViewDataMap, EquipmentViewDataMapIT, equipmentViewDataMap 
 } from './equipment/equipment-view-data';
 
@@ -69,7 +69,7 @@ export {
   Protection, ProtectionName, protectionNames,
   Weapon, WeaponName, weaponNames, WeaponEffects,
   EquipmentDataMap, EquipmentDataMapIT, equipmentDataMap,
-  EquipmentViewData, AnyEquipmentViewData, 
+  AnyEquipmentViewData, 
   EquipmentViewDataMap, EquipmentViewDataMapIT, equipmentViewDataMap
 }
 

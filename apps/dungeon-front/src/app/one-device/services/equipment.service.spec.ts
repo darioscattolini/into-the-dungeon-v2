@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EquipmentService } from './equipment.service';
 import { 
   EquipmentName, equipmentNames, EquipmentDataMapIT, EquipmentDataMap, 
-  EquipmentViewData, EquipmentViewDataMapIT, equipmentViewDataMap,
+  EquipmentViewDataMap, EquipmentViewDataMapIT, equipmentViewDataMap,
   Protection, ProtectionName, protectionNames, 
   Weapon, WeaponName, weaponNames, monsterTypes,
 } from '../../models/models';
@@ -132,11 +132,13 @@ describe('EquipmentService', () => {
   });
 
   describe.each(protectionNames)('getViewDataFor: protection - %s)', name => {
-    let viewData: EquipmentViewData<typeof name>;
+    let viewData: EquipmentViewDataMap[typeof name];
+
+    beforeEach(() => {
+      viewData = equipmentService.getViewDataFor(name);
+    });
 
     test('it returns an object of ProtectionViewData type', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData).toContainAllKeys([
         'name', 'type', 'description', 'image', 'hitPoints', 
       ]);
@@ -148,42 +150,34 @@ describe('EquipmentService', () => {
     });
 
     test('its name is the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.name).toBe(equipmentViewDataMap[name].name);
     });
 
     test('its type is the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.type).toBe(equipmentViewDataMap[name].type);
     });
 
     test('its desciption is the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.description).toBe(equipmentViewDataMap[name].description);
     });
 
     test('its image Path is the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.image).toBe(equipmentViewDataMap[name].image);
     });
 
     test('its hitPoints are the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.hitPoints).toBe(equipmentViewDataMap[name].hitPoints);
     });
   });
 
   describe.each(weaponNames)('getViewDataFor: weapon - %s)', name => {
-    let viewData: EquipmentViewData<typeof name>;
+    let viewData: EquipmentViewDataMap[typeof name];
+
+    beforeEach(() => {
+      viewData = equipmentService.getViewDataFor(name);
+    });
 
     test('it returns an object of WeaponViewData type', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData).toContainAllKeys([
         'name', 
         'type', 
@@ -201,32 +195,22 @@ describe('EquipmentService', () => {
     });
 
     test('its name is the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.name).toBe(equipmentViewDataMap[name].name);
     });
 
     test('its type is the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.type).toBe(equipmentViewDataMap[name].type);
     });
 
     test('its desciption is the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.description).toBe(equipmentViewDataMap[name].description);
     });
 
     test('its image Path is the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.image).toBe(equipmentViewDataMap[name].image);
     });
 
     test('its availableUses are the same as in equipmentViewDataMap', () => {
-      viewData = equipmentService.getViewDataFor(name);
-
       expect(viewData.availableUses)
         .toBe(equipmentViewDataMap[name].availableUses);
     });
@@ -234,8 +218,7 @@ describe('EquipmentService', () => {
     test('its targets are the same as in equipmentViewDataMap', () => {
       const expectedTargets 
         = Array.from(equipmentViewDataMap[name].effectiveAgainst);
-      viewData = equipmentService.getViewDataFor(name);
-      
+
       expect(viewData.effectiveAgainst).toIncludeSameMembers(expectedTargets);
     });
   });
