@@ -51,14 +51,14 @@ import {
   ProtectionName, protectionNames
 } from './equipment/equipment-name';
 import { 
-  EquipmentData, EquipmentDataIT, equipmentData 
-} from './equipment/equipment-data';
+  EquipmentDataMap, EquipmentDataMapIT, equipmentDataMap 
+} from './equipment/equipment-data-map';
 
 export { 
   Equipment, EquipmentName, equipmentNames, 
   Protection, ProtectionName, protectionNames,
   Weapon, WeaponName, weaponNames, WeaponEffects,
-  EquipmentData, EquipmentDataIT, equipmentData
+  EquipmentDataMap, EquipmentDataMapIT, equipmentDataMap
 }
 
 // MONSTER
