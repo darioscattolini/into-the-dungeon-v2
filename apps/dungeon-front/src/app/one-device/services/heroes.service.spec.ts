@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { HeroesService } from './heroes.service';
 import { EquipmentService } from './equipment.service';
 import { 
-  Hero, heroTypes, HeroDataIT, heroData, 
+  Hero, heroTypes, HeroDataMapIT, heroDataMap, 
   AnyHeroViewData, HeroViewDataMapIT, heroViewDataMap,
   Equipment, EquipmentName, AnyEquipmentViewData, equipmentViewDataMap,
   Weapon, WeaponName, weaponNames, Protection, ProtectionName
@@ -23,7 +23,7 @@ describe('HeroesService', () => {
       providers: [
         HeroesService,
         EquipmentService,
-        { provide: HeroDataIT, useValue: heroData },
+        { provide: HeroDataMapIT, useValue: heroDataMap },
         { provide: HeroViewDataMapIT, useValue: heroViewDataMap }
       ]
     });
@@ -31,7 +31,7 @@ describe('HeroesService', () => {
     heroesService = TestBed.inject(HeroesService);
     equipmentServiceMock = TestBed.inject(EquipmentService);
     requiredEquipmentPieces = heroTypes.reduce((pieces, type) => {
-      pieces.push(...heroData[type].equipment)
+      pieces.push(...heroDataMap[type].equipment)
       return pieces;
     }, [] as EquipmentName[]);
   });
@@ -111,7 +111,7 @@ describe('HeroesService', () => {
       options = heroesService.getHeroOptions();
       
       options.forEach(option => {
-        const expectedNames = Array.from(heroData[option.type].equipment);
+        const expectedNames = Array.from(heroDataMap[option.type].equipment);
         const returnedNames = option.equipment.map(piece => piece.name);
         
         expect(returnedNames).toIncludeSameMembers(expectedNames);
@@ -187,22 +187,22 @@ describe('HeroesService', () => {
       hero = heroesService.createHero(type);
 
       // unmount all equipment to reduce hitPoints to base
-      for (const piece of heroData[type].equipment) {
+      for (const piece of heroDataMap[type].equipment) {
         hero.discardEquipmentPiece(piece);
       }
 
-      expect(hero.hitPoints).toBe(heroData[type].hitPoints);
+      expect(hero.hitPoints).toBe(heroDataMap[type].hitPoints);
     });
 
     test('hero has all expected equipment from heroData', () => {
-      const expectedEquipment = Array.from(heroData[type].equipment);
+      const expectedEquipment = Array.from(heroDataMap[type].equipment);
       hero = heroesService.createHero(type);
 
       expect(hero.getMountedEquipment()).toIncludeSameMembers(expectedEquipment);
     });
 
     test('hero requested all expected equipment to equipmentService', () => {
-      const expectedEquipment = Array.from(heroData[type].equipment);
+      const expectedEquipment = Array.from(heroDataMap[type].equipment);
       hero = heroesService.createHero(type);
       const requestedPieces = createPieceMock.mock.calls.map(args => args[0]);
 

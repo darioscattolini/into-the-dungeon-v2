@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
 import { EquipmentService } from './equipment.service';
 import { 
-  Hero, HeroType, heroTypes, HeroData, HeroDataIT, 
+  Hero, HeroType, heroTypes, HeroDataMap, HeroDataMapIT, 
   AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, AnyEquipmentViewData
 } from '../../models/models';
 
@@ -10,11 +10,11 @@ import {
   providedIn: OneDeviceModule
 })
 export class HeroesService {
-  private data: HeroData;
+  private data: HeroDataMap;
   private viewData: HeroViewDataMap;
 
   constructor(
-    @Inject(HeroDataIT) heroData: HeroData,
+    @Inject(HeroDataMapIT) heroData: HeroDataMap,
     @Inject(HeroViewDataMapIT) heroViewDataMap: HeroViewDataMap,
     private equipmentService: EquipmentService
   ) {

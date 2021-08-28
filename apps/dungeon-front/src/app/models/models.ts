@@ -36,13 +36,13 @@ export { Player }
 // HERO
 import { Hero } from "./hero/hero";
 import { HeroType, heroTypes } from "./hero/hero-type";
-import { HeroData, heroData, HeroDataIT } from "./hero/hero-data";
+import { HeroDataMap, HeroDataMapIT, heroDataMap } from "./hero/hero-data";
 import { 
   AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, heroViewDataMap 
 } from "./hero/hero-view-data";
 
 export { 
-  Hero, HeroType, heroTypes, HeroData, heroData, HeroDataIT, 
+  Hero, HeroType, heroTypes, HeroDataMap, HeroDataMapIT, heroDataMap, 
   AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, heroViewDataMap 
 }
 
