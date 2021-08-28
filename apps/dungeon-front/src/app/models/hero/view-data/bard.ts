@@ -1,4 +1,4 @@
-import { PartialHeroViewData } from '../../../models/models';
+import { PartialHeroViewData } from '../hero-view-data';
 
 const description = `
   Blabbermouth, boastful and stylish, he looks like the most unsuitable 

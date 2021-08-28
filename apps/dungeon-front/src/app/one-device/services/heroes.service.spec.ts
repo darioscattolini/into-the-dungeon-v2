@@ -3,13 +3,11 @@ import { TestBed } from '@angular/core/testing';
 import { HeroesService } from './heroes.service';
 import { EquipmentService } from './equipment.service';
 import { 
-  Hero, heroTypes, HeroDataIT, heroData, AnyHeroViewData, 
+  Hero, heroTypes, HeroDataIT, heroData, 
+  AnyHeroViewData, HeroViewDataMapIT, heroViewDataMap,
   Equipment, EquipmentName, AnyEquipmentViewData, equipmentViewDataMap,
   Weapon, WeaponName, weaponNames, Protection, ProtectionName
 } from '../../models/models';
-import { 
-  HeroViewDataMapIT, heroViewDataMap
-} from '../../view-data/view-data';
 import { MonsterDouble, pickRandomWeaponNames } from '../../models/test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 

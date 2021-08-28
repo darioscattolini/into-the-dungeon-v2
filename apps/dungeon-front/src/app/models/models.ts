@@ -37,8 +37,14 @@ export { Player }
 import { Hero } from "./hero/hero";
 import { HeroType, heroTypes } from "./hero/hero-type";
 import { HeroData, heroData, HeroDataIT } from "./hero/hero-data";
+import { 
+  AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, heroViewDataMap 
+} from "./hero/hero-view-data";
 
-export { Hero, HeroType, heroTypes, HeroData, heroData, HeroDataIT }
+export { 
+  Hero, HeroType, heroTypes, HeroData, heroData, HeroDataIT, 
+  AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, heroViewDataMap 
+}
 
 // EQUIPMENT
 import { Equipment } from './equipment/equipment';
@@ -73,13 +79,3 @@ import { MonsterType, monsterTypes } from './monster/monster-type';
 import { monsterData } from './monster/monster-data';
 
 export { Monster, AnyMonster, MonsterType, monsterTypes, monsterData }
-
-// VIEW DATA
-import { 
-  HeroViewData, AnyHeroViewData, PartialHeroViewData 
-} from './view-data/hero-view-data';
-
-export { 
-  HeroViewData, AnyHeroViewData, PartialHeroViewData, 
-  
-};

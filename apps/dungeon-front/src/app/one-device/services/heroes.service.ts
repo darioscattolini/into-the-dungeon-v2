@@ -2,10 +2,9 @@ import { Inject, Injectable } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
 import { EquipmentService } from './equipment.service';
 import { 
-  Hero, HeroType, heroTypes, AnyHeroViewData, HeroDataIT, HeroData, 
-  AnyEquipmentViewData
+  Hero, HeroType, heroTypes, HeroData, HeroDataIT, 
+  AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, AnyEquipmentViewData
 } from '../../models/models';
-import { HeroViewDataMap, HeroViewDataMapIT } from '../../view-data/view-data';
 
 @Injectable({
   providedIn: OneDeviceModule

@@ -1,4 +1,4 @@
-import { PartialHeroViewData } from '../../../models/models';
+import { PartialHeroViewData } from '../hero-view-data';
 
 const description = `
   He is smart, powerful and cold-blooded. Since he discovered his ability to 
