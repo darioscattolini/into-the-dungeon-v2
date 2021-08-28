@@ -1,4 +1,4 @@
-import { PartialHeroViewData } from '../../models/models';
+import { PartialHeroViewData } from '../../../models/models';
 
 const description = `
   When she disappears for weeks from his father's court, everybody believes 

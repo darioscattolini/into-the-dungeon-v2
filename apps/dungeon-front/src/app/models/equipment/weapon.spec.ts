@@ -1,32 +1,12 @@
 import { Weapon } from './weapon';
 import { WeaponName } from './equipment-name';
 import { WeaponEffects } from './weapon-effects';
-import { Monster, MonsterType, monsterTypes } from '../models';
-import { pickRandomMonsterTypes, pickRandomWeaponNames } from '../test-doubles';
+import { MonsterType, monsterTypes } from '../models';
+import { 
+  pickRandomWeaponNames, buildWeaponEffects,
+  pickRandomMonsterTypes, monsterDummyBuilder
+} from '../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
-
-const monsterDummyBuilder: { [key in MonsterType]: Monster<key> } = {
-  fairy: new Monster('fairy', randomInteger(10)),
-  goblin: new Monster('goblin', randomInteger(10)),
-  skeleton: new Monster('skeleton', randomInteger(10)),
-  orc: new Monster('orc', randomInteger(10)),
-  vampire: new Monster('vampire', randomInteger(10)),
-  golem: new Monster('golem', randomInteger(10)),
-  litch: new Monster('litch', randomInteger(10)),
-  demon: new Monster('demon', randomInteger(10)),
-  dragon: new Monster('dragon', randomInteger(10))
-};
-
-function buildWeaponEffects(targets: MonsterType[]): WeaponEffects {
-  const effects: WeaponEffects = { };
-
-  for (const target of targets) {
-    const effect = randomInteger(10);
-    effects[target] = (damage: number) => effect * damage;
-  }
-
-  return effects;
-}
 
 describe('Weapon', () => {
   let weapon: Weapon;
@@ -132,4 +112,3 @@ describe('Weapon', () => {
     expect(weapon.availableUses).toBe(previousAvailableUses - 1);
   });
 });
-

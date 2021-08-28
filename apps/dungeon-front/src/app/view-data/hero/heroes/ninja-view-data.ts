@@ -1,4 +1,4 @@
-import { PartialHeroViewData } from '../../models/models';
+import { PartialHeroViewData } from '../../../models/models';
 
 const description = `
   He is stealthy, agile and never misses a hit, nither with his katana nor with 

@@ -2,7 +2,7 @@
 const bardProtectionNames = ['fancy tunic', 'sophisticated hat'] as const;
 
 const bardWeaponNames = [ 
-  'elfish harp', 'charming flute', 'dancing sword', 'coin of luck'
+  'eardrum smasher', 'charming flute', 'dancing sword', 'coin of luck'
 ] as const;
 
 const bardEquipmentNames = [

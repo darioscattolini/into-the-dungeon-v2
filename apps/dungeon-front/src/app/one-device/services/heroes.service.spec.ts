@@ -4,12 +4,14 @@ import { HeroesService } from './heroes.service';
 import { EquipmentService } from './equipment.service';
 import { 
   Hero, heroTypes, HeroDataIT, heroData, AnyHeroViewData, 
-  Equipment, EquipmentName, EquipmentViewData, 
+  Equipment, EquipmentName, AnyEquipmentViewData, 
   Weapon, WeaponName, weaponNames, Protection, ProtectionName
 } from '../../models/models';
-import { HeroViewDataMapIT, heroViewDataMap } from '../../view-data/view-data';
+import { 
+  HeroViewDataMapIT, heroViewDataMap, equipmentViewDataMap 
+} from '../../view-data/view-data';
 import { MonsterDouble, pickRandomWeaponNames } from '../../models/test-doubles';
-import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
+import { randomInteger } from '@into-the-dungeon/util-testing';
 
 jest.mock('./equipment.service');
 
@@ -43,28 +45,13 @@ describe('HeroesService', () => {
   describe('getHeroOptions', () => {
     let options: AnyHeroViewData[];
     let getViewMock: jest
-      .SpyInstance<EquipmentViewData, [equipmentName: EquipmentName]>;
+      .SpyInstance<AnyEquipmentViewData, [equipmentName: EquipmentName]>;
 
     beforeEach(() => {
-      type EquipmentViewDataProvider = {
-        [key in EquipmentName]: EquipmentViewData
-      };
-
-      const equipmentViewDataProvider: EquipmentViewDataProvider 
-        = requiredEquipmentPieces.reduce((provider, pieceName) => {
-          provider[pieceName] = {
-            name: pieceName,
-            description: randomString(10),
-            image: randomString(7)
-          }
-
-          return provider;
-        }, {} as EquipmentViewDataProvider);
-
-        getViewMock = jest.spyOn(equipmentServiceMock, 'getViewDataFor')
-          .mockImplementation(
-            (piece: EquipmentName) => equipmentViewDataProvider[piece]
-          );
+      getViewMock = jest.spyOn(equipmentServiceMock, 'getViewDataFor')
+        .mockImplementation(
+          (piece: EquipmentName) => equipmentViewDataMap[piece]
+        );
     });
 
     test('it returns as many options as heroTypes', () => {

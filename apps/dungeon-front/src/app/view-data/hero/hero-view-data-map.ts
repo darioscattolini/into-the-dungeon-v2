@@ -1,9 +1,9 @@
 import { InjectionToken } from '@angular/core';
 import { HeroType, PartialHeroViewData } from '../../models/models';
-import { bard } from './bard-view-data';
-import { mage } from './mage-view-data';
-import { ninja } from './ninja-view-data';
-import { princess } from './princess-view-data';
+import { bard } from './heroes/bard-view-data';
+import { mage } from './heroes/mage-view-data';
+import { ninja } from './heroes/ninja-view-data';
+import { princess } from './heroes/princess-view-data';
 
 export type HeroViewDataMap = {
   readonly [key in HeroType]: PartialHeroViewData<key>;

@@ -3,7 +3,7 @@ import { OneDeviceModule } from '../one-device.module';
 import { EquipmentService } from './equipment.service';
 import { 
   Hero, HeroType, heroTypes, AnyHeroViewData, HeroDataIT, HeroData, 
-  EquipmentViewData
+  AnyEquipmentViewData
 } from '../../models/models';
 import { HeroViewDataMap, HeroViewDataMapIT } from '../../view-data/view-data';
 
@@ -28,7 +28,7 @@ export class HeroesService {
     
     for (const type of heroTypes) {
       const partialViewData = this.viewData[type];
-      const equipment: EquipmentViewData[] = [];
+      const equipment: AnyEquipmentViewData[] = [];
 
       for (const pieceName of this.data[type].equipment) {
         const pieceViewData = this.equipmentService.getViewDataFor(pieceName);

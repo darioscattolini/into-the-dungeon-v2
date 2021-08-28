@@ -18,7 +18,7 @@ export const heroData: HeroData = {
       'charming flute',
       'coin of luck',
       'dancing sword',
-      'elfish harp'
+      'eardrum smasher'
     ]
   },
   mage: {

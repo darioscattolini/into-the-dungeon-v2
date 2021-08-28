@@ -1,7 +1,8 @@
 import { 
   Player, PlayerRequirements, BiddingPlayersRound, 
   Hero, HeroType, EquipmentName, equipmentNames, 
-  Weapon, WeaponName, weaponNames, Protection, ProtectionName, protectionNames,
+  Weapon, WeaponName, weaponNames, WeaponEffects,
+  Protection, ProtectionName, protectionNames,
   Monster, AnyMonster, MonsterType, monsterTypes
 } from './models';
 import { 
@@ -95,15 +96,6 @@ class MonsterDouble {
   }
 }
 
-function buildPlayerRequirementsDummy(): PlayerRequirements {
-  const randomAmount = randomInteger(10);
-      
-  return {
-    min: randomAmount + 2,
-    max: randomAmount + 5
-  };
-}
-
 function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
   const chosenItems: T[] = [];
 
@@ -118,10 +110,13 @@ function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
   return chosenItems;
 }
 
-function pickRandomMonsterTypes(amount: number, unique = true): MonsterType[] {
-  const options = Array.from(monsterTypes);
-
-  return buildRandomArray(options, amount, unique);
+function buildPlayerRequirementsDummy(): PlayerRequirements {
+  const randomAmount = randomInteger(10);
+      
+  return {
+    min: randomAmount + 2,
+    max: randomAmount + 5
+  };
 }
 
 function pickRandomEquipmentNames(
@@ -162,11 +157,41 @@ function buildUniqueWeaponDoublesArray(amount: number): Weapon[] {
   return weapons;
 }
 
+function buildWeaponEffects(targets: MonsterType[]): WeaponEffects {
+  const effects: WeaponEffects = { };
+
+  for (const target of targets) {
+    const effect = randomInteger(10);
+    effects[target] = (damage: number) => effect * damage;
+  }
+
+  return effects;
+}
+
+function pickRandomMonsterTypes(amount: number, unique = true): MonsterType[] {
+  const options = Array.from(monsterTypes);
+
+  return buildRandomArray(options, amount, unique);
+}
+
+const monsterDummyBuilder: { [key in MonsterType]: Monster<key> } = {
+  fairy: new Monster('fairy', randomInteger(10)),
+  goblin: new Monster('goblin', randomInteger(10)),
+  skeleton: new Monster('skeleton', randomInteger(10)),
+  orc: new Monster('orc', randomInteger(10)),
+  vampire: new Monster('vampire', randomInteger(10)),
+  golem: new Monster('golem', randomInteger(10)),
+  litch: new Monster('litch', randomInteger(10)),
+  demon: new Monster('demon', randomInteger(10)),
+  dragon: new Monster('dragon', randomInteger(10))
+};
+
 export { 
   PlayerDouble, buildPlayerRequirementsDummy,
   BiddingPlayersRoundDouble,
-  HeroDouble, ProtectionDouble, WeaponDouble, 
-  pickRandomEquipmentNames, pickRandomProtectionNames, pickRandomWeaponNames,
-  buildUniqueWeaponDoublesArray,
-  MonsterDouble, pickRandomMonsterTypes
+  HeroDouble, pickRandomEquipmentNames,
+  ProtectionDouble, pickRandomProtectionNames,
+  WeaponDouble, pickRandomWeaponNames, buildUniqueWeaponDoublesArray, 
+  buildWeaponEffects,
+  MonsterDouble, pickRandomMonsterTypes, monsterDummyBuilder
 }

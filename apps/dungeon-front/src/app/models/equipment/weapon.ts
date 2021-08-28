@@ -5,7 +5,7 @@ import { AnyMonster } from '../models';
 
 export class Weapon implements EquipmentBase<'weapon'> {
   public get availableUses() { return this._availableUses; }
-  private _availableUses: number;
+  protected _availableUses: number;
   
   public readonly name: WeaponName;
   public readonly type = 'weapon';
