@@ -1,6 +1,6 @@
 import { Protection } from './protection';
-import { ProtectionName } from './equipment-name';
-import { pickRandomProtectionNames } from '../test-doubles';
+import { ProtectionName } from '../equipment-name';
+import { pickRandomProtectionNames } from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 describe('Protection', () => {

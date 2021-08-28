@@ -1,4 +1,4 @@
-import { Weapon } from '../weapon';
+import { Weapon } from './weapon';
 import { AnyMonster } from '../../models';
 
 export class CharmingFlute extends Weapon {

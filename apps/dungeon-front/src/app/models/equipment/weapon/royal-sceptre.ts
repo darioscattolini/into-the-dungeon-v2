@@ -1,5 +1,5 @@
-import { Weapon } from '../weapon';
-import { WeaponEffects } from '../weapon-effects';
+import { Weapon } from './weapon';
+import { WeaponEffects } from './weapon-effects';
 import { AnyMonster } from '../../models';
 
 export class RoyalSceptre extends Weapon {

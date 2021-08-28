@@ -1,7 +1,7 @@
-import { EquipmentBase } from './equipment-base';
-import { WeaponName } from './equipment-name';
+import { EquipmentBase } from '../equipment-base';
+import { WeaponName } from '../equipment-name';
 import { WeaponEffects } from './weapon-effects';
-import { AnyMonster } from '../models';
+import { AnyMonster } from '../../models';
 
 export class Weapon implements EquipmentBase<'weapon'> {
   public get availableUses() { return this._availableUses; }

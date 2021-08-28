@@ -1,5 +1,5 @@
-import { EquipmentBase } from './equipment-base';
-import { ProtectionName } from './equipment-name';
+import { EquipmentBase } from '../equipment-base';
+import { ProtectionName } from '../equipment-name';
 
 export class Protection implements EquipmentBase<'protection'> {
   public readonly hitPoints: number;

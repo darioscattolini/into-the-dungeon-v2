@@ -2,12 +2,12 @@ import { InjectionToken } from '@angular/core';
 import { 
   EquipmentName, ProtectionName, WeaponName 
 } from '../equipment/equipment-name';
-import { Protection } from './protection';
-import { Weapon } from './weapon';
-import { WeaponEffects } from './weapon-effects';
-import { CharmingFlute } from './special-weapon/charming-flute';
-import { CoinOfLuck } from './special-weapon/coin-of-luck';
-import { RoyalSceptre } from './special-weapon/royal-sceptre';
+import { Protection } from './protection/protection';
+import { Weapon } from './weapon/weapon';
+import { WeaponEffects } from './weapon/weapon-effects';
+import { CharmingFlute } from './weapon/charming-flute';
+import { CoinOfLuck } from './weapon/coin-of-luck';
+import { RoyalSceptre } from './weapon/royal-sceptre';
 
 type ProtectionData = {
   readonly classToBeUsed: typeof Protection;

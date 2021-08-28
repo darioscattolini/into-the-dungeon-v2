@@ -1,11 +1,11 @@
 import { Weapon } from './weapon';
-import { WeaponName } from './equipment-name';
+import { WeaponName } from '../equipment-name';
 import { WeaponEffects } from './weapon-effects';
-import { MonsterType, monsterTypes } from '../models';
+import { MonsterType, monsterTypes } from '../../models';
 import { 
   pickRandomWeaponNames, buildWeaponEffects,
   pickRandomMonsterTypes, monsterDummyBuilder
-} from '../test-doubles';
+} from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 describe('Weapon', () => {

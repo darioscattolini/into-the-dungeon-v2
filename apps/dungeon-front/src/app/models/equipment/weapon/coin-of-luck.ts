@@ -1,4 +1,4 @@
-import { Weapon } from '../weapon';
+import { Weapon } from './weapon';
 
 export class CoinOfLuck extends Weapon {
   protected afterEffect(): void {

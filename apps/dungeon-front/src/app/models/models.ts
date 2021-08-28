@@ -42,9 +42,9 @@ export { Hero, HeroType, heroTypes, HeroData, heroData, HeroDataIT }
 
 // EQUIPMENT
 import { Equipment } from './equipment/equipment';
-import { Protection } from './equipment/protection';
-import { Weapon } from './equipment/weapon';
-import { WeaponEffects } from './equipment/weapon-effects';
+import { Protection } from './equipment/protection/protection';
+import { Weapon } from './equipment/weapon/weapon';
+import { WeaponEffects } from './equipment/weapon/weapon-effects';
 import { 
   EquipmentName, equipmentNames,
   WeaponName, weaponNames, 
