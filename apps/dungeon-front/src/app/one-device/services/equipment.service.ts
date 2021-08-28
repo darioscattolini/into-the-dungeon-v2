@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
 import { 
-  Equipment, EquipmentName, EquipmentData, EquipmentDataIT, EquipmentViewData,
+  Equipment, EquipmentName, EquipmentData, EquipmentDataIT,
   Protection, ProtectionName, protectionNames, Weapon, WeaponName, weaponNames
 } from '../../models/models';
 import { 
