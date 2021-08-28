@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { MonstersService } from './monsters.service';
 import { 
-  Monster, AnyMonster, monsterTypes, MonsterDataMapIT, monsterDataMap 
+  Monster, AnyMonster, monsterTypes, MonsterDataMapIT, monsterDataMap,
+  MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap
 } from '../../models/models';
 
 describe('MonstersService', () => {
@@ -13,6 +14,7 @@ describe('MonstersService', () => {
       providers: [
         MonstersService,
         { provide: MonsterDataMapIT, useValue: monsterDataMap },
+        { provide: MonsterViewDataMapIT, useValue: monsterViewDataMap },
       ]
     });
     monstersService = TestBed.inject(MonstersService);
@@ -81,6 +83,39 @@ describe('MonstersService', () => {
       }
       
       expect(variations).toSatisfyAll(number => number >= 8);
+    });
+  });
+
+  describe.each(monsterTypes)('getViewDataFor(%s))', type => {
+    let viewData: MonsterViewDataMap[typeof type];
+
+    beforeEach(() => {
+      viewData = monstersService.getViewDataFor(type);
+    })
+
+    test('it returns an object of MonsterViewData type', () => {
+      expect(viewData)
+        .toContainAllKeys(['name', 'damage', 'description', 'image']);
+      expect(viewData.name).toBeString();
+      expect(viewData.damage).toBeNumber();
+      expect(viewData.description).toBeString();
+      expect(viewData.image).toBeString();
+    });
+
+    test('its name is the same as in monsterViewDataMap', () => {
+      expect(viewData.name).toBe(monsterViewDataMap[type].name);
+    });
+
+    test('its damage is the same as in monsterViewDataMap', () => {
+      expect(viewData.damage).toBe(monsterViewDataMap[type].damage);
+    });
+
+    test('its description is the same as in monsterViewDataMap', () => {
+      expect(viewData.description).toBe(monsterViewDataMap[type].description);
+    });
+
+    test('its image path is the same as in monsterViewDataMap', () => {
+      expect(viewData.image).toBe(monsterViewDataMap[type].image);
     });
   });
 });

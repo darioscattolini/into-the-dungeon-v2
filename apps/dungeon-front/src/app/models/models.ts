@@ -79,8 +79,12 @@ import { MonsterType, monsterTypes } from './monster/monster-type';
 import { 
   MonsterDataMap, MonsterDataMapIT, monsterDataMap 
 } from './monster/monster-data';
+import { 
+  MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap 
+} from './monster/monster-view-data';
 
 export { 
   Monster, AnyMonster, MonsterType, monsterTypes, 
   MonsterDataMap, MonsterDataMapIT, monsterDataMap,
+  MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap 
 }

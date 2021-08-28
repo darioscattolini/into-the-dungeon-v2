@@ -1,18 +1,24 @@
 import { Injectable, Inject } from '@angular/core';
 import { OneDeviceModule } from '../one-device.module';
 import { 
-  Monster, AnyMonster, monsterTypes, MonsterDataMap, MonsterDataMapIT
+  Monster, AnyMonster, MonsterType, monsterTypes, 
+  MonsterDataMap, MonsterDataMapIT, MonsterViewDataMap, MonsterViewDataMapIT
 } from '../../models/models';
 
 @Injectable({
   providedIn: OneDeviceModule
 })
 export class MonstersService {
-  private monsterData: MonsterDataMap;
+  private data: MonsterDataMap;
   private monsterTypes = monsterTypes;
+  private viewData: MonsterViewDataMap;
   
-  constructor(@Inject(MonsterDataMapIT) monsterDataMap: MonsterDataMap) {
-    this.monsterData = monsterDataMap;
+  constructor(
+    @Inject(MonsterDataMapIT) monsterDataMap: MonsterDataMap,
+    @Inject(MonsterViewDataMapIT) monsterViewDataMap: MonsterViewDataMap
+  ) {
+    this.data = monsterDataMap;
+    this.viewData = monsterViewDataMap;
   }
 
   public getMonstersPack(): AnyMonster[] {
@@ -21,12 +27,16 @@ export class MonstersService {
     return pack;
   }
 
+  public getViewDataFor<T extends MonsterType>(name: T): MonsterViewDataMap[T] {
+    return this.viewData[name];
+  }
+
   private buildPack(): AnyMonster[] {
     const pack: AnyMonster[] = [];
 
     for (const type of this.monsterTypes) {
-      const amount = this.monsterData[type].maxAmount;
-      const damage = this.monsterData[type].damage;
+      const amount = this.data[type].maxAmount;
+      const damage = this.data[type].damage;
 
       for (let i = 0; i < amount; i++) {
         const monsterInstance = new Monster(type, damage);
