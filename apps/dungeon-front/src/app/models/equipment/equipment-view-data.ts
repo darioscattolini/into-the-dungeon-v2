@@ -1,6 +1,6 @@
 import { ProtectionViewData } from './protection/view-data/protection-view-data';
 import { WeaponViewData } from './weapon/view-data/weapon-view-data';
-import { EquipmentName, ProtectionName, WeaponName } from '../../models/models';
+import { EquipmentName, ProtectionName, WeaponName } from './equipment-name';
 import { InjectionToken } from '@angular/core';
 import { ancientCrown } from './weapon/view-data/pieces/ancient-crown';
 import { blastingSpell } from './weapon/view-data/pieces/blasting-spell';
