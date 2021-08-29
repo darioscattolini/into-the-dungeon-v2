@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { OneDeviceModule } from '../one-device.module';
 import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
 import { 
@@ -11,9 +10,7 @@ import {
   RaidParticipants
 } from '../../models/models';
 
-@Injectable({
-  providedIn: OneDeviceModule
-})
+@Injectable()
 export class BiddingService {
 
   constructor(

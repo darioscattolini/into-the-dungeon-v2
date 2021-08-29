@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { OneDeviceModule } from '../one-device.module';
 import { UiMediatorService } from './ui-mediator.service';
 import { 
   Raid, RaidParticipants, ChosenWeapon, RaidResult, WeaponName 
 } from '../../models/models';
 
-@Injectable({
-  providedIn: OneDeviceModule
-})
+@Injectable()
 export class RaidService {
   
   constructor(private uiMediator: UiMediatorService) { }

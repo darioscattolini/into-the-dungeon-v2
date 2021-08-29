@@ -1,5 +1,4 @@
 import { Injectable, Inject } from '@angular/core';
-import { OneDeviceModule } from '../one-device.module';
 import { 
   Equipment, EquipmentName, EquipmentDataMap, EquipmentDataMapIT, 
   EquipmentViewDataMap, EquipmentViewDataMapIT,
@@ -12,9 +11,7 @@ type EquipmentConditional<T extends EquipmentName> = T extends ProtectionName
   ? Weapon
   : never;
 
-@Injectable({
-  providedIn: OneDeviceModule
-})
+@Injectable()
 export class EquipmentService {
   private data: EquipmentDataMap;
   private viewData: EquipmentViewDataMap;

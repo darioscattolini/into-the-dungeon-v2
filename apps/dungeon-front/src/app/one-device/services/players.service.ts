@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { OneDeviceModule } from '../one-device.module';
 import { UiMediatorService } from './ui-mediator.service';
 import { Player, PlayerRequirements } from '../../models/models';
 
-@Injectable({
-  providedIn: OneDeviceModule
-})
+@Injectable()
 export class PlayersService {
   
   constructor(private uiMediator: UiMediatorService) { }

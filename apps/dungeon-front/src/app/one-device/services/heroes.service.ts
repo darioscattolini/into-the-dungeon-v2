@@ -1,14 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
-import { OneDeviceModule } from '../one-device.module';
 import { EquipmentService } from './equipment.service';
 import { 
   Hero, HeroType, heroTypes, HeroDataMap, HeroDataMapIT, 
   AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, AnyEquipmentViewData
 } from '../../models/models';
 
-@Injectable({
-  providedIn: OneDeviceModule
-})
+@Injectable()
 export class HeroesService {
   private data: HeroDataMap;
   private viewData: HeroViewDataMap;

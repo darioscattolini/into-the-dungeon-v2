@@ -1,13 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
-import { OneDeviceModule } from '../one-device.module';
 import { 
   Monster, AnyMonster, MonsterType, monsterTypes, 
   MonsterDataMap, MonsterDataMapIT, MonsterViewDataMap, MonsterViewDataMapIT
 } from '../../models/models';
 
-@Injectable({
-  providedIn: OneDeviceModule
-})
+@Injectable()
 export class MonstersService {
   private data: MonsterDataMap;
   private monsterTypes = monsterTypes;

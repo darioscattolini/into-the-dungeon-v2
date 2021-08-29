@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { OneDeviceModule } from '../one-device.module';
 import { HeroesService } from './heroes.service';
+import { GameService } from './game.service';
 import { 
   Player, Hero, HeroType, MonsterType, EquipmentName, WeaponName, ChosenWeapon
 } from '../../models/models';
 
-@Injectable({
-  providedIn: OneDeviceModule
-})
+@Injectable()
 export class UiMediatorService {
 
   constructor(public heroesService: HeroesService) { }

@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { OneDeviceModule } from '../one-device.module';
 import { PlayersService } from './players.service';
 import { BiddingService } from './bidding.service';
 import { RaidService } from './raid.service';
 import { Game, Player } from '../../models/models';
 
-@Injectable({
-  providedIn: OneDeviceModule
-})
+@Injectable()
 export class GameService {
 
   constructor(
