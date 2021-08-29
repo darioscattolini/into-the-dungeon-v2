@@ -18,10 +18,6 @@ class Page {
     return this.query<HTMLElement>('h1');
   }
 
-  get description() {
-    return this.query<HTMLElement>('#description');
-  }
-
   get buttons() { 
     return Array.from(this.queryAll<HTMLButtonElement>('button')); 
   }
@@ -97,20 +93,6 @@ describe('HomeComponent', () => {
     expect(page.heading.textContent).toContain('Into the Dungeon');
   });
 
-  test('existence of #description element', () => {
-    expect(page.description).toBeTruthy();
-  });
-
-  test('content of #description element', () => {
-    const descriptionContent = 
-      (page.description.textContent as string).toLowerCase();
-
-    expect(descriptionContent).toIncludeMultiple([
-      'hero', 'dungeon', 'monster', 'equipment', 'survive', 'online',
-      'single device', 'multi-player'
-    ]);
-  });
-
   test('if it contains two buttons', () => {
     expect(page.buttons).toHaveLength(2);
     expect(page.buttons).toSatisfyAll(
@@ -138,7 +120,9 @@ describe('HomeComponent', () => {
         if (page.oneDeviceBtn) {
           page.oneDeviceBtn.click();
         } else {
-          throw new Error('Cannot run test because page.oneDeviceBtn is undefined');
+          throw new Error(
+            'Cannot run test because page.oneDeviceBtn is undefined'
+          );
         }
       });
       
