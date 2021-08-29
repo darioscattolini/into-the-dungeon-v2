@@ -1,3 +1,14 @@
+// This controls global app screen size.
+// Now fixed to a standard mobile size for mobile-first design
+:host {
+  display: block;
+  width: 360px;
+  height: 640px;
+  margin: 20px auto;
+  padding: 24px;
+  border: 1px black solid;  // guidelines during development
+}
+
 /*
    * Remove template code below
    */
