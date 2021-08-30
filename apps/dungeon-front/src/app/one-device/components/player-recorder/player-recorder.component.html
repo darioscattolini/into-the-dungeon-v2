@@ -1,0 +1,33 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Add players' names</mat-card-title>
+    <mat-card-subtitle>2-4 players required</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p *ngFor="let name of addedNames" class="mat-elevation-z1">
+      {{name}}
+      <button mat-icon-button (click)="removePlayer(name)">
+        <mat-icon>remove</mat-icon>
+      </button>
+    </p>
+    
+    <mat-form-field *ngIf="addedNames.length < range[1]" appearance="fill">
+      <mat-label>Player name</mat-label>
+      
+      <input matInput type="text" [formControl]="nameInputControl">
+      <mat-error>Repeated names not allowed.</mat-error>
+
+      <button mat-button matSuffix 
+        [disabled]="additionDisabled"
+        (click)="addPlayer()"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </mat-form-field>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-button [disabled]="!ready" (click)="finish()">NEXT</button>
+  </mat-card-actions> 
+</mat-card>

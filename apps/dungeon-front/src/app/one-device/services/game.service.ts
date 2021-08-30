@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PlayersService } from './players.service';
+import { UiMediatorService } from './ui-mediator.service';
 import { BiddingService } from './bidding.service';
 import { RaidService } from './raid.service';
 import { Game, Player } from '../../models/models';
@@ -8,7 +8,7 @@ import { Game, Player } from '../../models/models';
 export class GameService {
 
   constructor(
-    private playersService: PlayersService,
+    private uiMediator: UiMediatorService,
     private biddingService: BiddingService,
     private raidService: RaidService,
   ) { }
@@ -33,7 +33,7 @@ export class GameService {
 
   private async buildNewGame(): Promise<Game> {
     const requirements = Game.getPlayerRequirements();
-    const players = await this.playersService.getJoiningPlayers(requirements);
+    const players = await this.uiMediator.requestPlayers(requirements);
     const game = new Game(players);
     
     return game;

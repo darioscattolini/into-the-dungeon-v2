@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { mocked } from 'ts-jest/utils';
 
 import { GameService } from './game.service';
-import { PlayersService } from './players.service';
+import { UiMediatorService } from './ui-mediator.service';
 import { BiddingService } from './bidding.service';
 import { RaidService } from './raid.service';
 import { 
@@ -14,7 +14,7 @@ import {
   HeroDouble, MonsterDouble, buildPlayerRequirementsDummy 
 } from '../../models/test-doubles';
 
-jest.mock('./players.service');
+jest.mock('./ui-mediator.service');
 jest.mock('./bidding.service');
 jest.mock('./raid.service');
 
@@ -25,9 +25,9 @@ jest.mock('../../models/game-mechanics/bidding/bidding-players-round');
 
 describe('GameService', () => {
   let gameService: GameService;
+  let uiMediator: UiMediatorService;
   let biddingService: BiddingService;
   let raidService: RaidService;
-  let playersService: PlayersService;
 
   const roundLoopController = jest.spyOn(GameMock.prototype, 'getWinner');
 
@@ -35,15 +35,15 @@ describe('GameService', () => {
     TestBed.configureTestingModule({
       providers: [
         GameService, 
-        PlayersService, 
+        UiMediatorService, 
         BiddingService, 
         RaidService
       ]
     });
     gameService = TestBed.inject(GameService);
+    uiMediator = TestBed.inject(UiMediatorService);
     biddingService = TestBed.inject(BiddingService);
     raidService = TestBed.inject(RaidService);
-    playersService = TestBed.inject(PlayersService);
 
     // set up return value making round loop end (runs once by default)
     roundLoopController.mockReturnValue(PlayerDouble.createDouble());
@@ -70,7 +70,7 @@ describe('GameService', () => {
       jest.spyOn(Game, 'getPlayerRequirements')
         .mockReturnValue(requirementsDummy);
       
-      jest.spyOn(playersService, 'getJoiningPlayers')
+      jest.spyOn(uiMediator, 'requestPlayers')
         .mockResolvedValue(playersDummy);
     });
 
@@ -82,19 +82,15 @@ describe('GameService', () => {
       expect(Game.getPlayerRequirements).toHaveBeenCalled();
     });
   
-    test(
-      'it asks PlayersService for players with Game requirements', 
-      async () => {
-        expect.assertions(1);
-    
-        await gameService.play();
-    
-        expect(playersService.getJoiningPlayers)
-          .toHaveBeenCalledWith(requirementsDummy);
-      }
-    );
+    test('it asks UiMediator for players with Game requirements', async () => {
+      expect.assertions(1);
   
-    test('it creates Game with players from PlayersService', async () => {
+      await gameService.play();
+  
+      expect(uiMediator.requestPlayers).toHaveBeenCalledWith(requirementsDummy);
+    });
+  
+    test('it creates Game with players from UiMediator', async () => {
       expect.assertions(1);
   
       await gameService.play();

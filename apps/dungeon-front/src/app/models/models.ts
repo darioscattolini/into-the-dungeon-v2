@@ -88,3 +88,8 @@ export {
   MonsterDataMap, MonsterDataMapIT, monsterDataMap,
   MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap 
 }
+
+// REQUEST
+import { PlayersRequest } from './request/players-request';
+
+export { PlayersRequest }

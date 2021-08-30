@@ -4,7 +4,8 @@ import { randomInteger } from '@into-the-dungeon/util-testing';
 import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
 import { 
-  Player, HeroType, EquipmentName, WeaponName 
+  Player, PlayerRequirements, PlayersRequest, 
+  HeroType, EquipmentName, WeaponName
 } from '../../models/models';
 import { 
   PlayerDouble, HeroDouble, pickRandomMonsterTypes 
@@ -30,29 +31,44 @@ describe('UiMediatorService', () => {
     playerDummy = PlayerDouble.createDouble();
   });
 
-  it('should be created', () => {
-    expect(uiMediator).toBeTruthy();
+  describe('instantiation and initial state', () => {
+    test('it is created', () => {
+      expect(uiMediator).toBeTruthy();
+    });
+
+    test('playersRequest is initially undefined', () => {
+      expect(uiMediator.playersRequest).toBeUndefined();
+    });
   });
 
   describe('notifyError', () => {
     //
   });
 
-  describe('requestPlayersAmount', () => {
-    test('it returns a number', async () => {
+  describe('requestPlayers', () => {
+    let rangeDummy: PlayerRequirements;
+
+    beforeEach(() => {
       const min = randomInteger(4);
       const max = min + 5;
-      const rangeDummy: [number, number] = [min, max];
-      
-      expect.assertions(1);
-
-      const playersAmount = await uiMediator.requestPlayersAmount(rangeDummy);
-
-      expect(playersAmount).toBeNumber();
+      rangeDummy = { min, max };
     });
 
-    // Test validation on ranges (max after min, two numbers, positive)
-    // Test return between range
+    test('it populates playersRequest field before resolving', () => {     
+      uiMediator.requestPlayers(rangeDummy);
+
+      expect(uiMediator.playersRequest).toBeDefined();
+    });
+
+    test('playersRequest has expected range', () => {
+      uiMediator.requestPlayers(rangeDummy);
+      const range = (uiMediator.playersRequest as PlayersRequest).range
+
+      expect(range).toEqual([rangeDummy.min, rangeDummy.max]);
+    });
+
+    // test PlayersRequest.promise response makes method resolve
+    // test method returns players from promise response
   });
 
   describe('requestBidParticipation', () => {
@@ -120,16 +136,6 @@ describe('UiMediatorService', () => {
         await uiMediator.requestMonsterAddition(playerDummy, monsterNameDummy);
 
       expect(response).toBeBoolean();
-    });
-  });
-
-  describe('requestPlayerName', () => {
-    test('it returns a string', async () => {
-      expect.assertions(1);
-
-      const name = await uiMediator.requestPlayerName();
-
-      expect(name).toBeString();
     });
   });
 

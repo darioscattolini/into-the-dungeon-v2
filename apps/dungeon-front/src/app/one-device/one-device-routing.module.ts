@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { OneDeviceComponent } from './one-device.component';
+import { 
+  OneDeviceComponent 
+} from './components/one-device/one-device.component';
 
 const routes: Routes = [{ path: '', component: OneDeviceComponent }];
 

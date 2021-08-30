@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HeroesService } from './heroes.service';
-import { GameService } from './game.service';
 import { 
-  Player, Hero, HeroType, MonsterType, EquipmentName, WeaponName, ChosenWeapon
+  Player, PlayerRequirements, PlayersRequest, MonsterType, 
+  Hero, HeroType, EquipmentName, WeaponName, ChosenWeapon,
 } from '../../models/models';
+
+
 
 @Injectable()
 export class UiMediatorService {
+  public get playersRequest() { return this._playersRequest; }
+  private _playersRequest?: PlayersRequest;
 
-  constructor(public heroesService: HeroesService) { }
+  constructor(private heroesService: HeroesService) { }
 
   public notifyError(error: string): void {
     //
@@ -16,7 +20,7 @@ export class UiMediatorService {
 
   public async requestBidParticipation(player: Player): Promise<boolean> {
     // minimum required implementation
-    return true;
+    return false;
   }
 
   public async requestEquipmentRemoval(
@@ -43,14 +47,13 @@ export class UiMediatorService {
     return true;
   }
 
-  public async requestPlayersAmount(range: [number, number]): Promise<number> {
-    // minimum required implementation
-    return 3;
-  }
-
-  public async requestPlayerName(): Promise<string> {
-    // minimum required implementation
-    return 'John';
+  public async requestPlayers(range: PlayerRequirements): Promise<Player[]> {
+    this._playersRequest = new PlayersRequest([range.min, range.max]);
+    const response = await this._playersRequest.promise;
+    this._playersRequest = undefined;
+    const players = response.map(name => new Player(name));
+    
+    return players;
   }
 
   public async requestWeaponChoice(
