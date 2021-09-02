@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@into-the-dungeon/util-common": ["libs/util-common/src/index.ts"],
-      "@into-the-dungeon/util-testing": ["libs/util-testing/src/index.ts"]
+      "@into-the-dungeon/util-testing": ["libs/util-testing/src/index.ts"],
+      "swiper_angular": ["../node_modules/swiper/angular"]
     }
   },
   "exclude": ["node_modules", "tmp"]
