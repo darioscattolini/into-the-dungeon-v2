@@ -7,5 +7,5 @@ export interface WeaponViewData<T extends WeaponName>
     readonly name: T;
     readonly type: 'weapon';
     readonly availableUses: number;
-    readonly effectiveAgainst: ReadonlyArray<MonsterType>;
+    readonly effectiveAgainst: ReadonlyArray<MonsterType | 'all monsters'>;
 }

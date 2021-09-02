@@ -1,6 +1,4 @@
 import { WeaponViewData } from '../weapon-view-data';
-import { monsterTypes } from '../../../../monster/monster-type';
-// importing monsterTypes from /models.ts imports undefined
 
 const description = `
   An ancient relic that halves the damage of any kind of creature (if damage 
@@ -12,6 +10,6 @@ export const powerDrainer: WeaponViewData<'power drainer'> = {
   type: 'weapon',
   image: '...',
   availableUses: 2,
-  effectiveAgainst: monsterTypes,
+  effectiveAgainst: ['all monsters'],
   description: description,
 } as const;

@@ -1,10 +1,8 @@
 import { WeaponViewData } from '../weapon-view-data';
 
 const description = `
-  A magic token with the power to dispel the spirits giving life to undead
-  creatures, thus making skeletons, vampires and litches return to inanimate 
-  form before they can deal any damage. Fate decides if it can be used more than
-  once.
+  A magic token with the power to dispel the spirits animating undead creatures
+  before they can deal any damage. Fate decides if it can be used more than once.
 `;
 
 export const coinOfLuck: WeaponViewData<'coin of luck'> = {
