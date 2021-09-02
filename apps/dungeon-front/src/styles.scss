@@ -103,7 +103,8 @@ $dungeon-front-theme: mat.define-light-theme((
 @include mat.all-component-themes($dungeon-front-theme);
 
 /* You can add global styles to this file, and also import other style files */
-@import '~swiper/scss';
+@import '~swiper/swiper.scss';
+@import '~swiper/components/pagination/pagination.scss';
 
 * {
   box-sizing: border-box;
@@ -117,4 +118,10 @@ body {
   margin: 0; 
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: #dcdfe0;
+}
+
+// Overrides
+
+.hero-stats .swiper-pagination {
+  position: static;
 }
