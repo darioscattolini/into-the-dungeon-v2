@@ -1,0 +1,32 @@
+.container-spacing-small {
+  margin: 2px;
+  padding: 8px;
+}
+
+.header-small {
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.header-small mat-card-title {
+  margin-bottom: 0;
+  font-size: 1em;
+}
+
+.text-small {
+  font-size: 12px;
+}
+
+.stat-inline-small {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+dt {
+  font-weight: 500;
+}
+
+dd {
+  margin-left: 0;
+  margin-bottom: 4px;
+}

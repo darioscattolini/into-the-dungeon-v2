@@ -91,5 +91,6 @@ export {
 
 // REQUEST
 import { PlayersRequest } from './request/players-request';
+import { HeroChoiceRequest } from './request/hero-choice-request';
 
-export { PlayersRequest }
+export { PlayersRequest, HeroChoiceRequest }

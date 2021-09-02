@@ -1,0 +1,102 @@
+<h2>Choose a hero</h2>
+
+<mat-dialog-content *ngIf="!playerNotified">
+  A new bidding phase starts. {{ data.request.player }} must choose a hero.
+</mat-dialog-content>
+
+<mat-dialog-actions *ngIf="!playerNotified">
+  <button mat-raised-button color="primary" (click)="playerNotified = true">
+    Choose hero
+  </button>
+</mat-dialog-actions>
+
+<mat-dialog-content *ngIf="playerNotified">
+  <swiper [slidesPerView]="1" [spaceBetween]="50" [setWrapperSize]="true">
+    <ng-template swiperSlide *ngFor="let hero of data.request.options">
+
+      <mat-card class="mat-elevation-z0 hero-card">
+        <mat-card-title-group>
+          <mat-card-title>{{ hero.type | titlecase }}</mat-card-title>
+          <img mat-card-sm-image src="{{ hero.image }}">
+        </mat-card-title-group>
+        
+        <mat-card-content class="hero-stats">
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Description
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              
+              <p class="mat-caption">{{ hero.description }}</p>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Hit Points
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              
+              <dl class="mat-caption hero-hit-points-dl">
+                <dt>From hero</dt>
+                <dd>{{ hero.baseHitPoints }} HP</dd>
+                
+                <dt>From equipment</dt>
+                <dd>{{ calculateEquipmentHitPoints(hero) }} HP</dd>
+
+                <dt>TOTAL</dt>
+                <dd>
+                  {{ hero.baseHitPoints + calculateEquipmentHitPoints(hero) }} HP
+                </dd>
+              </dl>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Equipment
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              
+              <swiper [slidesPerView]="1"
+                [spaceBetween]="50" 
+                [pagination]="{ type: 'fraction' }"
+              >            
+                <ng-template swiperSlide *ngFor="let piece of hero.equipment">
+                  <dungeon-equipment-view 
+                    [piece]="piece" [smallComponent]="true"
+                  >
+                  </dungeon-equipment-view>
+                </ng-template>
+              </swiper>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-card-content>
+      </mat-card>
+
+    </ng-template>
+  </swiper>
+</mat-dialog-content>
+
+<mat-dialog-actions *ngIf="playerNotified" class ="hero-select-actions">
+  <span class="navigation">
+    <button mat-icon-button color="primary" 
+      (click)="previousHero()"
+      [disabled]="swiper?.swiperRef?.isBeginning"
+    >
+      <mat-icon>arrow_back_ios_new</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" 
+      (click)="nextHero()"
+      [disabled]="swiper?.swiperRef?.isEnd"
+    >
+      <mat-icon>arrow_forward_ios</mat-icon>
+    </button>
+  </span>
+
+  <button mat-raised-button color="accent" (click)="chooseHero()">
+    Choose
+  </button>
+</mat-dialog-actions>

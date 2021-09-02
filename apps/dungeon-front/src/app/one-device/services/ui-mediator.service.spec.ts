@@ -5,13 +5,41 @@ import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
 import { 
   Player, PlayerRequirements, PlayersRequest, 
-  HeroType, EquipmentName, WeaponName
+  HeroType, AnyHeroViewData, heroTypes, heroViewDataMap,
+  EquipmentName, WeaponName, AnyEquipmentViewData, equipmentViewDataMap, 
 } from '../../models/models';
 import { 
-  PlayerDouble, HeroDouble, pickRandomMonsterTypes 
+  PlayerDouble, HeroDouble, pickRandomMonsterTypes, pickRandomEquipmentNames 
 } from '../../models/test-doubles';
+import { EventEmitter } from '@angular/core';
 
 jest.mock('./heroes.service');
+
+function buildHeroOptionsDummy(): AnyHeroViewData[] {
+  return heroTypes.reduce(
+    (options, type) => {
+      const partialData = heroViewDataMap[type];
+      const equipment = pickRandomEquipmentNames(6).reduce(
+        (pieces, pieceName) => {
+          pieces.push(equipmentViewDataMap[pieceName])
+          return pieces;
+        }, 
+        [] as AnyEquipmentViewData[]
+      );
+
+      options.push({ ...partialData, equipment });
+      
+      return options;
+    }, 
+    [] as AnyHeroViewData[]
+  );
+}
+
+function fakeHeroChoice(chosenOption: HeroType, uiMediator: UiMediatorService) {
+  uiMediator.heroChoiceRequest.subscribe(request => {
+    request.onResponse(chosenOption);
+  });
+}
 
 describe('UiMediatorService', () => {
   let uiMediator: UiMediatorService;
@@ -38,6 +66,13 @@ describe('UiMediatorService', () => {
 
     test('playersRequest is initially undefined', () => {
       expect(uiMediator.playersRequest).toBeUndefined();
+    });
+
+    test('heroChoiceRequest is EventEmitter but has not emitted yet', () => {
+      jest.spyOn(uiMediator.heroChoiceRequest, 'emit');
+      
+      expect(uiMediator.heroChoiceRequest).toBeInstanceOf(EventEmitter);
+      expect(uiMediator.heroChoiceRequest.emit).not.toHaveBeenCalled();
     });
   });
 
@@ -95,6 +130,18 @@ describe('UiMediatorService', () => {
   });
 
   describe('requestHeroChoice', () => {
+    let chosenHeroDummy: HeroType;
+    let heroOptionsDummy: AnyHeroViewData[];
+
+    beforeEach(() => {
+      chosenHeroDummy = 'bard';
+      heroOptionsDummy = buildHeroOptionsDummy();
+
+      fakeHeroChoice(chosenHeroDummy, uiMediator);
+      jest.spyOn(heroesServiceMock, 'getHeroOptions')
+        .mockReturnValue(heroOptionsDummy);
+    });
+
     test('it asks HeroesService for Hero options', async () => {
       expect.assertions(1);
 
@@ -103,15 +150,29 @@ describe('UiMediatorService', () => {
       expect(heroesServiceMock.getHeroOptions).toHaveBeenCalled();
     });
 
-    test('it asks HeroesService to create chosen Hero', async () => {
-      const chosenHero: HeroType = 'bard';
-      // this value should be provided to player selection stub
+    test('it emits HeroChoiceRequest with expected properties', async () => {      
+      jest.spyOn(uiMediator.heroChoiceRequest, 'emit');
 
+      expect.assertions(2);
+
+      await uiMediator.requestHeroChoice(playerDummy);
+
+      expect(uiMediator.heroChoiceRequest.emit).toHaveBeenCalledTimes(1);
+      expect(uiMediator.heroChoiceRequest.emit)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          player: playerDummy.name,
+          options: expect.arrayContaining(heroOptionsDummy),
+          promise: expect.toSatisfy(x => x instanceof Promise),
+          onResponse: expect.toBeFunction()
+        }));
+    });
+
+    test('it asks HeroesService to create chosen Hero', async () => {
       expect.assertions(1);
 
       await uiMediator.requestHeroChoice(playerDummy);
 
-      expect(heroesServiceMock.createHero).toHaveBeenCalledWith(chosenHero);
+      expect(heroesServiceMock.createHero).toHaveBeenCalledWith(chosenHeroDummy);
     });
 
     test('it returns hero created by HeroesService', async () => {

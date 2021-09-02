@@ -1,0 +1,37 @@
+
+.hero-card {
+  padding: 0;
+}
+
+.hero-card mat-card-title-group {
+  align-items: center;
+}
+
+.hero-card mat-card-title-group mat-card-title {
+  margin-bottom: 0;
+  padding-left: 24px;
+}
+
+.hero-stats {
+  margin-top: 16px;
+  padding: 2px;
+}
+
+.hero-hit-points-dl {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.hero-hit-points dd {
+  margin-left: 0;
+}
+
+.hero-select-actions {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.hero-select-actions .navigation {
+  flex-grow: 1;
+  text-align: center;
+}

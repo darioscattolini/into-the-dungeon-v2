@@ -39,10 +39,3 @@ export class GameService {
     return game;
   }
 }
-
-/*
-  NOTIFICATION POLICY:
-  Player choosing, bidding and raid events are notified by respective services
-  Check if special notification is required after every round
-  Implement Winner notification
-*/

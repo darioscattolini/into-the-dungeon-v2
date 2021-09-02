@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HeroesService } from './heroes.service';
 import { 
   Player, PlayerRequirements, PlayersRequest, MonsterType, 
-  Hero, HeroType, EquipmentName, WeaponName, ChosenWeapon,
+  Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon,
 } from '../../models/models';
-
-
 
 @Injectable()
 export class UiMediatorService {
+  public readonly heroChoiceRequest = new EventEmitter<HeroChoiceRequest>();
+  
   public get playersRequest() { return this._playersRequest; }
   private _playersRequest?: PlayersRequest;
 
@@ -31,12 +31,12 @@ export class UiMediatorService {
   }
 
   public async requestHeroChoice(player: Player): Promise<Hero> {
-    // partial implementation
-    this.heroesService.getHeroOptions();
-    // expect choice from player;
-    const choice: HeroType = 'bard';
+    const options = this.heroesService.getHeroOptions();
+    const request = new HeroChoiceRequest(player.name, options);
+    this.heroChoiceRequest.emit(request) ;
+    const choice = await request.promise;
     const hero = this.heroesService.createHero(choice);
-    
+
     return hero;
   }
 
