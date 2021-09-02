@@ -26,12 +26,13 @@ Nx chosen presets make use of:
 * [Angular](https://angular.io/) for the front-end.
 * [Node.js](https://nodejs.org/) and [NestJS](https://nestjs.com/) for the back-end.
 * Both Angular and NestJs make use of [TypeScript](https://www.typescriptlang.org/).
-* NestJS also makes use of [Express](https://expressjs.com/).
 * [Jest](https://jestjs.io/) framework for writing and running tests.
 
 Other libraries and dependencies I use:
 * [Angular Material](https://material.angular.io/) for theming.
+* [Swiper](https://swiperjs.com/) for slider component.
 * [jest-extended](https://github.com/jest-community/jest-extended) for additional Jest matchers.
+* [ng-mocks](https://ng-mocks.sudo.eu/) for Angular-specific mocking functionality.
 
 ## Status
 _in progress_
