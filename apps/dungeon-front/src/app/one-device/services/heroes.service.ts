@@ -35,6 +35,7 @@ export class HeroesService {
         type: partialViewData.type,
         description: partialViewData.description,
         image: partialViewData.image,
+        baseHitPoints: partialViewData.baseHitPoints,
         equipment
       }
 

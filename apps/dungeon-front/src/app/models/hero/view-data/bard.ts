@@ -10,4 +10,5 @@ export const bard: PartialHeroViewData<'bard'> = {
   type: 'bard',
   image: '...',
   description: description,
+  baseHitPoints: 3
 } as const;

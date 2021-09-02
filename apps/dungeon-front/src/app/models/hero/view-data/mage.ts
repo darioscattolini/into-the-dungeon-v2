@@ -10,4 +10,5 @@ export const mage: PartialHeroViewData<'mage'> = {
   type: 'mage',
   image: '...',
   description: description,
+  baseHitPoints: 2
 } as const;

@@ -10,6 +10,7 @@ export interface HeroViewData<T extends HeroType> {
   readonly type: T;
   readonly image: string;
   readonly description: string;
+  readonly baseHitPoints: number;
   readonly equipment: ReadonlyArray<AnyEquipmentViewData>
 }
 

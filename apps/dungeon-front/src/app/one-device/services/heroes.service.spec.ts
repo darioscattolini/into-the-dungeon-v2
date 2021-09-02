@@ -63,11 +63,12 @@ describe('HeroesService', () => {
 
       options.forEach(option => {
         expect(option).toContainAllKeys([
-          'type', 'description', 'image', 'equipment'
+          'type', 'description', 'image', 'baseHitPoints', 'equipment'
         ]);
         expect(option.type).toBeString();
         expect(option.description).toBeString();
         expect(option.image).toBeString();
+        expect(option.baseHitPoints).toBeNumber();
         expect(option.equipment).toBeArray();
       });
     });
