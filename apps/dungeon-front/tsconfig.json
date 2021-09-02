@@ -17,7 +17,11 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    //"baseUrl": "./",
+    "paths": {
+      "swiper_angular": ["../node_modules/swiper/angular"]
+    }
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
