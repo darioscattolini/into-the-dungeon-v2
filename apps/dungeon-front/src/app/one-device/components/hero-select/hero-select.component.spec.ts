@@ -11,7 +11,7 @@ describe('HeroSelectComponent', () => {
   let component: MockedDebugElement<HeroSelectComponent>;
   let playerNameDummy: string;
 
-  beforeEach(() => MockBuilder(HeroSelectComponent, OneDeviceModule))
+  beforeEach(() => MockBuilder(HeroSelectComponent, OneDeviceModule));
 
   beforeEach(() => {
     playerNameDummy = 'John';

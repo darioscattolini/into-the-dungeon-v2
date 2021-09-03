@@ -45,7 +45,7 @@ export class HeroSelectComponent implements AfterContentChecked {
 
   public ngAfterContentChecked() {
     this.changeDetector.detectChanges();
-}
+  }
 
   public previousHero(): void {
     this.swiper?.swiperRef.slidePrev()
