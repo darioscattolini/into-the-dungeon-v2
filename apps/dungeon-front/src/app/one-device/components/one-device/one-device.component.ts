@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 import { GameService } from '../../services/game.service';
 import { UiMediatorService } from '../../services/ui-mediator.service';
-import { HeroChoiceRequest } from '../../../models/models';
+import { Request } from '../../../models/models';
 import { HeroSelectComponent } from '../hero-select/hero-select.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -22,20 +22,21 @@ export class OneDeviceComponent implements OnInit {
   ) { }
 
   public ngOnInit() {
-    this.gameService.play(); // no await?
     this.uiMediator.heroChoiceRequest.subscribe(request => {
-      this.triggerHeroChoiceRequest(request);
-    })
+      this.triggerDialogComponent(HeroSelectComponent, request);
+    });
+
+    this.gameService.play(); // no await?
   }
 
-  private triggerHeroChoiceRequest(request: HeroChoiceRequest) {
-    const dialogRef = this.dialog.open(HeroSelectComponent, { 
+  private triggerDialogComponent<T>(Component: Type<any>, request: Request<T>) {
+    const dialogRef = this.dialog.open(Component, { 
       data: { request },
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(hero => {
-      request.onResponse(hero);
+    dialogRef.afterClosed().subscribe(response => {
+      request.onResponse(response);
     });
   }
 }

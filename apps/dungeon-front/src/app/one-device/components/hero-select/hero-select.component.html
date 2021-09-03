@@ -1,4 +1,4 @@
-<h2>Choose a hero</h2>
+<h2 mat-dialog-title>Choose a hero</h2>
 
 <mat-dialog-content *ngIf="!playerNotified">
   A new bidding phase starts. {{ data.request.player }} must choose a hero.
@@ -84,19 +84,21 @@
   <span class="navigation">
     <button mat-icon-button color="primary" 
       (click)="previousHero()"
-      [disabled]="swiper?.swiperRef?.isBeginning"
+      [disabled]=" swiper ? swiper.swiperRef?.isBeginning : true"
     >
       <mat-icon>arrow_back_ios_new</mat-icon>
     </button>
     <button mat-icon-button color="primary" 
       (click)="nextHero()"
-      [disabled]="swiper?.swiperRef?.isEnd"
+      [disabled]="swiper ? swiper.swiperRef?.isEnd : true"
     >
       <mat-icon>arrow_forward_ios</mat-icon>
     </button>
   </span>
 
-  <button mat-raised-button color="accent" (click)="chooseHero()">
+  <button mat-raised-button color="accent" 
+    [mat-dialog-close]="swiper ? currentHero : undefined"
+  >
     Choose
   </button>
 </mat-dialog-actions>

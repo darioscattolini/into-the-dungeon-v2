@@ -1,23 +1,26 @@
 import { 
-  Component, InjectionToken, Inject, Input, ViewChild 
+  Component, Inject, Input, ViewChild, ChangeDetectorRef, AfterContentChecked 
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SwiperComponent } from 'swiper/angular';
 import SwiperCore, { Pagination } from "swiper";
 import { AnyHeroViewData, HeroChoiceRequest } from '../../../models/models';
 
 SwiperCore.use([Pagination]);
 
-type HeroSelectDialogRef = MatDialogRef<HeroSelectComponent>;
-
-const MAT_DIALOG_REF = new InjectionToken<HeroSelectDialogRef>('matDialogRef');
-
 @Component({
   selector: 'dungeon-hero-select',
   templateUrl: './hero-select.component.html',
   styleUrls: ['./hero-select.component.scss']
 })
-export class HeroSelectComponent {
+export class HeroSelectComponent implements AfterContentChecked {
+  public get currentHero() {
+    const heroIndex = this.swiper?.swiperRef.realIndex as number;
+    const hero = this.data.request.options[heroIndex].type;
+
+    return hero;
+  }
+
   public Infinity = Infinity;
   public playerNotified = false;
   
@@ -27,7 +30,7 @@ export class HeroSelectComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { request: HeroChoiceRequest },
-    @Inject(MAT_DIALOG_REF) private dialogRef: HeroSelectDialogRef
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   public calculateEquipmentHitPoints(hero: AnyHeroViewData): number {
@@ -36,15 +39,13 @@ export class HeroSelectComponent {
     }, 0);
   }
 
-  public chooseHero(): void {
-    const heroIndex = this.swiper?.swiperRef.realIndex as number;
-    const hero = this.data.request.options[heroIndex].type;
-    this.dialogRef.close(hero);
-  }
-
   public nextHero(): void {
     this.swiper?.swiperRef.slideNext()
   }
+
+  public ngAfterContentChecked() {
+    this.changeDetector.detectChanges();
+}
 
   public previousHero(): void {
     this.swiper?.swiperRef.slidePrev()

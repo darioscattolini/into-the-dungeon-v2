@@ -1,4 +1,6 @@
 export abstract class Request<T> {
+  public readonly player?: string;
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private _resolve: (value: T) => void = () => {};
 
@@ -9,6 +11,10 @@ export abstract class Request<T> {
 
   public get promise(): Promise<T> {
     return this._promise;
+  }
+
+  constructor(player?: string) {
+    this.player = player;
   }
 
   public onResponse(response: T) {
