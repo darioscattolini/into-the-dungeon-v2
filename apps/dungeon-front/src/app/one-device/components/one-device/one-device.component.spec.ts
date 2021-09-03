@@ -31,6 +31,10 @@ describe('OneDeviceComponent', () => {
     Object.defineProperty(uiMediator, 'heroChoiceRequest', {
       value: new EventEmitter<HeroChoiceRequest>()
     });
+
+    Object.defineProperty(uiMediator, 'playersRequest', {
+      value: new EventEmitter<HeroChoiceRequest>()
+    });
   });
 
   beforeEach(() => {

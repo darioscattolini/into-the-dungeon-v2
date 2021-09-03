@@ -4,6 +4,7 @@ import { UiMediatorService } from '../../services/ui-mediator.service';
 import { Request } from '../../../models/models';
 import { HeroSelectComponent } from '../hero-select/hero-select.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PlayerRecorderComponent } from '../player-recorder/player-recorder.component';
 
 @Component({
   selector: 'dungeon-one-device',
@@ -22,6 +23,10 @@ export class OneDeviceComponent implements OnInit {
   ) { }
 
   public ngOnInit() {
+    this.uiMediator.playersRequest.subscribe(request => {
+      this.triggerDialogComponent(PlayerRecorderComponent, request);
+    });
+
     this.uiMediator.heroChoiceRequest.subscribe(request => {
       this.triggerDialogComponent(HeroSelectComponent, request);
     });

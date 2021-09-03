@@ -9,8 +9,7 @@ import {
 export class UiMediatorService {
   public readonly heroChoiceRequest = new EventEmitter<HeroChoiceRequest>();
   
-  public get playersRequest() { return this._playersRequest; }
-  private _playersRequest?: PlayersRequest;
+  public readonly playersRequest = new EventEmitter<PlayersRequest>();
 
   constructor(private heroesService: HeroesService) { }
 
@@ -48,10 +47,10 @@ export class UiMediatorService {
   }
 
   public async requestPlayers(range: PlayerRequirements): Promise<Player[]> {
-    this._playersRequest = new PlayersRequest([range.min, range.max]);
-    const response = await this._playersRequest.promise;
-    this._playersRequest = undefined;
-    const players = response.map(name => new Player(name));
+    const request = new PlayersRequest([range.min, range.max]);
+    this.playersRequest.emit(request);
+    const playerNames = await request.promise;
+    const players = playerNames.map(name => new Player(name));
     
     return players;
   }

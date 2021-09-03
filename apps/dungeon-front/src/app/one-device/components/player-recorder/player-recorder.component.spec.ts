@@ -1,35 +1,39 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import {
+  MockBuilder, MockedDebugElement, MockRender, MockService, ngMocks 
+} from 'ng-mocks';
+import { randomInteger } from '@into-the-dungeon/util-testing';
 
 import { PlayerRecorderComponent } from './player-recorder.component';
-
-@Component({
-  selector: 'dungeon-host-component',
-  template: '<dungeon-player-recorder [range]="[2, 4]"></dungeon-player-recorder>'
-})
-class HostComponent {}
+import { OneDeviceModule } from '../../one-device.module';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { PlayersRequest } from '../../../models/models';
 
 describe('PlayerRecorderComponent', () => {
-  let component: PlayerRecorderComponent;
-  let hostComponent: HostComponent;
-  let hostFixture: ComponentFixture<HostComponent>;
+  let component: MockedDebugElement<PlayerRecorderComponent>;
+  let playersRequestStub: PlayersRequest;
+  let rangeDummy: [number, number];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ PlayerRecorderComponent, HostComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ] // to avoid complaints on non imported children components
-    })
-    .compileComponents();
-  });
+  beforeEach(() => MockBuilder(PlayerRecorderComponent, OneDeviceModule));
 
   beforeEach(() => {
-    hostFixture = TestBed.createComponent(HostComponent);
-    hostComponent = hostFixture.componentInstance;
-    hostFixture.detectChanges();
-    component = hostFixture.nativeElement.querySelector('dungeon-player-recorder');
+    playersRequestStub = MockService(PlayersRequest);
+    const randomStart = 1 + randomInteger(2);
+    const randomEnd = randomStart + 1 + randomInteger(2);
+    rangeDummy = [randomStart, randomEnd];
+
+    Object.defineProperty(playersRequestStub, 'range', { value: rangeDummy});
+    
+    MockRender(PlayerRecorderComponent, {}, {
+      providers: [{
+        provide: MAT_DIALOG_DATA,
+        useValue: { request: playersRequestStub }
+      }]
+    });
+
+    component = ngMocks.find(PlayerRecorderComponent);
   });
 
-  test('it is created', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

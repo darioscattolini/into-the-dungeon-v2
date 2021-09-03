@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { randomInteger } from '@into-the-dungeon/util-testing';
+import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
 
 import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
@@ -41,6 +41,12 @@ function fakeHeroChoice(chosenOption: HeroType, uiMediator: UiMediatorService) {
   });
 }
 
+function fakePlayerAddition(names: string[], uiMediator: UiMediatorService) {
+  uiMediator.playersRequest.subscribe(request => {
+    request.onResponse(names);
+  });
+}
+
 describe('UiMediatorService', () => {
   let uiMediator: UiMediatorService;
   let heroesServiceMock: HeroesService;
@@ -64,46 +70,23 @@ describe('UiMediatorService', () => {
       expect(uiMediator).toBeTruthy();
     });
 
-    test('playersRequest is initially undefined', () => {
-      expect(uiMediator.playersRequest).toBeUndefined();
-    });
-
     test('heroChoiceRequest is EventEmitter but has not emitted yet', () => {
       jest.spyOn(uiMediator.heroChoiceRequest, 'emit');
       
       expect(uiMediator.heroChoiceRequest).toBeInstanceOf(EventEmitter);
       expect(uiMediator.heroChoiceRequest.emit).not.toHaveBeenCalled();
     });
+    
+    test('playersRequest is EventEmitter but has not emitted yet', () => {
+      jest.spyOn(uiMediator.playersRequest, 'emit');
+      
+      expect(uiMediator.playersRequest).toBeInstanceOf(EventEmitter);
+      expect(uiMediator.playersRequest.emit).not.toHaveBeenCalled();
+    });
   });
 
   describe('notifyError', () => {
     //
-  });
-
-  describe('requestPlayers', () => {
-    let rangeDummy: PlayerRequirements;
-
-    beforeEach(() => {
-      const min = randomInteger(4);
-      const max = min + 5;
-      rangeDummy = { min, max };
-    });
-
-    test('it populates playersRequest field before resolving', () => {     
-      uiMediator.requestPlayers(rangeDummy);
-
-      expect(uiMediator.playersRequest).toBeDefined();
-    });
-
-    test('playersRequest has expected range', () => {
-      uiMediator.requestPlayers(rangeDummy);
-      const range = (uiMediator.playersRequest as PlayersRequest).range
-
-      expect(range).toEqual([rangeDummy.min, rangeDummy.max]);
-    });
-
-    // test PlayersRequest.promise response makes method resolve
-    // test method returns players from promise response
   });
 
   describe('requestBidParticipation', () => {
@@ -197,6 +180,44 @@ describe('UiMediatorService', () => {
         await uiMediator.requestMonsterAddition(playerDummy, monsterNameDummy);
 
       expect(response).toBeBoolean();
+    });
+  });
+
+  describe('requestPlayers', () => {
+    let rangeDummy: PlayerRequirements;
+    let addedPlayersDummy: string[];
+
+    beforeEach(() => {
+      const min = randomInteger(4);
+      const max = min + 5;
+      rangeDummy = { min, max };
+      addedPlayersDummy = [randomString(6), randomString(5), randomString(8)];
+      fakePlayerAddition(addedPlayersDummy, uiMediator);
+    });
+
+    test('it emits PlayersRequest with expected properties', async () => {      
+      jest.spyOn(uiMediator.playersRequest, 'emit');
+
+      expect.assertions(2);
+
+      await uiMediator.requestPlayers(rangeDummy);
+
+      expect(uiMediator.playersRequest.emit).toHaveBeenCalledTimes(1);
+      expect(uiMediator.playersRequest.emit)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          range: [rangeDummy.min, rangeDummy.max],
+          promise: expect.toSatisfy(x => x instanceof Promise),
+          onResponse: expect.toBeFunction()
+        }));
+    });
+
+    test('it returns players with added players\' names', async () => {
+      expect.assertions(1);
+
+      const players = await uiMediator.requestPlayers(rangeDummy);
+      const playerNames = players.map(player => player.name);
+
+      expect(playerNames).toIncludeSameMembers(addedPlayersDummy);
     });
   });
 

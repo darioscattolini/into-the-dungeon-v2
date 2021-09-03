@@ -1,12 +1,17 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { 
+  Component, AfterContentChecked, Inject, Input, Output, 
+  EventEmitter, ChangeDetectorRef 
+} from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { PlayersRequest } from '../../../models/models';
 
 @Component({
   selector: 'dungeon-player-recorder',
   templateUrl: './player-recorder.component.html',
   styleUrls: ['./player-recorder.component.scss']
 })
-export class PlayerRecorderComponent {
+export class PlayerRecorderComponent implements AfterContentChecked {
   public addedNames: string[] = [];
 
   public get additionDisabled(): boolean {
@@ -23,14 +28,17 @@ export class PlayerRecorderComponent {
     return isRepeated ? { repeatedName: control.value } : null;
   });
 
-  @Input() range!: [number, number];
-
   public get ready(): boolean { 
-    return this.addedNames.length >= this.range[0]
-      && this.addedNames.length <= this.range[1];
+    return this.addedNames.length >= this.data.request.range[0]
+      && this.addedNames.length <= this.data.request.range[1];
   }
 
   public repeatedName = false;
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { request: PlayersRequest },
+    private changeDetector: ChangeDetectorRef
+  ) { }
 
   public addPlayer(): void {
     this.addedNames.push(this.nameInputControl.value);
@@ -39,6 +47,10 @@ export class PlayerRecorderComponent {
 
   public finish(): void {
     this.finished.emit(this.addedNames);
+  }
+
+  public ngAfterContentChecked() {
+    this.changeDetector.detectChanges();
   }
 
   public removePlayer(name: string): void {
