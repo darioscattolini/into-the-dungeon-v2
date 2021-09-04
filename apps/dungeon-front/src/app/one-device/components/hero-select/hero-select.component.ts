@@ -1,5 +1,5 @@
 import { 
-  Component, Inject, Input, ViewChild, ChangeDetectorRef, AfterContentChecked 
+  Component, Inject, ViewChild, ChangeDetectorRef, AfterContentChecked 
 } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SwiperComponent } from 'swiper/angular';
@@ -23,9 +23,7 @@ export class HeroSelectComponent implements AfterContentChecked {
 
   public Infinity = Infinity;
   public playerNotified = false;
-  
-  @Input() player?: string;
-    
+      
   @ViewChild(SwiperComponent) swiper?: SwiperComponent;
 
   constructor(
