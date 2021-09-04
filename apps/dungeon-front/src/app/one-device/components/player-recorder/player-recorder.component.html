@@ -27,7 +27,10 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button color="accent" [mat-dialog-close]="addedNames">
+  <button mat-raised-button color="accent" 
+    [disabled]="!ready"
+    [mat-dialog-close]="addedNames"
+  >
     Start game
   </button>
 </mat-dialog-actions>
