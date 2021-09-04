@@ -1,16 +1,24 @@
 <h2 mat-dialog-title>Choose a hero</h2>
 
-<mat-dialog-content *ngIf="!playerNotified">
-  A new bidding phase starts. {{ data.request.player }} must choose a hero.
-</mat-dialog-content>
+<mat-dialog-content 
+  *ngIf="!playerNotified; then notifyPlayerContent; else selectHeroContent"
+></mat-dialog-content>
 
-<mat-dialog-actions *ngIf="!playerNotified">
+<mat-dialog-actions 
+  *ngIf="!playerNotified; then notifyPlayerActions; else selectHeroActions"
+></mat-dialog-actions>
+
+<ng-template #notifyPlayerContent>
+  A new bidding phase starts. {{ data.request.player }} must choose a hero.
+</ng-template>
+
+<ng-template #notifyPlayerActions>
   <button mat-raised-button color="primary" (click)="playerNotified = true">
     Choose hero
   </button>
-</mat-dialog-actions>
+</ng-template>
 
-<mat-dialog-content *ngIf="playerNotified">
+<ng-template #selectHeroContent>
   <swiper [slidesPerView]="1" [spaceBetween]="50" [setWrapperSize]="true">
     <ng-template swiperSlide *ngFor="let hero of data.request.options">
 
@@ -78,9 +86,9 @@
 
     </ng-template>
   </swiper>
-</mat-dialog-content>
+</ng-template>
 
-<mat-dialog-actions *ngIf="playerNotified" class ="hero-select-actions">
+<ng-template #selectHeroActions class ="hero-select-actions">
   <span class="navigation">
     <button mat-icon-button color="primary" 
       (click)="previousHero()"
@@ -101,4 +109,4 @@
   >
     Choose
   </button>
-</mat-dialog-actions>
+</ng-template>
