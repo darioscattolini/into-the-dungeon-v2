@@ -1,6 +1,5 @@
 import { 
-  Component, AfterContentChecked, Inject, Input, Output, 
-  EventEmitter, ChangeDetectorRef 
+  Component, AfterContentChecked, Inject, ChangeDetectorRef 
 } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -17,8 +16,6 @@ export class PlayerRecorderComponent implements AfterContentChecked {
   public get additionDisabled(): boolean {
     return !this.nameInputControl.value || !this.nameInputControl.valid;
   }
-
-  @Output() finished = new EventEmitter<string[]>()
 
   public nameInputControl = new FormControl('', (control: AbstractControl) => {
     const isRepeated = this.addedNames
@@ -43,10 +40,6 @@ export class PlayerRecorderComponent implements AfterContentChecked {
   public addPlayer(): void {
     this.addedNames.push(this.nameInputControl.value);
     this.nameInputControl.setValue('');
-  }
-
-  public finish(): void {
-    this.finished.emit(this.addedNames);
   }
 
   public ngAfterContentChecked() {
