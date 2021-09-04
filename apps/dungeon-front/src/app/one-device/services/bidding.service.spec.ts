@@ -125,7 +125,7 @@ describe('BiddingService', () => {
 
     test('Bidding is instantiated only once', async () => {
       // stubbed dependency
-      jest.spyOn(Bidding.prototype, 'getActionRequest')
+      jest.spyOn(Bidding.prototype, 'getActionRequestData')
         .mockReturnValue(actionRequestGenericDummy);
 
       makeLoopRunTimes(3);
@@ -139,7 +139,7 @@ describe('BiddingService', () => {
 
     test('loop runs as many times as bidding.goesOn is true', async () => {
       // stubbed dependency
-      jest.spyOn(Bidding.prototype, 'getActionRequest')
+      jest.spyOn(Bidding.prototype, 'getActionRequestData')
         .mockReturnValue(actionRequestGenericDummy);
 
       const times = randomInteger(5) + 2;
@@ -151,7 +151,7 @@ describe('BiddingService', () => {
 
       const [biddingMock] = BiddingMock.mock.instances;
 
-      expect(biddingMock.getActionRequest).toHaveBeenCalledTimes(times);
+      expect(biddingMock.getActionRequestData).toHaveBeenCalledTimes(times);
     });
 
     describe('loop run for bid participation (play-bidding)', () => {
@@ -162,7 +162,7 @@ describe('BiddingService', () => {
 
         makeLoopRunTimes(1);
 
-        jest.spyOn(Bidding.prototype, 'getActionRequest')
+        jest.spyOn(Bidding.prototype, 'getActionRequestData')
           .mockReturnValue({
             action: 'play-bidding',
             player: requestTargetDummy,
@@ -179,7 +179,7 @@ describe('BiddingService', () => {
         const [biddingMock] = BiddingMock.mock.instances;
     
         expect(uiMediator.requestBidParticipation)
-          .toHaveBeenCalledAfter(biddingMock.getActionRequest as jest.Mock);
+          .toHaveBeenCalledAfter(biddingMock.getActionRequestData as jest.Mock);
       });
 
       test(
@@ -257,7 +257,7 @@ describe('BiddingService', () => {
 
         makeLoopRunTimes(1);
 
-        jest.spyOn(Bidding.prototype, 'getActionRequest')
+        jest.spyOn(Bidding.prototype, 'getActionRequestData')
           .mockReturnValue({
             action: 'add-monster',
             player: requestTargetDummy,
@@ -266,7 +266,7 @@ describe('BiddingService', () => {
           });
       });
 
-      test('it requests monster addition after getActionRequest', async () => {
+      test('it requests monster addition after getActionRequestData', async () => {
         expect.assertions(1);
 
         await biddingService.playBidding(playersDummy);
@@ -274,11 +274,11 @@ describe('BiddingService', () => {
         const [biddingMock] = BiddingMock.mock.instances;
     
         expect(uiMediator.requestMonsterAddition)
-          .toHaveBeenCalledAfter(biddingMock.getActionRequest as jest.Mock);
+          .toHaveBeenCalledAfter(biddingMock.getActionRequestData as jest.Mock);
       });
 
       test(
-        'monster addition is requested to player from getActionRequest', 
+        'monster addition is requested to player from getActionRequestData', 
         async () => {       
           expect.assertions(1);
 
@@ -290,7 +290,7 @@ describe('BiddingService', () => {
       );
 
       test(
-        'monster addition is requested for monster from getActionRequest', 
+        'monster addition is requested for monster from getActionRequestData', 
         async () => {       
           expect.assertions(1);
 
@@ -366,7 +366,7 @@ describe('BiddingService', () => {
 
         makeLoopRunTimes(1);
 
-        jest.spyOn(Bidding.prototype, 'getActionRequest')
+        jest.spyOn(Bidding.prototype, 'getActionRequestData')
           .mockReturnValue({
             action: 'remove-equipment',
             player: requestTargetDummy,
@@ -378,7 +378,7 @@ describe('BiddingService', () => {
           .mockResolvedValue(chosenEquipmentDummy);
       });
 
-      test('it requests equipment removal after getActionRequest', async () => {
+      test('it requests equipment removal after getActionRequestData', async () => {
         expect.assertions(1);
 
         await biddingService.playBidding(playersDummy);
@@ -386,11 +386,11 @@ describe('BiddingService', () => {
         const [biddingMock] = BiddingMock.mock.instances;
     
         expect(uiMediator.requestEquipmentRemoval)
-          .toHaveBeenCalledAfter(biddingMock.getActionRequest as jest.Mock);
+          .toHaveBeenCalledAfter(biddingMock.getActionRequestData as jest.Mock);
       });
 
       test(
-        'equipment removal is requested to player from getActionRequest', 
+        'equipment removal is requested to player from getActionRequestData', 
         async () => {       
           expect.assertions(1);
 
@@ -402,7 +402,7 @@ describe('BiddingService', () => {
       );
 
       test(
-        'equipment removal is requested with options from getActionRequest', 
+        'equipment removal is requested with options from getActionRequestData', 
         async () => {       
           expect.assertions(1);
 
@@ -417,7 +417,7 @@ describe('BiddingService', () => {
         const optionsDummy: EquipmentName[] = ['chaperone', 'katana', 'suitor'];
         const wrongChoice: EquipmentName = 'royal sceptre';
         
-        jest.spyOn(Bidding.prototype, 'getActionRequest')
+        jest.spyOn(Bidding.prototype, 'getActionRequestData')
           .mockReturnValue({
             action: 'remove-equipment',
             player: requestTargetDummy,

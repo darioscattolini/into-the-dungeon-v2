@@ -160,10 +160,10 @@ describe('Bidding', () => {
       expect(bidding.monstersInDungeonAmount).toBe(0);
     });
 
-    test('getActionRequest can be called', () => {
+    test('getActionRequestData can be called', () => {
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
 
-      expect(() => { bidding.getActionRequest(); }).not.toThrowError();
+      expect(() => { bidding.getActionRequestData(); }).not.toThrowError();
     });
 
     test.each(buildAllResponseDummies())(
@@ -197,36 +197,36 @@ describe('Bidding', () => {
     });
 
     test('public state has not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
       const currentState = getPublicState(bidding);
 
       expect(currentState).toEqual(previousState);
     });
 
     test('currentPlayer is biddingPlayersRound currentPlayer', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.currentPlayer).toBe(playersMock.getCurrentPlayer());
     });
 
     test('bidding players have not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
       expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
     
-    test('getActionRequest cannot be called right after', () => {
-      bidding.getActionRequest();
+    test('getActionRequestData cannot be called right after', () => {
+      bidding.getActionRequestData();
 
-      expect(() => { bidding.getActionRequest(); })
+      expect(() => { bidding.getActionRequestData(); })
         .toThrowError('A user response to a previous request is pending.');
     });
 
     test.each([
       playBiddingDummy(), withdrawDummy()
     ])('onResponse can be called with BidParticipationResponse', response => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(() => { bidding.onResponse(response); }).not.toThrowError();
     });
@@ -236,7 +236,7 @@ describe('Bidding', () => {
     ])(
       'onResponse cannot be called with MonsterAddition/EquipmentRemoval Response', 
       response => {
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         
         expect(() => { bidding.onResponse(response); })
           .toThrowError('A response of "play-bidding" type was expected.');
@@ -244,20 +244,20 @@ describe('Bidding', () => {
     );
 
     test('getResult cannot be called', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(() => { bidding.getResult(); })
         .toThrowError('Bidding phase has not ended yet.');
     });
 
     test('bidding goes on', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.goesOn()).toBeTrue();
     });
 
-    test('getActionRequest returns a play-bidding request', () => {
-      const request = bidding.getActionRequest();
+    test('getActionRequestData returns a play-bidding request', () => {
+      const request = bidding.getActionRequestData();
 
       expect(request).toContainAllKeys(['action', 'player', 'content', 'state']);
       expect(request.action).toBe('play-bidding');
@@ -267,17 +267,17 @@ describe('Bidding', () => {
       ]);
     });
 
-    test('getActionRequest is targeted at current player', () => {
+    test('getActionRequestData is targeted at current player', () => {
       const playerDummy = PlayerDouble.createDouble();
       jest.spyOn(playersMock, 'getCurrentPlayer').mockReturnValue(playerDummy);
       
-      const request = bidding.getActionRequest();
+      const request = bidding.getActionRequestData();
 
       expect(request.player).toBe(playerDummy);
     });
 
-    test('getActionRequest state reflects current bidding state', () => {
-      const state = bidding.getActionRequest().state;
+    test('getActionRequestData state reflects current bidding state', () => {
+      const state = bidding.getActionRequestData().state;
 
       expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
       expect(state.hero).toEqual({
@@ -298,7 +298,7 @@ describe('Bidding', () => {
         monstersPackDummy = [ MonsterDouble.createDouble() ];
         [pickedMonster] = monstersPackDummy;
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);  
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
 
@@ -340,10 +340,10 @@ describe('Bidding', () => {
           .toBe(previousState.monstersInDungeonAmount + 1);
       });
 
-      test('getActionRequest cannot be called', () => {
+      test('getActionRequestData cannot be called', () => {
         bidding.onResponse(playBiddingDummy());
 
-        expect(() => { bidding.getActionRequest(); })
+        expect(() => { bidding.getActionRequestData(); })
           .toThrowError(
             'Bidding phase has ended, method should not have been called.'
           );
@@ -411,7 +411,7 @@ describe('Bidding', () => {
         pickedMonster = monstersPackDummy[monstersPackDummy.length - 1];
 
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
 
@@ -454,10 +454,10 @@ describe('Bidding', () => {
           .toBe(previousState.monstersInDungeonAmount + 1);
       });
 
-      test('getActionRequest can be called', () => {
+      test('getActionRequestData can be called', () => {
         bidding.onResponse(playBiddingDummy());
         
-        expect(() => { bidding.getActionRequest(); }).not.toThrowError();
+        expect(() => { bidding.getActionRequestData(); }).not.toThrowError();
       });
 
       test.each(buildAllResponseDummies())(
@@ -483,9 +483,9 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
 
-      test('getActionRequest returns a play-bidding request', () => {
+      test('getActionRequestData returns a play-bidding request', () => {
         bidding.onResponse(playBiddingDummy());
-        const request = bidding.getActionRequest();
+        const request = bidding.getActionRequestData();
   
         expect(request)
           .toContainAllKeys(['action', 'player', 'content', 'state']);
@@ -496,16 +496,16 @@ describe('Bidding', () => {
         ]);
       });
   
-      test('getActionRequest is targeted at next player', () => {
+      test('getActionRequestData is targeted at next player', () => {
         bidding.onResponse(playBiddingDummy());
-        const target = bidding.getActionRequest().player;
+        const target = bidding.getActionRequestData().player;
 
         expect(target).toBe(nextPlayerDummy);
       });
   
-      test('getActionRequest state reflects current bidding state', () => {
+      test('getActionRequestData state reflects current bidding state', () => {
         bidding.onResponse(playBiddingDummy());
-        const state = bidding.getActionRequest().state;
+        const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
         expect(state.hero).toEqual({
@@ -551,7 +551,7 @@ describe('Bidding', () => {
         pickedMonster = monstersPackDummy[monstersPackDummy.length - 1];
 
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
 
@@ -594,10 +594,10 @@ describe('Bidding', () => {
           .toBe(previousState.monstersInDungeonAmount);
       });
 
-      test('getActionRequest can be called', () => {
+      test('getActionRequestData can be called', () => {
         bidding.onResponse(playBiddingDummy());
   
-        expect(() => { bidding.getActionRequest(); }).not.toThrowError();
+        expect(() => { bidding.getActionRequestData(); }).not.toThrowError();
       });
 
       test.each(buildAllResponseDummies())(
@@ -623,9 +623,9 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
 
-      test('getActionRequest returns an add-monster request', () => {
+      test('getActionRequestData returns an add-monster request', () => {
         bidding.onResponse(playBiddingDummy());
-        const request = bidding.getActionRequest();
+        const request = bidding.getActionRequestData();
   
         expect(request)
           .toContainAllKeys(['action', 'player', 'content', 'state']);
@@ -636,23 +636,23 @@ describe('Bidding', () => {
         ]);
       });
   
-      test('getActionRequest is targeted at current player', () => {
+      test('getActionRequestData is targeted at current player', () => {
         bidding.onResponse(playBiddingDummy());
-        const request = bidding.getActionRequest();
+        const request = bidding.getActionRequestData();
 
         expect(request.player).toBe(previousState.currentPlayer);
       });
 
-      test('getActionRequest content is picked monster', () => {
+      test('getActionRequestData content is picked monster', () => {
         bidding.onResponse(playBiddingDummy());
-        const request = bidding.getActionRequest();
+        const request = bidding.getActionRequestData();
 
         expect(request.content).toBe(pickedMonster.type);
       });
   
-      test('getActionRequest state reflects current bidding state', () => {
+      test('getActionRequestData state reflects current bidding state', () => {
         bidding.onResponse(playBiddingDummy());
-        const state = bidding.getActionRequest().state;
+        const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
         expect(state.hero).toEqual({
@@ -683,7 +683,7 @@ describe('Bidding', () => {
         ).mockReturnValue(2);
 
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
 
@@ -725,10 +725,10 @@ describe('Bidding', () => {
           .toBe(previousState.monstersInDungeonAmount);
       });
       
-      test('getActionRequest cannot be called', () => {
+      test('getActionRequestData cannot be called', () => {
         bidding.onResponse(withdrawDummy());
 
-        expect(() => { bidding.getActionRequest(); })
+        expect(() => { bidding.getActionRequestData(); })
           .toThrowError(
             'Bidding phase has ended, method should not have been called.'
           );
@@ -793,7 +793,7 @@ describe('Bidding', () => {
           .mockReturnValue(playersAmount); */
 
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
 
@@ -841,10 +841,10 @@ describe('Bidding', () => {
           .toBe(previousState.monstersInDungeonAmount);
       });
 
-      test('getActionRequest can be called', () => {
+      test('getActionRequestData can be called', () => {
         bidding.onResponse(withdrawDummy());
 
-        expect(() => { bidding.getActionRequest(); }).not.toThrowError();
+        expect(() => { bidding.getActionRequestData(); }).not.toThrowError();
       });
 
       test.each(buildAllResponseDummies())(
@@ -870,9 +870,9 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
 
-      test('getActionRequest returns a play-bidding request', () => {
+      test('getActionRequestData returns a play-bidding request', () => {
         bidding.onResponse(withdrawDummy());
-        const request = bidding.getActionRequest();
+        const request = bidding.getActionRequestData();
   
         expect(request)
           .toContainAllKeys(['action', 'player', 'content', 'state']);
@@ -883,16 +883,16 @@ describe('Bidding', () => {
         ]);
       });
   
-      test('getActionRequest is targeted at next player', () => {
+      test('getActionRequestData is targeted at next player', () => {
         bidding.onResponse(withdrawDummy());
-        const target = bidding.getActionRequest().player;
+        const target = bidding.getActionRequestData().player;
 
         expect(target).toBe(nextPlayerDummy);
       });
   
-      test('getActionRequest state reflects current bidding state', () => {
+      test('getActionRequestData state reflects current bidding state', () => {
         bidding.onResponse(withdrawDummy());
-        const state = bidding.getActionRequest().state;
+        const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
         expect(state.hero).toEqual({
@@ -924,60 +924,60 @@ describe('Bidding', () => {
   describe('play-bidding accepted, add-monster action request demanded', () => {
     beforeEach(() => {
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
       bidding.onResponse(playBiddingDummy());
       previousState = getPublicState(bidding);
     });
 
     test('currentPhase has not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.currentPhase).toBe(previousState.currentPhase);
     });
 
     test('currentPlayer has not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.currentPlayer).toBe(previousState.currentPlayer);
     });
 
     test('currentPlayer is biddingPlayersRound currentPlayer', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.currentPlayer).toBe(playersMock.getCurrentPlayer());
     });
 
     test('bidding players have not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
       expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
     
     test('monstersPackAmount has not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
         
       expect(bidding.monstersPackAmount).toBe(previousState.monstersPackAmount);
     });
 
     test('monstersInDungeon has not increased yet', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
         
       expect(bidding.monstersInDungeonAmount)
         .toBe(previousState.monstersInDungeonAmount);
     });
     
-    test('getActionRequest cannot be called right after', () => {
-      bidding.getActionRequest();
+    test('getActionRequestData cannot be called right after', () => {
+      bidding.getActionRequestData();
 
-      expect(() => { bidding.getActionRequest(); })
+      expect(() => { bidding.getActionRequestData(); })
         .toThrowError('A user response to a previous request is pending.');
     });
 
     test.each([
       addMonsterDummy(), dontAddMonsterDummy()
     ])('onResponse can be called with MonsterAdditionResponse', response => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
        expect(() => { bidding.onResponse(response); }).not.toThrowError();
     });
@@ -987,7 +987,7 @@ describe('Bidding', () => {
     ])(
       'onResponse cannot be called with BidParticipation/EquipmentRemoval Response', 
       response => {
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         
         expect(() => { bidding.onResponse(response); })
           .toThrowError('A response of "add-monster" type was expected.');
@@ -995,19 +995,19 @@ describe('Bidding', () => {
     );
 
     test('getResult cannot be called', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(() => { bidding.getResult(); })
         .toThrowError('Bidding phase has not ended yet.');
     });
 
     test('bidding goes on', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.goesOn()).toBeTrue();
     });
 
-    // return value of getActionRequest already tested
+    // return value of getActionRequestData already tested
   });
 
   describe('add-monster request accepted', () => {
@@ -1016,9 +1016,9 @@ describe('Bidding', () => {
         monstersPackDummy = [ MonsterDouble.createDouble() ];
         [pickedMonster] = monstersPackDummy;
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(playBiddingDummy());
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
 
@@ -1060,10 +1060,10 @@ describe('Bidding', () => {
           .toBe(previousState.monstersInDungeonAmount + 1);
       });
 
-      test('getActionRequest cannot be called', () => {
+      test('getActionRequestData cannot be called', () => {
         bidding.onResponse(addMonsterDummy());
 
-        expect(() => { bidding.getActionRequest(); })
+        expect(() => { bidding.getActionRequestData(); })
           .toThrowError(
             'Bidding phase has ended, method should not have been called.'
           );
@@ -1128,9 +1128,9 @@ describe('Bidding', () => {
         pickedMonster = monstersPackDummy[monstersPackDummy.length - 1];
   
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(playBiddingDummy());
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
   
@@ -1173,10 +1173,10 @@ describe('Bidding', () => {
           .toBe(previousState.monstersInDungeonAmount + 1);
       });
   
-      test('getActionRequest can be called', () => {
+      test('getActionRequestData can be called', () => {
         bidding.onResponse(addMonsterDummy());
           
-        expect(() => { bidding.getActionRequest(); }).not.toThrowError();
+        expect(() => { bidding.getActionRequestData(); }).not.toThrowError();
       });
   
       test.each(buildAllResponseDummies())(
@@ -1202,9 +1202,9 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
   
-      test('getActionRequest returns a play-bidding request', () => {
+      test('getActionRequestData returns a play-bidding request', () => {
         bidding.onResponse(addMonsterDummy());
-        const request = bidding.getActionRequest();
+        const request = bidding.getActionRequestData();
   
         expect(request)
           .toContainAllKeys(['action', 'player', 'content', 'state']);
@@ -1215,16 +1215,16 @@ describe('Bidding', () => {
         ]);
       });
   
-      test('getActionRequest is targeted at next player', () => {
+      test('getActionRequestData is targeted at next player', () => {
         bidding.onResponse(addMonsterDummy());
-        const target = bidding.getActionRequest().player;
+        const target = bidding.getActionRequestData().player;
 
         expect(target).toBe(nextPlayerDummy);
       });
   
-      test('getActionRequest state reflects current bidding state', () => {
+      test('getActionRequestData state reflects current bidding state', () => {
         bidding.onResponse(addMonsterDummy());
-        const state = bidding.getActionRequest().state;
+        const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
         expect(state.hero).toEqual({
@@ -1256,9 +1256,9 @@ describe('Bidding', () => {
   describe('add-monster request rejected', () => {
     beforeEach(() => {
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
       bidding.onResponse(playBiddingDummy());
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
       previousState = getPublicState(bidding);
     });
 
@@ -1301,10 +1301,10 @@ describe('Bidding', () => {
         .toBe(previousState.monstersInDungeonAmount);
     });
 
-    test('getActionRequest can be called', () => {
+    test('getActionRequestData can be called', () => {
       bidding.onResponse(dontAddMonsterDummy());
 
-      expect(() => { bidding.getActionRequest(); }).not.toThrowError();
+      expect(() => { bidding.getActionRequestData(); }).not.toThrowError();
     });
 
     test.each(buildAllResponseDummies())(
@@ -1330,9 +1330,9 @@ describe('Bidding', () => {
       expect(bidding.goesOn()).toBeTrue();
     });
 
-    test('getActionRequest returns a remove-equipment request', () => {
+    test('getActionRequestData returns a remove-equipment request', () => {
       bidding.onResponse(dontAddMonsterDummy());
-      const request = bidding.getActionRequest();
+      const request = bidding.getActionRequestData();
 
       expect(request)
         .toContainAllKeys(['action', 'player', 'content', 'state']);
@@ -1343,23 +1343,23 @@ describe('Bidding', () => {
       ]);
     });
 
-    test('getActionRequest is targeted at current player', () => {
+    test('getActionRequestData is targeted at current player', () => {
       bidding.onResponse(dontAddMonsterDummy());
-      const request = bidding.getActionRequest();
+      const request = bidding.getActionRequestData();
 
       expect(request.player).toBe(previousState.currentPlayer);
     });
 
-    test('getActionRequest content is hero\'s equipment', () => {
+    test('getActionRequestData content is hero\'s equipment', () => {
       bidding.onResponse(dontAddMonsterDummy());
-      const request = bidding.getActionRequest();
+      const request = bidding.getActionRequestData();
 
       expect(request.content).toIncludeSameMembers(equipmentOptions);
     });
 
-    test('getActionRequest state reflects current bidding state', () => {
+    test('getActionRequestData state reflects current bidding state', () => {
       bidding.onResponse(dontAddMonsterDummy());
-      const state = bidding.getActionRequest().state;
+      const state = bidding.getActionRequestData().state;
 
       expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
       expect(state.hero).toEqual({
@@ -1384,55 +1384,55 @@ describe('Bidding', () => {
   describe('add-monster rejected, remove-equipment action request demanded', () => {
     beforeEach(() => {
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
       bidding.onResponse(playBiddingDummy());
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
       bidding.onResponse(dontAddMonsterDummy());
       previousState = getPublicState(bidding);
     });
 
     test('currentPhase has not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.currentPhase).toBe(previousState.currentPhase);
     });
 
     test('currentPlayer has not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.currentPlayer).toBe(previousState.currentPlayer);
     });
 
     test('currentPlayer is biddingPlayersRound currentPlayer', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.currentPlayer).toBe(playersMock.getCurrentPlayer());
     });
 
     test('bidding players have not changed', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
       expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
     
     test('monstersPackAmount has not decreased', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
         
       expect(bidding.monstersPackAmount).toBe(previousState.monstersPackAmount);
     });
 
     test('monstersInDungeon has not increased', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
         
       expect(bidding.monstersInDungeonAmount)
         .toBe(previousState.monstersInDungeonAmount);
     });
     
-    test('getActionRequest cannot be called right after', () => {
-      bidding.getActionRequest();
+    test('getActionRequestData cannot be called right after', () => {
+      bidding.getActionRequestData();
 
-      expect(() => { bidding.getActionRequest(); })
+      expect(() => { bidding.getActionRequestData(); })
         .toThrowError('A user response to a previous request is pending.');
     });
 
@@ -1442,7 +1442,7 @@ describe('Bidding', () => {
     ])(
       'onResponse cannot be called with PlayBidding/MonsterAddition Response', 
         response => {
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         
         expect(() => { bidding.onResponse(response); })
           .toThrowError('A response of "remove-equipment" type was expected.');
@@ -1450,26 +1450,26 @@ describe('Bidding', () => {
     );
 
     test('onResponse can be called with EquipmentRemoval Response', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
         
       expect(() => { bidding.onResponse(removeEquipmentDummy()); })
         .not.toThrowError();
     });
 
     test('getResult cannot be called', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(() => { bidding.getResult(); })
         .toThrowError('Bidding phase has not ended yet.');
     });
 
     test('bidding goes on', () => {
-      bidding.getActionRequest();
+      bidding.getActionRequestData();
 
       expect(bidding.goesOn()).toBeTrue();
     });
 
-    // return value of getActionRequest already tested
+    // return value of getActionRequestData already tested
   });
 
   describe('remove equipment response', () => {
@@ -1484,11 +1484,11 @@ describe('Bidding', () => {
 
         monstersPackDummy = [ MonsterDouble.createDouble() ];
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(playBiddingDummy());
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(dontAddMonsterDummy());
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
 
@@ -1541,10 +1541,10 @@ describe('Bidding', () => {
           .toHaveBeenCalledWith(chosenEquipment);
       });
 
-      test('getActionRequest cannot be called', () => {
+      test('getActionRequestData cannot be called', () => {
         bidding.onResponse(removeEquipmentDummy());
 
-        expect(() => { bidding.getActionRequest(); })
+        expect(() => { bidding.getActionRequestData(); })
           .toThrowError(
             'Bidding phase has ended, method should not have been called.'
           );
@@ -1627,11 +1627,11 @@ describe('Bidding', () => {
 
         pickedMonster = monstersPackDummy[monstersPackDummy.length - 1];
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(playBiddingDummy());
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(dontAddMonsterDummy());
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         previousState = getPublicState(bidding);
       });
 
@@ -1683,10 +1683,10 @@ describe('Bidding', () => {
           .toHaveBeenCalledWith(chosenEquipment);
       });
   
-      test('getActionRequest can be called', () => {
+      test('getActionRequestData can be called', () => {
         bidding.onResponse(removeEquipmentDummy());
           
-        expect(() => { bidding.getActionRequest(); }).not.toThrowError();
+        expect(() => { bidding.getActionRequestData(); }).not.toThrowError();
       });
   
       test.each(buildAllResponseDummies())(
@@ -1712,9 +1712,9 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
   
-      test('getActionRequest returns a play-bidding request', () => {
+      test('getActionRequestData returns a play-bidding request', () => {
         bidding.onResponse(removeEquipmentDummy());
-        const request = bidding.getActionRequest();
+        const request = bidding.getActionRequestData();
   
         expect(request)
           .toContainAllKeys(['action', 'player', 'content', 'state']);
@@ -1725,16 +1725,16 @@ describe('Bidding', () => {
         ]);
       });
   
-      test('getActionRequest is targeted at next player', () => {
+      test('getActionRequestData is targeted at next player', () => {
         bidding.onResponse(removeEquipmentDummy());
-        const target = bidding.getActionRequest().player;
+        const target = bidding.getActionRequestData().player;
 
         expect(target).toBe(nextPlayerDummy);
       });
   
-      test('getActionRequest state reflects current bidding state', () => {
+      test('getActionRequestData state reflects current bidding state', () => {
         bidding.onResponse(removeEquipmentDummy());
-        const state = bidding.getActionRequest().state;
+        const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
         expect(state.hero).toEqual({
@@ -1788,9 +1788,9 @@ describe('Bidding', () => {
 
       for (let i = 0; i < rounds; i++) {
         const addMonster = additionSignals[i];
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(playBiddingDummy());
-        const request = bidding.getActionRequest();
+        const request = bidding.getActionRequestData();
         bidding.onResponse({ action: 'add-monster', content: addMonster });
         
         if (addMonster) {
@@ -1800,13 +1800,13 @@ describe('Bidding', () => {
 
           addedMonsters.push(request.content);
         } else {
-          bidding.getActionRequest();
+          bidding.getActionRequestData();
           bidding.onResponse(removeEquipmentDummy());
         }
       }
 
       while (bidding.goesOn()) {
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(withdrawDummy());
       }
     });
@@ -1861,15 +1861,15 @@ describe('Bidding', () => {
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
 
       for (let i = 0; i < rounds; i++) {
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(playBiddingDummy());
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
 
         if (!removals[i]) {
           bidding.onResponse(addMonsterDummy());
         } else {
           bidding.onResponse(dontAddMonsterDummy());
-          bidding.getActionRequest();
+          bidding.getActionRequestData();
           const response = removeEquipmentDummy();
           expectedRemovals.push(response.content);
           bidding.onResponse(response);
@@ -1877,7 +1877,7 @@ describe('Bidding', () => {
       }
 
       while (bidding.goesOn()) {
-        bidding.getActionRequest();
+        bidding.getActionRequestData();
         bidding.onResponse(withdrawDummy());
       }
     });

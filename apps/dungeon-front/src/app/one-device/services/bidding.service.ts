@@ -44,7 +44,7 @@ export class BiddingService {
 
   private async manageBidding(bidding: Bidding): Promise<RaidParticipants> {
     while (bidding.goesOn()) {
-      const request = bidding.getActionRequest();
+      const request = bidding.getActionRequestData();
       const response = await this.makeRequest(request);
       const outcome = bidding.onResponse(response);
       // Notify state update

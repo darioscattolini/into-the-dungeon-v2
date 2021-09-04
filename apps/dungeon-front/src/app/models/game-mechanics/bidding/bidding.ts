@@ -52,7 +52,7 @@ export class Bidding {
     this.monstersPack = monsters;
   }
 
-  public getActionRequest(): BiddingActionRequestData {
+  public getActionRequestData(): BiddingActionRequestData {
     if (this.responsePending) {
       throw new Error('A user response to a previous request is pending.');
     }
