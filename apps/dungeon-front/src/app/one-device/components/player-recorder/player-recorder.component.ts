@@ -1,6 +1,4 @@
-import { 
-  Component, AfterContentChecked, Inject, ChangeDetectorRef 
-} from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PlayersRequest } from '../../../models/models';
@@ -10,7 +8,7 @@ import { PlayersRequest } from '../../../models/models';
   templateUrl: './player-recorder.component.html',
   styleUrls: ['./player-recorder.component.scss']
 })
-export class PlayerRecorderComponent implements AfterContentChecked {
+export class PlayerRecorderComponent {
   public addedNames: string[] = [];
 
   public get additionDisabled(): boolean {
@@ -33,17 +31,12 @@ export class PlayerRecorderComponent implements AfterContentChecked {
   public repeatedName = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { request: PlayersRequest },
-    private changeDetector: ChangeDetectorRef
+    @Inject(MAT_DIALOG_DATA) public data: { request: PlayersRequest }
   ) { }
 
   public addPlayer(): void {
     this.addedNames.push(this.nameInputControl.value);
     this.nameInputControl.setValue('');
-  }
-
-  public ngAfterContentChecked() {
-    this.changeDetector.detectChanges();
   }
 
   public removePlayer(name: string): void {
