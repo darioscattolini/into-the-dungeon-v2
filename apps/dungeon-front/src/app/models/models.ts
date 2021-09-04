@@ -6,7 +6,6 @@ import {
   BiddingPlayersRound 
 } from "./game-mechanics/bidding/bidding-players-round";
 import {
-  BiddingAction,
   BiddingActionRequest, BiddingActionResponse,
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,
@@ -20,7 +19,7 @@ import { RaidResult } from './game-mechanics/raid/raid-result';
 
 export { 
   Game, PlayerRequirements,
-  Bidding, BiddingPlayersRound, BiddingAction,
+  Bidding, BiddingPlayersRound,
   BiddingActionRequest, BiddingActionResponse,
   BidParticipationRequest, BidParticipationResponse,
   MonsterAdditionRequest, MonsterAdditionResponse,

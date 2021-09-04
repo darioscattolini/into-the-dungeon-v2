@@ -1,19 +1,32 @@
 import { MonsterType, EquipmentName, Player } from '../../models';
 
-export interface BidParticipationRequest {
-  action: 'play-bidding';
-  player: Player;
+export type BiddingAction = 'play-bidding' | 'add-monster' | 'remove-equipment';
+
+export type DungeonExposableData = (MonsterType | 'unknown')[];
+
+type BiddingExposableState = {
+  dungeon: DungeonExposableData;
 }
 
-export interface MonsterAdditionRequest {
-  action: 'add-monster';
+interface BiddingActionRequestBase {
+  action: BiddingAction;
   player: Player;
+  content?: MonsterType | EquipmentName[];
+  state: BiddingExposableState;
+}
+
+export interface BidParticipationRequest extends BiddingActionRequestBase {
+  action: 'play-bidding';
+  content: undefined;
+}
+
+export interface MonsterAdditionRequest extends BiddingActionRequestBase {
+  action: 'add-monster';
   content: MonsterType;
 }
 
-export interface EquipmentRemovalRequest {
+export interface EquipmentRemovalRequest extends BiddingActionRequestBase {
   action: 'remove-equipment';
-  player: Player;
   content: EquipmentName[];
 }
 
@@ -41,5 +54,3 @@ export type BiddingActionResponse =
   | BidParticipationResponse 
   | MonsterAdditionResponse 
   | EquipmentRemovalResponse;
-
-export type BiddingAction = BiddingActionRequest['action'];

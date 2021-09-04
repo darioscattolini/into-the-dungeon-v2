@@ -7,7 +7,7 @@ import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
 import { 
   Player, BiddingPlayersRound, Bidding,
-  Hero, EquipmentName, Monster, AnyMonster, MonsterType
+  Hero, EquipmentName, Monster, AnyMonster, MonsterType, BiddingActionRequest
 } from '../../models/models';
 import { 
   PlayerDouble, BiddingPlayersRoundDouble, 
@@ -63,6 +63,7 @@ describe('BiddingService', () => {
     let playersDummy: BiddingPlayersRound;
     let heroDummy: Hero;
     let monstersPackDummy: AnyMonster[];
+    let actionRequestGenericDummy: BiddingActionRequest;
 
     beforeEach(() => {
       playersDummy = BiddingPlayersRoundDouble.createDouble();
@@ -71,6 +72,12 @@ describe('BiddingService', () => {
         MonsterDouble.createDouble(),
         MonsterDouble.createDouble()
       ];
+      actionRequestGenericDummy = {
+        action: 'play-bidding',
+        player: PlayerDouble.createDouble(),
+        content: undefined,
+        state: { dungeon: [] }
+      };
 
       jest.spyOn(uiMediator, 'requestHeroChoice').mockResolvedValue(heroDummy);
       jest.spyOn(monstersService, 'getMonstersPack')
@@ -111,10 +118,7 @@ describe('BiddingService', () => {
     test('Bidding is instantiated only once', async () => {
       // stubbed dependency
       jest.spyOn(Bidding.prototype, 'getActionRequest')
-        .mockReturnValue({
-          action: 'play-bidding',
-          player: PlayerDouble.createDouble()
-        });
+        .mockReturnValue(actionRequestGenericDummy);
 
       makeLoopRunTimes(3);
 
@@ -128,10 +132,7 @@ describe('BiddingService', () => {
     test('loop runs as many times as bidding.goesOn is true', async () => {
       // stubbed dependency
       jest.spyOn(Bidding.prototype, 'getActionRequest')
-        .mockReturnValue({
-          action: 'play-bidding',
-          player: PlayerDouble.createDouble()
-        });
+        .mockReturnValue(actionRequestGenericDummy);
 
       const times = randomInteger(5) + 2;
       makeLoopRunTimes(times);
@@ -156,7 +157,9 @@ describe('BiddingService', () => {
         jest.spyOn(Bidding.prototype, 'getActionRequest')
           .mockReturnValue({
             action: 'play-bidding',
-            player: requestTargetDummy
+            player: requestTargetDummy,
+            content: undefined,
+            state: actionRequestGenericDummy.state
           });
       });
 
@@ -250,7 +253,8 @@ describe('BiddingService', () => {
           .mockReturnValue({
             action: 'add-monster',
             player: requestTargetDummy,
-            content: monsterTypeDummy
+            content: monsterTypeDummy,
+            state: actionRequestGenericDummy.state
           });
       });
 
@@ -358,7 +362,8 @@ describe('BiddingService', () => {
           .mockReturnValue({
             action: 'remove-equipment',
             player: requestTargetDummy,
-            content: equipmentOptionsDummy
+            content: equipmentOptionsDummy,
+            state: actionRequestGenericDummy.state
           });
 
         jest.spyOn(uiMediator, 'requestEquipmentRemoval')
@@ -408,7 +413,8 @@ describe('BiddingService', () => {
           .mockReturnValue({
             action: 'remove-equipment',
             player: requestTargetDummy,
-            content: optionsDummy
+            content: optionsDummy,
+            state: actionRequestGenericDummy.state
           });
 
         jest.spyOn(uiMediator, 'requestEquipmentRemoval')

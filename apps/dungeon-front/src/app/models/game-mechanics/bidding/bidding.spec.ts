@@ -4,7 +4,7 @@ import {
   BiddingActionResponse,
   BidParticipationResponse, MonsterAdditionResponse, EquipmentRemovalResponse
 } from './bidding-action';
-import { Player, Hero, AnyMonster, EquipmentName } from '../../models';
+import { Player, Hero, AnyMonster, EquipmentName, MonsterType } from '../../models';
 import { 
   BiddingPlayersRoundDouble, HeroDouble, MonsterDouble, PlayerDouble,
   pickRandomEquipmentNames
@@ -254,14 +254,27 @@ describe('Bidding', () => {
       expect(bidding.goesOn()).toBeTrue();
     });
 
-    test('getActionRequest returns play-bidding request to current player', () => {
+    test('getActionRequest returns a play-bidding request', () => {
+      const request = bidding.getActionRequest();
+
+      expect(request).toContainAllKeys(['action', 'player', 'content', 'state']);
+      expect(request.action).toBe('play-bidding');
+      expect(request.content).toBeUndefined();
+    });
+
+    test('getActionRequest is targeted at current player', () => {
       const playerDummy = PlayerDouble.createDouble();
       jest.spyOn(playersMock, 'getCurrentPlayer').mockReturnValue(playerDummy);
       
       const request = bidding.getActionRequest();
 
-      expect(request)
-        .toEqual({ action: 'play-bidding', player: playerDummy });
+      expect(request.player).toBe(playerDummy);
+    });
+
+    test('getActionRequest state reflects current bidding state', () => {
+      const state = bidding.getActionRequest().state;
+
+      expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
     });
   });
 
@@ -459,14 +472,28 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
 
-      test('getActionRequest returns play-bidding request for next player', () => {
+      test('getActionRequest returns a play-bidding request', () => {
         bidding.onResponse(playBiddingDummy());
         const request = bidding.getActionRequest();
+  
+        expect(request)
+          .toContainAllKeys(['action', 'player', 'content', 'state']);
+        expect(request.action).toBe('play-bidding');
+        expect(request.content).toBeUndefined();
+      });
+  
+      test('getActionRequest is targeted at next player', () => {
+        bidding.onResponse(playBiddingDummy());
+        const target = bidding.getActionRequest().player;
 
-        expect(request).toEqual({
-          action: 'play-bidding',
-          player: expect.toSatisfy(x => x === nextPlayerDummy)
-        });
+        expect(target).toBe(nextPlayerDummy);
+      });
+  
+      test('getActionRequest state reflects current bidding state', () => {
+        bidding.onResponse(playBiddingDummy());
+        const state = bidding.getActionRequest().state;
+  
+        expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
       });
       
       test('correct notification is returned', () => {
@@ -533,11 +560,11 @@ describe('Bidding', () => {
         expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
       });
       
-      test('monstersPackAmount has not decreased yet', () => {
+      test('monstersPackAmount has decreased by one', () => {
         bidding.onResponse(playBiddingDummy());
           
         expect(bidding.monstersPackAmount)
-          .toBe(previousState.monstersPackAmount);
+          .toBe(previousState.monstersPackAmount - 1);
       });
 
       test('monstersInDungeon has not increased yet', () => {
@@ -576,14 +603,35 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
 
-      test('getActionRequest returns add-monster request for same player', () => {
+      test('getActionRequest returns an add-monster request', () => {
+        bidding.onResponse(playBiddingDummy());
+        const request = bidding.getActionRequest();
+  
+        expect(request)
+          .toContainAllKeys(['action', 'player', 'content', 'state']);
+        expect(request.action).toBe('add-monster');
+        expect(request.content).toBeDefined();
+      });
+  
+      test('getActionRequest is targeted at current player', () => {
         bidding.onResponse(playBiddingDummy());
         const request = bidding.getActionRequest();
 
-        expect(request).toContainAllKeys(['action', 'player', 'content']);
-        expect(request.action).toBe('add-monster');
         expect(request.player).toBe(previousState.currentPlayer);
-        expect(request).toContainEntry(['content', pickedMonster.type]);
+      });
+
+      test('getActionRequest content is picked monster', () => {
+        bidding.onResponse(playBiddingDummy());
+        const request = bidding.getActionRequest();
+
+        expect(request.content).toBe(pickedMonster.type);
+      });
+  
+      test('getActionRequest state reflects current bidding state', () => {
+        bidding.onResponse(playBiddingDummy());
+        const state = bidding.getActionRequest().state;
+  
+        expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
       });
 
       test('correct notification is returned', () => {
@@ -793,14 +841,28 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
 
-      test('getActionRequest returns play-bidding request for next player', () => {
+      test('getActionRequest returns a play-bidding request', () => {
         bidding.onResponse(withdrawDummy());
         const request = bidding.getActionRequest();
+  
+        expect(request)
+          .toContainAllKeys(['action', 'player', 'content', 'state']);
+        expect(request.action).toBe('play-bidding');
+        expect(request.content).toBeUndefined();
+      });
+  
+      test('getActionRequest is targeted at next player', () => {
+        bidding.onResponse(withdrawDummy());
+        const target = bidding.getActionRequest().player;
 
-        expect(request).toEqual({
-          action: 'play-bidding',
-          player: expect.toSatisfy(x => x === nextPlayerDummy)
-        });
+        expect(target).toBe(nextPlayerDummy);
+      });
+  
+      test('getActionRequest state reflects current bidding state', () => {
+        bidding.onResponse(withdrawDummy());
+        const state = bidding.getActionRequest().state;
+  
+        expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
       });
       
       test('correct notification is returned', () => {
@@ -854,11 +916,10 @@ describe('Bidding', () => {
       expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
     
-    test('monstersPackAmount has decreased by one', () => {
+    test('monstersPackAmount has not changed', () => {
       bidding.getActionRequest();
         
-      expect(bidding.monstersPackAmount)
-        .toBe(previousState.monstersPackAmount - 1);
+      expect(bidding.monstersPackAmount).toBe(previousState.monstersPackAmount);
     });
 
     test('monstersInDungeon has not increased yet', () => {
@@ -1103,14 +1164,28 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
   
-      test('getActionRequest returns play-bidding request for next player', () => {
+      test('getActionRequest returns a play-bidding request', () => {
         bidding.onResponse(addMonsterDummy());
         const request = bidding.getActionRequest();
   
-        expect(request).toEqual({
-          action: 'play-bidding',
-          player: expect.toSatisfy(x => x === nextPlayerDummy)
-        });
+        expect(request)
+          .toContainAllKeys(['action', 'player', 'content', 'state']);
+        expect(request.action).toBe('play-bidding');
+        expect(request.content).toBeUndefined();
+      });
+  
+      test('getActionRequest is targeted at next player', () => {
+        bidding.onResponse(addMonsterDummy());
+        const target = bidding.getActionRequest().player;
+
+        expect(target).toBe(nextPlayerDummy);
+      });
+  
+      test('getActionRequest state reflects current bidding state', () => {
+        bidding.onResponse(addMonsterDummy());
+        const state = bidding.getActionRequest().state;
+  
+        expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
       });
       
       test('correct notification is returned', () => {
@@ -1208,16 +1283,35 @@ describe('Bidding', () => {
       expect(bidding.goesOn()).toBeTrue();
     });
 
-    test('getActionRequest returns remove-equipment request for same player', () => {
+    test('getActionRequest returns a remove-equipment request', () => {
       bidding.onResponse(dontAddMonsterDummy());
       const request = bidding.getActionRequest();
 
-      expect(request).toContainAllKeys(['action', 'player', 'content']);
+      expect(request)
+        .toContainAllKeys(['action', 'player', 'content', 'state']);
       expect(request.action).toBe('remove-equipment');
+      expect(request.content).toBeDefined();
+    });
+
+    test('getActionRequest is targeted at current player', () => {
+      bidding.onResponse(dontAddMonsterDummy());
+      const request = bidding.getActionRequest();
+
       expect(request.player).toBe(previousState.currentPlayer);
-      expect(request).toContainEntry([
-        'content', expect.toIncludeSameMembers(equipmentOptions)
-      ]);
+    });
+
+    test('getActionRequest content is hero\'s equipment', () => {
+      bidding.onResponse(dontAddMonsterDummy());
+      const request = bidding.getActionRequest();
+
+      expect(request.content).toIncludeSameMembers(equipmentOptions);
+    });
+
+    test('getActionRequest state reflects current bidding state', () => {
+      bidding.onResponse(dontAddMonsterDummy());
+      const state = bidding.getActionRequest().state;
+
+      expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
     });
 
     test('correct notification is returned', () => {
@@ -1562,14 +1656,28 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeTrue();
       });
   
-      test('getActionRequest returns play-bidding request for next player', () => {
+      test('getActionRequest returns a play-bidding request', () => {
         bidding.onResponse(removeEquipmentDummy());
         const request = bidding.getActionRequest();
   
-        expect(request).toEqual({
-          action: 'play-bidding',
-          player: expect.toSatisfy(x => x === nextPlayerDummy)
-        });
+        expect(request)
+          .toContainAllKeys(['action', 'player', 'content', 'state']);
+        expect(request.action).toBe('play-bidding');
+        expect(request.content).toBeUndefined();
+      });
+  
+      test('getActionRequest is targeted at next player', () => {
+        bidding.onResponse(removeEquipmentDummy());
+        const target = bidding.getActionRequest().player;
+
+        expect(target).toBe(nextPlayerDummy);
+      });
+  
+      test('getActionRequest state reflects current bidding state', () => {
+        bidding.onResponse(removeEquipmentDummy());
+        const state = bidding.getActionRequest().state;
+  
+        expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
       });
       
       test('correct notification is returned', () => {
@@ -1595,29 +1703,38 @@ describe('Bidding', () => {
   describe('monster addition (amount and order)', () => {
     let rounds: number;
     let initialPackAmount: number;
-    let additions: boolean[];
+    let additionSignals: boolean[];
+    let addedMonsters: MonsterType[];
 
     beforeEach(() => {
       rounds = 8;
       initialPackAmount = rounds + randomInteger(5);
     
       monstersPackDummy = [];
-      additions = [];
+      additionSignals = [];
+      addedMonsters = [];
 
       for (let i = 0; i < initialPackAmount; i++) {
         monstersPackDummy.push(MonsterDouble.createDouble());
-        if (i < rounds) additions.push(Math.random() >= 0.5);
+        if (i < rounds) additionSignals.push(Math.random() >= 0.5);
       }
 
       bidding = new Bidding(playersMock, heroMock, Array.from(monstersPackDummy));
 
       for (let i = 0; i < rounds; i++) {
+        const addMonster = additionSignals[i];
         bidding.getActionRequest();
         bidding.onResponse(playBiddingDummy());
-        bidding.getActionRequest();
-        bidding.onResponse({ action: 'add-monster', content: additions[i] });
+        const request = bidding.getActionRequest();
+        bidding.onResponse({ action: 'add-monster', content: addMonster });
         
-        if (!additions[i]) {
+        if (addMonster) {
+          if (request.action !== 'add-monster') {
+            throw new Error('Unexpected request type');
+          }
+
+          addedMonsters.push(request.content);
+        } else {
           bidding.getActionRequest();
           bidding.onResponse(removeEquipmentDummy());
         }
@@ -1629,23 +1746,24 @@ describe('Bidding', () => {
       }
     });
     
-    test('monsters pack amount decreased by rounds amount', () => {
-      expect(bidding.monstersPackAmount).toBe(initialPackAmount - rounds);
+    test('set up works', () => {
+      const expectedRemainingMonsters = initialPackAmount - rounds;
+      const expectedAddedMonsters = additionSignals
+        .filter(signal => signal).length;
+
+      expect(bidding.monstersPackAmount).toBe(expectedRemainingMonsters);
+      expect(addedMonsters.length).toBe(expectedAddedMonsters);
     });
 
-    test('monsters in dungeon amount equals additions', () => {
-      const additionsAmount = additions.filter(addition => addition).length;
-      
-      expect(bidding.monstersInDungeonAmount).toBe(additionsAmount);
+    test('monsters in dungeon amount equals additions', () => {  
+      expect(bidding.monstersInDungeonAmount).toBe(addedMonsters.length);
     });
 
-    test('returned dungeon contains expected monsters in expected order', () => {
-      // monsters are picked in reverse order
-      const expectedDungeon = Array.from(monstersPackDummy).reverse()
-        .filter((monster, index) => additions[index]);
-      const dungeonOutcome = bidding.getResult().enemies;
+    test('returned dungeon contains added monsters in reverse order', () => {
+      const dungeonOutcome = bidding.getResult().enemies
+        .map(enemy => enemy.type);
 
-      expect(dungeonOutcome).toEqual(expectedDungeon);
+      expect(dungeonOutcome).toEqual(addedMonsters.reverse());
     })
   });
 

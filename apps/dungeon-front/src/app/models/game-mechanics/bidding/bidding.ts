@@ -1,13 +1,24 @@
 import { BiddingPlayersRound } from './bidding-players-round';
 import { 
-  BiddingAction, BiddingActionRequest, BiddingActionResponse 
+  BiddingAction, BiddingActionRequest, BiddingActionResponse, 
+  DungeonExposableData 
 } from './bidding-action';
 import { BiddingNotification } from './bidding-notification';
 import {
   Player, Hero, EquipmentName, AnyMonster, MonsterType, RaidParticipants 
 } from '../../models';
 
+type DungeonEntry = {
+  monster: AnyMonster;
+  adder: Player;
+}
+
 export class Bidding {
+  /* 
+    Public getters added to simplify testing. This API should not be used by the
+    app itself. Relevant state information is sent through BiddingActionRequest
+  */
+
   public get currentPhase() {
     if (this.hasEnded) return 'bidding-ended';
     else return this.currentAction;
@@ -29,7 +40,7 @@ export class Bidding {
   private hasEnded = false;
   private currentAction: BiddingAction = 'play-bidding';
   private hero: Hero;
-  private monstersInDungeon: AnyMonster[] = [];
+  private monstersInDungeon: DungeonEntry[] = [];
   private monstersPack: AnyMonster[];
   private pickedMonster: AnyMonster | undefined;
   private players: BiddingPlayersRound;
@@ -54,21 +65,26 @@ export class Bidding {
 
     const action = this.currentAction;
     const player = this.players.getCurrentPlayer();
+    const state = {
+      dungeon: this.getDungeonDataForBidder()
+    };
 
     this.responsePending = true;
 
     if (action === 'add-monster') {
+      if (!this.pickedMonster) throw new Error('No picked monster.');
 
-      const content = this.pickCurrentMonster();
-      return { action, player, content };
-
+      const content = this.pickedMonster.type;
+      
+      return { action, player, content, state };
     } else if (action === 'remove-equipment') {
-
       const content = this.getRemovableEquipment();
-      return { action, player, content };
-
+      
+      return { action, player, content, state };
     } else {
-      return { action, player };
+      const content = undefined;
+      
+      return { action, player, state, content };
     }
   }
 
@@ -78,7 +94,7 @@ export class Bidding {
     return {
       raider: this.players.getRaider(),
       hero: this.hero,
-      enemies: this.monstersInDungeon
+      enemies: this.getDungeonDataForRaid()
     }
   }
 
@@ -124,7 +140,15 @@ export class Bidding {
       throw new Error ('There is no picked monster to add to dungeon.')
     }
 
-    this.monstersInDungeon.push(this.pickedMonster);
+    if (!this.currentPlayer) {
+      throw new Error ('There is no active player, bidding should have ended.')
+    }
+
+    this.monstersInDungeon.unshift({
+      monster: this.pickedMonster,
+      adder: this.currentPlayer
+    });
+
     this.pickedMonster = undefined;
   }
 
@@ -133,6 +157,18 @@ export class Bidding {
     this.currentAction = 'play-bidding';  
 
     return nextPlayer;
+  }
+
+  private getDungeonDataForBidder(): DungeonExposableData {    
+    return this.monstersInDungeon.map(entry => {
+      return entry.adder === this.currentPlayer 
+        ? entry.monster.type 
+        : 'unknown';
+    });
+  }
+
+  private getDungeonDataForRaid(): AnyMonster[] {
+    return this.monstersInDungeon.map(entry => entry.monster);
   }
 
   private getRemovableEquipment(): EquipmentName[] {
@@ -206,9 +242,10 @@ export class Bidding {
     const target = this.players.getCurrentPlayer();
 
     if (response) {
+      const pickedMonster = this.pickCurrentMonster();
+
       if (this.getRemovableEquipment().length === 0) {
         const message = 'necessarily-add-monster';
-        const entity = this.pickCurrentMonster();
         this.addPickedMonsterToDungeon();
         
         if (this.monstersPack.length === 0) {
@@ -219,7 +256,7 @@ export class Bidding {
           notification = {
             target, 
             message, 
-            entity,
+            entity: pickedMonster,
             endOfBidding: {
               raider,
               reason: 'last-monster'
@@ -233,7 +270,7 @@ export class Bidding {
           notification = {
             target, 
             message, 
-            entity,
+            entity: pickedMonster,
             endOfBidding: undefined,
             endOfTurn: {
               nextPlayer,
