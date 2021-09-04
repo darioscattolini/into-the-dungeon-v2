@@ -6,8 +6,8 @@ import { BiddingService } from './bidding.service';
 import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Player, BiddingPlayersRound, Bidding,
-  Hero, EquipmentName, Monster, AnyMonster, MonsterType, BiddingActionRequest
+  Player, BiddingPlayersRound, Bidding, BiddingActionRequest,
+  Hero, EquipmentName, Monster, AnyMonster, MonsterType
 } from '../../models/models';
 import { 
   PlayerDouble, BiddingPlayersRoundDouble, 
@@ -76,7 +76,13 @@ describe('BiddingService', () => {
         action: 'play-bidding',
         player: PlayerDouble.createDouble(),
         content: undefined,
-        state: { dungeon: [] }
+        state: { 
+          dungeon: [],
+          hero: {
+            type: heroDummy.type,
+            equipment: []
+          }
+        }
       };
 
       jest.spyOn(uiMediator, 'requestHeroChoice').mockResolvedValue(heroDummy);
