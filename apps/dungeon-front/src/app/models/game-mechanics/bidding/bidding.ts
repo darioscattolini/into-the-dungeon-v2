@@ -171,9 +171,11 @@ export class Bidding {
     const hero = {
       type: this.hero.type,
       equipment: this.hero.getMountedEquipment()
-    }
+    };
 
-    return { dungeon, hero };
+    const remainingPlayers = this.players.remainingPlayersAmount;
+
+    return { dungeon, hero, remainingPlayers };
   }
 
   private getRemovableEquipment(): EquipmentName[] {

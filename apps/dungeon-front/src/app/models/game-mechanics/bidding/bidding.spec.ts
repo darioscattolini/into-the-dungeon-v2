@@ -262,7 +262,9 @@ describe('Bidding', () => {
       expect(request).toContainAllKeys(['action', 'player', 'content', 'state']);
       expect(request.action).toBe('play-bidding');
       expect(request.content).toBeUndefined();
-      expect(request.state).toContainAllKeys(['dungeon', 'hero']);
+      expect(request.state).toContainAllKeys([
+        'dungeon', 'hero', 'remainingPlayers'
+      ]);
     });
 
     test('getActionRequest is targeted at current player', () => {
@@ -282,6 +284,7 @@ describe('Bidding', () => {
         type: heroMock.type,
         equipment: heroMock.getMountedEquipment()
       });
+      expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
     });
   });
 
@@ -487,7 +490,9 @@ describe('Bidding', () => {
           .toContainAllKeys(['action', 'player', 'content', 'state']);
         expect(request.action).toBe('play-bidding');
         expect(request.content).toBeUndefined();
-        expect(request.state).toContainAllKeys(['dungeon', 'hero']);
+        expect(request.state).toContainAllKeys([
+          'dungeon', 'hero', 'remainingPlayers'
+        ]);
       });
   
       test('getActionRequest is targeted at next player', () => {
@@ -506,6 +511,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
       test('correct notification is returned', () => {
@@ -623,7 +629,9 @@ describe('Bidding', () => {
           .toContainAllKeys(['action', 'player', 'content', 'state']);
         expect(request.action).toBe('add-monster');
         expect(request.content).toBeDefined();
-        expect(request.state).toContainAllKeys(['dungeon', 'hero']);
+        expect(request.state).toContainAllKeys([
+          'dungeon', 'hero', 'remainingPlayers'
+        ]);
       });
   
       test('getActionRequest is targeted at current player', () => {
@@ -649,6 +657,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
 
       test('correct notification is returned', () => {
@@ -866,7 +875,9 @@ describe('Bidding', () => {
           .toContainAllKeys(['action', 'player', 'content', 'state']);
         expect(request.action).toBe('play-bidding');
         expect(request.content).toBeUndefined();
-        expect(request.state).toContainAllKeys(['dungeon', 'hero']);
+        expect(request.state).toContainAllKeys([
+          'dungeon', 'hero', 'remainingPlayers'
+        ]);
       });
   
       test('getActionRequest is targeted at next player', () => {
@@ -885,6 +896,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
       test('correct notification is returned', () => {
@@ -1194,7 +1206,9 @@ describe('Bidding', () => {
           .toContainAllKeys(['action', 'player', 'content', 'state']);
         expect(request.action).toBe('play-bidding');
         expect(request.content).toBeUndefined();
-        expect(request.state).toContainAllKeys(['dungeon', 'hero']);
+        expect(request.state).toContainAllKeys([
+          'dungeon', 'hero', 'remainingPlayers'
+        ]);
       });
   
       test('getActionRequest is targeted at next player', () => {
@@ -1213,6 +1227,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
       test('correct notification is returned', () => {
@@ -1318,7 +1333,9 @@ describe('Bidding', () => {
         .toContainAllKeys(['action', 'player', 'content', 'state']);
       expect(request.action).toBe('remove-equipment');
       expect(request.content).toBeDefined();
-      expect(request.state).toContainAllKeys(['dungeon', 'hero']);
+      expect(request.state).toContainAllKeys([
+        'dungeon', 'hero', 'remainingPlayers'
+      ]);
     });
 
     test('getActionRequest is targeted at current player', () => {
@@ -1344,6 +1361,7 @@ describe('Bidding', () => {
         type: heroMock.type,
         equipment: heroMock.getMountedEquipment()
       });
+      expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
     });
 
     test('correct notification is returned', () => {
@@ -1696,7 +1714,9 @@ describe('Bidding', () => {
           .toContainAllKeys(['action', 'player', 'content', 'state']);
         expect(request.action).toBe('play-bidding');
         expect(request.content).toBeUndefined();
-        expect(request.state).toContainAllKeys(['dungeon', 'hero']);
+        expect(request.state).toContainAllKeys([
+          'dungeon', 'hero', 'remainingPlayers'
+        ]);
       });
   
       test('getActionRequest is targeted at next player', () => {
@@ -1715,6 +1735,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
       test('correct notification is returned', () => {

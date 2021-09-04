@@ -11,6 +11,7 @@ interface HeroExposableData {
 export interface BiddingExposableState {
   dungeon: DungeonExposableData;
   hero: HeroExposableData;
+  remainingPlayers: number;
 }
 
 interface BiddingActionRequestBase {
