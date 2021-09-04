@@ -3,6 +3,7 @@ import { MonsterType, EquipmentName, Player, HeroType } from '../../models';
 export type BiddingAction = 'play-bidding' | 'add-monster' | 'remove-equipment';
 
 type DungeonExposableData = (MonsterType | 'unknown')[];
+
 interface HeroExposableData {
   type: HeroType,
   equipment: EquipmentName[]
@@ -15,49 +16,52 @@ export interface BiddingExposableState {
   remainingPlayers: number;
 }
 
-interface BiddingActionRequestBase {
+interface BiddingActionRequestDataBase {
   action: BiddingAction;
   player: Player;
   content?: MonsterType | EquipmentName[];
   state: BiddingExposableState;
 }
 
-export interface BidParticipationRequest extends BiddingActionRequestBase {
-  action: 'play-bidding';
-  content: undefined;
-}
+export interface BidParticipationRequestData 
+  extends BiddingActionRequestDataBase {
+    action: 'play-bidding';
+    content: undefined;
+  }
 
-export interface MonsterAdditionRequest extends BiddingActionRequestBase {
-  action: 'add-monster';
-  content: MonsterType;
-}
+export interface MonsterAdditionRequestData 
+  extends BiddingActionRequestDataBase {
+    action: 'add-monster';
+    content: MonsterType;
+  }
 
-export interface EquipmentRemovalRequest extends BiddingActionRequestBase {
-  action: 'remove-equipment';
-  content: EquipmentName[];
-}
+export interface EquipmentRemovalRequestData 
+  extends BiddingActionRequestDataBase {
+    action: 'remove-equipment';
+    content: EquipmentName[];
+  }
 
-export interface BidParticipationResponse {
+export interface BidParticipationResponseContent {
   action: 'play-bidding';
   content: boolean
 }
 
-export interface MonsterAdditionResponse {
+export interface MonsterAdditionResponseContent {
   action: 'add-monster';
   content: boolean
 }
 
-export interface EquipmentRemovalResponse {
+export interface EquipmentRemovalResponseContent {
   action: 'remove-equipment';
   content: EquipmentName
 }
 
-export type BiddingActionRequest = 
-  | BidParticipationRequest 
-  | MonsterAdditionRequest 
-  | EquipmentRemovalRequest;
+export type BiddingActionRequestData = 
+  | BidParticipationRequestData 
+  | MonsterAdditionRequestData 
+  | EquipmentRemovalRequestData;
 
-export type BiddingActionResponse =
-  | BidParticipationResponse 
-  | MonsterAdditionResponse 
-  | EquipmentRemovalResponse;
+export type BiddingActionResponseContent =
+  | BidParticipationResponseContent 
+  | MonsterAdditionResponseContent 
+  | EquipmentRemovalResponseContent;

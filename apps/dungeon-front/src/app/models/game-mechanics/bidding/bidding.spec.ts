@@ -1,8 +1,8 @@
 import { Bidding } from './bidding';
 import { BiddingPlayersRound } from './bidding-players-round';
 import { 
-  BiddingActionResponse,
-  BidParticipationResponse, MonsterAdditionResponse, EquipmentRemovalResponse
+  BiddingActionResponseContent, BidParticipationResponseContent, 
+  MonsterAdditionResponseContent, EquipmentRemovalResponseContent
 } from './bidding-action';
 import { 
   Player, Hero, AnyMonster, MonsterType, EquipmentName 
@@ -24,27 +24,27 @@ function getPublicState(bidding: Bidding) {
 
 type BiddingPublicState = ReturnType<typeof getPublicState>;
 
-function playBiddingDummy(): BidParticipationResponse { 
+function playBiddingDummy(): BidParticipationResponseContent { 
   return { action: 'play-bidding', content: true };
 }
 
-function withdrawDummy(): BidParticipationResponse { 
+function withdrawDummy(): BidParticipationResponseContent { 
   return { action: 'play-bidding', content: false };
 }
 
-function addMonsterDummy(): MonsterAdditionResponse { 
+function addMonsterDummy(): MonsterAdditionResponseContent { 
   return { action: 'add-monster', content: true };
 }
 
-function dontAddMonsterDummy(): MonsterAdditionResponse { 
+function dontAddMonsterDummy(): MonsterAdditionResponseContent { 
   return { action: 'add-monster', content: false };
 }
 
-function removeEquipmentDummy(): EquipmentRemovalResponse { 
+function removeEquipmentDummy(): EquipmentRemovalResponseContent { 
   return { action: 'remove-equipment', content: pickRandomEquipmentNames(1)[0] };
 }
 
-function buildAllResponseDummies(): BiddingActionResponse[] {
+function buildAllResponseDummies(): BiddingActionResponseContent[] {
   return [
     playBiddingDummy(), withdrawDummy(),
     addMonsterDummy(), dontAddMonsterDummy(),

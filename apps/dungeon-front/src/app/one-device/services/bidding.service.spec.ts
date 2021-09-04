@@ -6,7 +6,7 @@ import { BiddingService } from './bidding.service';
 import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Player, BiddingPlayersRound, Bidding, BiddingActionRequest,
+  Player, BiddingPlayersRound, Bidding, BiddingActionRequestData,
   Hero, EquipmentName, Monster, AnyMonster, MonsterType
 } from '../../models/models';
 import { 
@@ -63,7 +63,7 @@ describe('BiddingService', () => {
     let playersDummy: BiddingPlayersRound;
     let heroDummy: Hero;
     let monstersPackDummy: AnyMonster[];
-    let actionRequestGenericDummy: BiddingActionRequest;
+    let actionRequestGenericDummy: BiddingActionRequestData;
 
     beforeEach(() => {
       playersDummy = BiddingPlayersRoundDouble.createDouble();

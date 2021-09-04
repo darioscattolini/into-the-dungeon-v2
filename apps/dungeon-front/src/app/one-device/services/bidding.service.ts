@@ -3,10 +3,10 @@ import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
 import { 
   Bidding, BiddingPlayersRound, 
-  BiddingActionRequest as ActionRequest, BiddingActionResponse as ActionResponse,
-  BidParticipationRequest, BidParticipationResponse,
-  MonsterAdditionRequest, MonsterAdditionResponse,
-  EquipmentRemovalRequest, EquipmentRemovalResponse,
+  BiddingActionRequestData, BiddingActionResponseContent,
+  BidParticipationRequestData, BidParticipationResponseContent,
+  MonsterAdditionRequestData, MonsterAdditionResponseContent,
+  EquipmentRemovalRequestData, EquipmentRemovalResponseContent,
   RaidParticipants
 } from '../../models/models';
 
@@ -27,7 +27,9 @@ export class BiddingService {
     return result;
   }
 
-  private async makeRequest(request: ActionRequest): Promise<ActionResponse> {  
+  private async makeRequest(
+    request: BiddingActionRequestData
+  ): Promise<BiddingActionResponseContent> {  
     switch (request.action) {
       case 'play-bidding': 
         return await this.requestBidParticipation(request);
@@ -60,8 +62,8 @@ export class BiddingService {
   }
 
   private async requestBidParticipation(
-    request: BidParticipationRequest
-  ): Promise<BidParticipationResponse> {
+    request: BidParticipationRequestData
+  ): Promise<BidParticipationResponseContent> {
     const player = request.player;
 
     const response = await this.uiMediator.requestBidParticipation(player);
@@ -73,8 +75,8 @@ export class BiddingService {
   }
 
   private async requestEquipmentRemoval(
-    request: EquipmentRemovalRequest
-  ): Promise<EquipmentRemovalResponse> {
+    request: EquipmentRemovalRequestData
+  ): Promise<EquipmentRemovalResponseContent> {
     const player = request.player
     const options = request.content;
         
@@ -92,8 +94,8 @@ export class BiddingService {
   }
 
   private async requestMonsterAddition(
-    request: MonsterAdditionRequest
-  ): Promise<MonsterAdditionResponse> {
+    request: MonsterAdditionRequestData
+  ): Promise<MonsterAdditionResponseContent> {
     const player = request.player;
     const monster = request.content;
     

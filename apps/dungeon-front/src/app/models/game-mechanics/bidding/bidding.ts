@@ -1,6 +1,6 @@
 import { BiddingPlayersRound } from './bidding-players-round';
 import { 
-  BiddingAction, BiddingActionRequest, BiddingActionResponse, 
+  BiddingAction, BiddingActionRequestData, BiddingActionResponseContent, 
   BiddingExposableState, 
 } from './bidding-action';
 import { BiddingNotification } from './bidding-notification';
@@ -52,7 +52,7 @@ export class Bidding {
     this.monstersPack = monsters;
   }
 
-  public getActionRequest(): BiddingActionRequest {
+  public getActionRequest(): BiddingActionRequestData {
     if (this.responsePending) {
       throw new Error('A user response to a previous request is pending.');
     }
@@ -100,7 +100,7 @@ export class Bidding {
     return !this.hasEnded;
   }
 
-  public onResponse(response: BiddingActionResponse): BiddingNotification {
+  public onResponse(response: BiddingActionResponseContent): BiddingNotification {
     if (this.hasEnded) {
       throw new Error(
         'Bidding phase has ended, method should not have been called.'
