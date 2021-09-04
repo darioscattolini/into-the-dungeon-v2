@@ -167,15 +167,14 @@ export class Bidding {
         ? entry.monster.type 
         : 'unknown'
     );
-    
     const hero = {
       type: this.hero.type,
       equipment: this.hero.getMountedEquipment()
     };
-
     const remainingPlayers = this.players.remainingPlayersAmount;
+    const remainingMonsters = this.monstersPackAmount;
 
-    return { dungeon, hero, remainingPlayers };
+    return { dungeon, hero, remainingMonsters, remainingPlayers };
   }
 
   private getRemovableEquipment(): EquipmentName[] {

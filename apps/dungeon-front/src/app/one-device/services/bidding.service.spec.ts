@@ -82,6 +82,7 @@ describe('BiddingService', () => {
             type: heroDummy.type,
             equipment: []
           },
+          remainingMonsters: 2,
           remainingPlayers: 2
         }
       };

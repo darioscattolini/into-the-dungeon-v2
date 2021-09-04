@@ -263,7 +263,7 @@ describe('Bidding', () => {
       expect(request.action).toBe('play-bidding');
       expect(request.content).toBeUndefined();
       expect(request.state).toContainAllKeys([
-        'dungeon', 'hero', 'remainingPlayers'
+        'dungeon', 'hero', 'remainingMonsters', 'remainingPlayers'
       ]);
     });
 
@@ -284,6 +284,7 @@ describe('Bidding', () => {
         type: heroMock.type,
         equipment: heroMock.getMountedEquipment()
       });
+      expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
       expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
     });
   });
@@ -491,7 +492,7 @@ describe('Bidding', () => {
         expect(request.action).toBe('play-bidding');
         expect(request.content).toBeUndefined();
         expect(request.state).toContainAllKeys([
-          'dungeon', 'hero', 'remainingPlayers'
+          'dungeon', 'hero', 'remainingMonsters', 'remainingPlayers'
         ]);
       });
   
@@ -511,6 +512,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
@@ -630,7 +632,7 @@ describe('Bidding', () => {
         expect(request.action).toBe('add-monster');
         expect(request.content).toBeDefined();
         expect(request.state).toContainAllKeys([
-          'dungeon', 'hero', 'remainingPlayers'
+          'dungeon', 'hero', 'remainingMonsters', 'remainingPlayers'
         ]);
       });
   
@@ -657,6 +659,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
 
@@ -876,7 +879,7 @@ describe('Bidding', () => {
         expect(request.action).toBe('play-bidding');
         expect(request.content).toBeUndefined();
         expect(request.state).toContainAllKeys([
-          'dungeon', 'hero', 'remainingPlayers'
+          'dungeon', 'hero', 'remainingMonsters', 'remainingPlayers'
         ]);
       });
   
@@ -896,6 +899,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
@@ -1207,7 +1211,7 @@ describe('Bidding', () => {
         expect(request.action).toBe('play-bidding');
         expect(request.content).toBeUndefined();
         expect(request.state).toContainAllKeys([
-          'dungeon', 'hero', 'remainingPlayers'
+          'dungeon', 'hero', 'remainingMonsters', 'remainingPlayers'
         ]);
       });
   
@@ -1227,6 +1231,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
@@ -1334,7 +1339,7 @@ describe('Bidding', () => {
       expect(request.action).toBe('remove-equipment');
       expect(request.content).toBeDefined();
       expect(request.state).toContainAllKeys([
-        'dungeon', 'hero', 'remainingPlayers'
+        'dungeon', 'hero', 'remainingMonsters', 'remainingPlayers'
       ]);
     });
 
@@ -1361,6 +1366,7 @@ describe('Bidding', () => {
         type: heroMock.type,
         equipment: heroMock.getMountedEquipment()
       });
+      expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
       expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
     });
 
@@ -1715,7 +1721,7 @@ describe('Bidding', () => {
         expect(request.action).toBe('play-bidding');
         expect(request.content).toBeUndefined();
         expect(request.state).toContainAllKeys([
-          'dungeon', 'hero', 'remainingPlayers'
+          'dungeon', 'hero', 'remainingMonsters', 'remainingPlayers'
         ]);
       });
   
@@ -1735,6 +1741,7 @@ describe('Bidding', () => {
           type: heroMock.type,
           equipment: heroMock.getMountedEquipment()
         });
+        expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
