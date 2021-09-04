@@ -4,9 +4,10 @@ import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
 import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
 import { 
-  Player, PlayerRequirements, PlayersRequest, 
+  Player, PlayerRequirements,
+  BiddingActionRequestData, BidParticipationRequestData,
   HeroType, AnyHeroViewData, heroTypes, heroViewDataMap,
-  EquipmentName, WeaponName, AnyEquipmentViewData, equipmentViewDataMap, 
+  EquipmentName, WeaponName, AnyEquipmentViewData, equipmentViewDataMap,
 } from '../../models/models';
 import { 
   PlayerDouble, HeroDouble, pickRandomMonsterTypes, pickRandomEquipmentNames 
@@ -33,6 +34,26 @@ function buildHeroOptionsDummy(): AnyHeroViewData[] {
     }, 
     [] as AnyHeroViewData[]
   );
+}
+
+function buildRequestStateDummy(): BiddingActionRequestData['state'] {
+  return {
+    dungeon: pickRandomMonsterTypes(4),
+    hero: {
+      type: HeroDouble.createDouble().type,
+      equipment: pickRandomEquipmentNames(5)
+    },
+    remainingMonsters: randomInteger(7),
+    remainingPlayers: randomInteger(4)
+  };
+}
+
+function fakeBidParticipationDecision(
+  decision: boolean, uiMediator: UiMediatorService
+) {
+  uiMediator.bidParticipationRequest.subscribe(request => {
+    request.onResponse(decision);
+  });
 }
 
 function fakeHeroChoice(chosenOption: HeroType, uiMediator: UiMediatorService) {
@@ -70,6 +91,13 @@ describe('UiMediatorService', () => {
       expect(uiMediator).toBeTruthy();
     });
 
+    test('bidParticipationRequest is EventEmitter but has not emitted yet', () => {
+      jest.spyOn(uiMediator.bidParticipationRequest, 'emit');
+      
+      expect(uiMediator.bidParticipationRequest).toBeInstanceOf(EventEmitter);
+      expect(uiMediator.bidParticipationRequest.emit).not.toHaveBeenCalled();
+    });
+
     test('heroChoiceRequest is EventEmitter but has not emitted yet', () => {
       jest.spyOn(uiMediator.heroChoiceRequest, 'emit');
       
@@ -89,13 +117,45 @@ describe('UiMediatorService', () => {
     //
   });
 
-  describe('requestBidParticipation', () => {
-    test('it returns a boolean', async () => {
+  describe.each([
+    true, false
+  ])('requestBidParticipation (accepted: %s)', acceptedDummy => {
+    let requestDataDummy: BidParticipationRequestData;
+
+    beforeEach(() => {
+      requestDataDummy = {
+        action: 'play-bidding',
+        player: playerDummy,
+        content: undefined,
+        state: buildRequestStateDummy()
+      };
+
+      fakeBidParticipationDecision(acceptedDummy, uiMediator);
+    });
+
+    test('it emits BidParticipationRequest with expected properties', async () => {      
+      jest.spyOn(uiMediator.bidParticipationRequest, 'emit');
+
+      expect.assertions(2);
+
+      await uiMediator.requestBidParticipation(requestDataDummy);
+
+      expect(uiMediator.bidParticipationRequest.emit).toHaveBeenCalledTimes(1);
+      expect(uiMediator.bidParticipationRequest.emit)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          player: playerDummy.name,
+          state: requestDataDummy.state,
+          promise: expect.toSatisfy(x => x instanceof Promise),
+          onResponse: expect.toBeFunction()
+        }));
+    });
+
+    test('it returns response to request', async () => {
       expect.assertions(1);
 
-      const response = await uiMediator.requestBidParticipation(playerDummy);
+      const response = await uiMediator.requestBidParticipation(requestDataDummy);
 
-      expect(response).toBeBoolean();
+      expect(response).toBe(acceptedDummy);
     });
   });
 

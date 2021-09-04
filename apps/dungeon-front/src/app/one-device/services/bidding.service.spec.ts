@@ -155,23 +155,23 @@ describe('BiddingService', () => {
     });
 
     describe('loop run for bid participation (play-bidding)', () => {
-      let requestTargetDummy: Player;
+      let requestDataDummy: BiddingActionRequestData;
 
       beforeEach(() => {
-        requestTargetDummy = PlayerDouble.createDouble();
+        requestDataDummy = {
+          action: 'play-bidding',
+          player: PlayerDouble.createDouble(),
+          content: undefined,
+          state: actionRequestGenericDummy.state
+        };
 
         makeLoopRunTimes(1);
 
         jest.spyOn(Bidding.prototype, 'getActionRequestData')
-          .mockReturnValue({
-            action: 'play-bidding',
-            player: requestTargetDummy,
-            content: undefined,
-            state: actionRequestGenericDummy.state
-          });
+          .mockReturnValue(requestDataDummy);
       });
 
-      test('it requests bid participation after getActionRequest', async () => {
+      test('it requests bid participation after getActionRequestData', async () => {
         expect.assertions(1);
 
         await biddingService.playBidding(playersDummy);
@@ -183,14 +183,14 @@ describe('BiddingService', () => {
       });
 
       test(
-        'bid participation is requested to player from getActionRequest', 
-        async () => {       
+        'bid participation is requested with data from getActionRequestData', 
+        async () => {
           expect.assertions(1);
 
           await biddingService.playBidding(playersDummy);
       
           expect(uiMediator.requestBidParticipation)
-            .toHaveBeenCalledWith(requestTargetDummy);
+            .toHaveBeenCalledWith(requestDataDummy);
         }
       );
 

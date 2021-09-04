@@ -64,9 +64,7 @@ export class BiddingService {
   private async requestBidParticipation(
     request: BidParticipationRequestData
   ): Promise<BidParticipationResponseContent> {
-    const player = request.player;
-
-    const response = await this.uiMediator.requestBidParticipation(player);
+    const response = await this.uiMediator.requestBidParticipation(request);
     
     return { 
       action: request.action, 

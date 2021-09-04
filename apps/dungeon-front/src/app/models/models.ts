@@ -90,7 +90,8 @@ export {
 
 // REQUEST
 import { Request } from './request/request';
+import { BidParticipationRequest } from './request/bid-participation-request';
 import { PlayersRequest } from './request/players-request';
 import { HeroChoiceRequest } from './request/hero-choice-request';
 
-export { Request, PlayersRequest, HeroChoiceRequest }
+export { Request, BidParticipationRequest, PlayersRequest, HeroChoiceRequest }

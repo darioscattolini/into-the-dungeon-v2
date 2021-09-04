@@ -1,14 +1,16 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HeroesService } from './heroes.service';
 import { 
-  Player, PlayerRequirements, PlayersRequest, MonsterType, 
+  Player, PlayerRequirements, PlayersRequest, MonsterType,
+  BidParticipationRequestData, BidParticipationRequest,
   Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon,
 } from '../../models/models';
 
 @Injectable()
 export class UiMediatorService {
+  public readonly bidParticipationRequest 
+    = new EventEmitter<BidParticipationRequest>();
   public readonly heroChoiceRequest = new EventEmitter<HeroChoiceRequest>();
-  
   public readonly playersRequest = new EventEmitter<PlayersRequest>();
 
   constructor(private heroesService: HeroesService) { }
@@ -17,9 +19,15 @@ export class UiMediatorService {
     //
   }
 
-  public async requestBidParticipation(player: Player): Promise<boolean> {
-    // minimum required implementation
-    return false;
+  public async requestBidParticipation(
+    requestData: BidParticipationRequestData
+  ): Promise<boolean> {
+    const { player, state } = requestData;
+    const request = new BidParticipationRequest(player.name, state);
+    this.bidParticipationRequest.emit(request) ;
+    const response = await request.promise;
+    
+    return response;
   }
 
   public async requestEquipmentRemoval(
