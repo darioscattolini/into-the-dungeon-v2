@@ -4,9 +4,7 @@ import {
 import { 
   BidParticipationComponent 
 } from './components/bid-participation/bid-participation.component';
-import { 
-  EquipmentViewComponent 
-} from './components/equipment-view/equipment-view.component';
+import { EquipmentComponent } from './components/equipment/equipment.component';
 import { 
   HeroSelectComponent 
 } from './components/hero-select/hero-select.component';
@@ -21,7 +19,7 @@ import {
 export const oneDeviceModuleDeclarations = [
   BiddingStateComponent,
   BidParticipationComponent,
-  EquipmentViewComponent,
+  EquipmentComponent,
   HeroSelectComponent,
   MonsterComponent,
   OneDeviceComponent, 

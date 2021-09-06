@@ -26,8 +26,8 @@
 
   <swiper [slidesPerView]="1" [spaceBetween]="50" #equipmentSwiper>
     <ng-template swiperSlide *ngFor="let piece of hero.equipment">
-      <dungeon-equipment-view [miniComponent]="true" [piece]="piece">
-      </dungeon-equipment-view>
+      <dungeon-equipment [miniComponent]="true" [piece]="piece">
+      </dungeon-equipment>
     </ng-template>
   </swiper>
 

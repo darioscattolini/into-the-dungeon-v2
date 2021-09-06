@@ -1,15 +1,15 @@
 import { MockBuilder, MockedDebugElement, MockRender, ngMocks } from 'ng-mocks';
 
-import { EquipmentViewComponent } from './equipment-view.component';
+import { EquipmentComponent } from './equipment.component';
 import { OneDeviceModule } from '../../one-device.module';
 import { AnyEquipmentViewData } from '../../../models/models';
 
 describe('EquipmentViewComponent', () => {
-  let component: MockedDebugElement<EquipmentViewComponent>;
+  let component: MockedDebugElement<EquipmentComponent>;
   let smallComponentDummy: boolean;
   let equipmentViewDataDummy: AnyEquipmentViewData;
 
-  beforeEach(() => MockBuilder(EquipmentViewComponent, OneDeviceModule));
+  beforeEach(() => MockBuilder(EquipmentComponent, OneDeviceModule));
 
   beforeEach(() => {
     smallComponentDummy = false;
@@ -21,12 +21,12 @@ describe('EquipmentViewComponent', () => {
       hitPoints: 4
     };
 
-    MockRender(EquipmentViewComponent, {
+    MockRender(EquipmentComponent, {
       'smallComponent': smallComponentDummy,
       'piece': equipmentViewDataDummy
     });
 
-    component = ngMocks.find(EquipmentViewComponent);
+    component = ngMocks.find(EquipmentComponent);
   });
 
   it('should create', () => {

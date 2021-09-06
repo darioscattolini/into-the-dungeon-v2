@@ -73,10 +73,8 @@
                   [pagination]="{ type: 'fraction' }"
                 >            
                   <ng-template swiperSlide *ngFor="let piece of hero.equipment">
-                    <dungeon-equipment-view 
-                      [piece]="piece" [smallComponent]="true"
-                    >
-                    </dungeon-equipment-view>
+                    <dungeon-equipment [piece]="piece" [smallComponent]="true">
+                    </dungeon-equipment>
                   </ng-template>
                 </swiper>
               </mat-expansion-panel>

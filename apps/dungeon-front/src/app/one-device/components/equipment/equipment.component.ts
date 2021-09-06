@@ -2,11 +2,11 @@ import { Component, Input } from '@angular/core';
 import { AnyEquipmentViewData } from '../../../models/models';
 
 @Component({
-  selector: 'dungeon-equipment-view',
-  templateUrl: './equipment-view.component.html',
-  styleUrls: ['./equipment-view.component.scss']
+  selector: 'dungeon-equipment',
+  templateUrl: './equipment.component.html',
+  styleUrls: ['./equipment.component.scss']
 })
-export class EquipmentViewComponent {
+export class EquipmentComponent {
   public description?: string;
   public effectiveAgainst?: string;
   public hitPoints?: number;
