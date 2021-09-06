@@ -1,10 +1,15 @@
 import { Component, OnInit, Type } from '@angular/core';
 import { GameService } from '../../services/game.service';
 import { UiMediatorService } from '../../services/ui-mediator.service';
-import { Request } from '../../../models/models';
-import { HeroSelectComponent } from '../hero-select/hero-select.component';
 import { MatDialog } from '@angular/material/dialog';
-import { PlayerRecorderComponent } from '../player-recorder/player-recorder.component';
+import { Request } from '../../../models/models';
+import { 
+  BidParticipationComponent 
+} from '../bid-participation/bid-participation.component';
+import { HeroSelectComponent } from '../hero-select/hero-select.component';
+import { 
+  PlayerRecorderComponent 
+} from '../player-recorder/player-recorder.component';
 
 @Component({
   selector: 'dungeon-one-device',
@@ -12,10 +17,6 @@ import { PlayerRecorderComponent } from '../player-recorder/player-recorder.comp
   styleUrls: ['./one-device.component.scss']
 })
 export class OneDeviceComponent implements OnInit {
-  public get playersRequest() {
-    return this.uiMediator.playersRequest;
-  }
-
   constructor(
     private gameService: GameService,
     private uiMediator: UiMediatorService,
@@ -23,6 +24,10 @@ export class OneDeviceComponent implements OnInit {
   ) { }
 
   public ngOnInit() {
+    this.uiMediator.bidParticipationRequest.subscribe(request => {
+      this.triggerDialogComponent(BidParticipationComponent, request);
+    });
+
     this.uiMediator.playersRequest.subscribe(request => {
       this.triggerDialogComponent(PlayerRecorderComponent, request);
     });

@@ -1,9 +1,10 @@
 import { 
   Player, PlayerRequirements, BiddingPlayersRound, 
-  Hero, HeroType, EquipmentName, equipmentNames, 
+  Hero, HeroType, 
+  EquipmentName, equipmentNames, AnyEquipmentViewData, equipmentViewDataMap,
   Weapon, WeaponName, weaponNames, WeaponEffects,
   Protection, ProtectionName, protectionNames,
-  Monster, AnyMonster, MonsterType, monsterTypes
+  Monster, AnyMonster, MonsterType, monsterTypes, 
 } from './models';
 import { 
   TestDouble, TestDoubleClass, Identified, randomInteger, randomString
@@ -94,6 +95,14 @@ class MonsterDouble {
 
     return new (Identified(Monster))(type, damage);
   }
+}
+
+function buildEquipmentViewDataDummy(): AnyEquipmentViewData[] {
+  return pickRandomEquipmentNames(6).reduce((pieces, pieceName) => {
+    pieces.push(equipmentViewDataMap[pieceName]);
+
+    return pieces;
+  }, [] as AnyEquipmentViewData[]);
 }
 
 function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
@@ -192,6 +201,6 @@ export {
   HeroDouble, pickRandomEquipmentNames,
   ProtectionDouble, pickRandomProtectionNames,
   WeaponDouble, pickRandomWeaponNames, buildUniqueWeaponDoublesArray, 
-  buildWeaponEffects,
+  buildWeaponEffects, buildEquipmentViewDataDummy,
   MonsterDouble, pickRandomMonsterTypes, monsterDummyBuilder
 }

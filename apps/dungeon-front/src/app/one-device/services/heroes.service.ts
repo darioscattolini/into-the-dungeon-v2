@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { EquipmentService } from './equipment.service';
 import { 
-  Hero, HeroType, heroTypes, HeroDataMap, HeroDataMapIT, 
-  AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, AnyEquipmentViewData
+  Hero, HeroType, heroTypes, HeroDataMap, HeroDataMapIT, EquipmentName,
+  AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, AnyEquipmentViewData, 
+  PlayingHeroViewData
 } from '../../models/models';
 
 @Injectable()
@@ -19,32 +20,6 @@ export class HeroesService {
     this.viewData = heroViewDataMap;
   }
 
-  public getHeroOptions(): AnyHeroViewData[] {
-    const options: AnyHeroViewData[] = [];
-    
-    for (const type of heroTypes) {
-      const partialViewData = this.viewData[type];
-      const equipment: AnyEquipmentViewData[] = [];
-
-      for (const pieceName of this.data[type].equipment) {
-        const pieceViewData = this.equipmentService.getViewDataFor(pieceName);
-        equipment.push(pieceViewData);
-      }
-
-      const viewData: AnyHeroViewData = {
-        type: partialViewData.type,
-        description: partialViewData.description,
-        image: partialViewData.image,
-        baseHitPoints: partialViewData.baseHitPoints,
-        equipment
-      }
-
-      options.push(viewData);
-    }
-
-    return options;
-  }
-
   public createHero(type: HeroType): Hero {
     const data = this.data[type];
     const hitPoints = data.hitPoints;
@@ -56,5 +31,50 @@ export class HeroesService {
     }
 
     return hero;
+  }
+
+  public getHeroOptions(): AnyHeroViewData[] {
+    const options: AnyHeroViewData[] = [];
+    
+    for (const type of heroTypes) {
+      const partialViewData = this.viewData[type];
+      const equipmentNames = Array.from(this.data[type].equipment);
+      const equipmentViewData = this.getEquipmentViewData(equipmentNames);
+
+      const viewData: AnyHeroViewData = {
+        type: partialViewData.type,
+        description: partialViewData.description,
+        image: partialViewData.image,
+        baseHitPoints: partialViewData.baseHitPoints,
+        equipment: equipmentViewData
+      }
+
+      options.push(viewData);
+    }
+
+    return options;
+  }
+
+  public getPlayingHeroViewData(hero: Hero): PlayingHeroViewData {
+    const partialViewData = this.viewData[hero.type];
+
+    return {
+      type: hero.type,
+      description: partialViewData.description,
+      image: partialViewData.image,
+      hitPoints: hero.hitPoints,
+      equipment: this.getEquipmentViewData(hero.getMountedEquipment()),
+    }
+  }
+
+  private getEquipmentViewData(pieces: EquipmentName[]): AnyEquipmentViewData[] {
+    const piecesViewData: AnyEquipmentViewData[] = [];
+
+    for (const piece of pieces) {
+      const pieceViewData = this.equipmentService.getViewDataFor(piece);
+      piecesViewData.push(pieceViewData);
+    }
+
+    return piecesViewData;
   }
 }

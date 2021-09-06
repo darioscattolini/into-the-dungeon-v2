@@ -1,32 +1,51 @@
-<mat-card [ngClass]="{ 'container-spacing-small': smallComponent }">
-  <mat-card-title-group *ngIf="!smallComponent">
-    <mat-card-title>{{ name | titlecase }}</mat-card-title>
-    <img mat-card-sm-image src="{{ image }}">
-  </mat-card-title-group>
+<div *ngIf="miniComponent; then miniTemplate; else normalTemplate"></div>
 
-  <mat-card-header *ngIf="smallComponent" class="header-small">
-    <mat-card-title>{{ name | titlecase }}</mat-card-title>
-    <img mat-card-avatar src="{{ image }}">
-  </mat-card-header>
+<ng-template #miniTemplate>
+  <div class="mini-component" #pieceTooltip="matTooltip"
+    [matTooltip]="type === 'protection' 
+      ? protectionMiniDescription 
+      : weaponMiniDescription"
+    matTooltipPosition="above"
+  >
+    <img [src]="image" class="avatar">
+    <a class="mat-caption piece-name" (click)="pieceTooltip.toggle()">
+      {{ name | titlecase }}
+    </a>
+  </div>
+</ng-template>
 
-  <mat-card-content [ngClass]="{ 'text-small': smallComponent }">
-    <dl>
-      <div [ngClass]="{ 'stat-inline-small': smallComponent }">
-        <dt>TYPE</dt>
-        <dd>{{ type | titlecase }}</dd>
+<ng-template #normalTemplate>
+  <mat-card [ngClass]="{ 'container-spacing-small': smallComponent }">
+    <mat-card-title-group *ngIf="!smallComponent">
+      <mat-card-title>{{ name | titlecase }}</mat-card-title>
+      <img mat-card-sm-image src="{{ image }}">
+    </mat-card-title-group>
+  
+    <mat-card-header *ngIf="smallComponent" class="header-small">
+      <mat-card-title>{{ name | titlecase }}</mat-card-title>
+      <img mat-card-avatar src="{{ image }}">
+    </mat-card-header>
+  
+    <mat-card-content [ngClass]="{ 'text-small': smallComponent }">
+      <dl>
+        <div [ngClass]="{ 'stat-inline-small': smallComponent }">
+          <dt>TYPE</dt>
+          <dd>{{ type | titlecase }}</dd>
+  
+          <dt *ngIf="type === 'protection'">HIT POINTS</dt>
+          <dd *ngIf="type === 'protection'">{{ hitPoints }}</dd>
+  
+          <dt *ngIf="type === 'weapon'">MAX USES</dt>
+          <dd *ngIf="type === 'weapon'">{{ maxUses }}</dd>
+        </div>
+  
+        <dt *ngIf="type === 'weapon'">EFFECTIVE AGAINST</dt>
+        <dd *ngIf="type === 'weapon'">{{ effectiveAgainst | titlecase }}</dd>
+  
+        <dt>DESCRIPTION</dt>
+        <dd>{{ description }}</dd>
+      </dl>
+    </mat-card-content>
+  </mat-card>  
+</ng-template>
 
-        <dt *ngIf="type === 'protection'">HIT POINTS</dt>
-        <dd *ngIf="type === 'protection'">{{ hitPoints }}</dd>
-
-        <dt *ngIf="type === 'weapon'">MAX USES</dt>
-        <dd *ngIf="type === 'weapon'">{{ maxUses }}</dd>
-      </div>
-
-      <dt *ngIf="type === 'weapon'">EFFECTIVE AGAINST</dt>
-      <dd *ngIf="type === 'weapon'">{{ effectiveAgainst | titlecase }}</dd>
-
-      <dt>DESCRIPTION</dt>
-      <dd>{{ description }}</dd>
-    </dl>
-  </mat-card-content>
-</mat-card>

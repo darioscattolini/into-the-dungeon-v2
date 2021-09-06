@@ -12,13 +12,28 @@ export class EquipmentViewComponent {
   public hitPoints?: number;
   public image?: string;
   public maxUses?: number | 'Unlimited';
-  public name?: string;
-  public type?: string;
+  public name?: AnyEquipmentViewData['name'];
+  public type?: AnyEquipmentViewData['type'];
+
+  public get protectionMiniDescription(): string {
+    const hitPoints = this.hitPoints as number;
+    
+    return `+${hitPoints} hitpoints`;
+  }
+
+  public get weaponMiniDescription(): string {
+    const maxUses = this.maxUses as number | 'Unlimited';
+    const effectiveAgainst = this.effectiveAgainst as string;
+    const description = this.description as string;
+
+    return `${description} Effective against ${effectiveAgainst}. Uses: ${maxUses}`;
+  }
   
   @Input() set piece(piece: AnyEquipmentViewData) {
     this.displayData(piece);
   }
 
+  @Input() miniComponent = false;
   @Input() smallComponent = false;
 
   private displayData(data: AnyEquipmentViewData) {

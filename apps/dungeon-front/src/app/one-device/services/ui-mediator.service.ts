@@ -1,8 +1,9 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HeroesService } from './heroes.service';
+import { MonstersService } from './monsters.service';
 import { 
   Player, PlayerRequirements, PlayersRequest, MonsterType,
-  BidParticipationRequestData, BidParticipationRequest,
+  BidParticipationRequestData, BidParticipationRequest, BiddingStateViewData,
   Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon,
 } from '../../models/models';
 
@@ -13,7 +14,10 @@ export class UiMediatorService {
   public readonly heroChoiceRequest = new EventEmitter<HeroChoiceRequest>();
   public readonly playersRequest = new EventEmitter<PlayersRequest>();
 
-  constructor(private heroesService: HeroesService) { }
+  constructor(
+    private heroesService: HeroesService,
+    private monstersService: MonstersService
+  ) { }
 
   public notifyError(error: string): void {
     //
@@ -23,7 +27,18 @@ export class UiMediatorService {
     requestData: BidParticipationRequestData
   ): Promise<boolean> {
     const { player, state } = requestData;
-    const request = new BidParticipationRequest(player.name, state);
+    
+    const heroViewData = this.heroesService.getPlayingHeroViewData(state.hero);
+    const dungeonViewData = state.dungeon
+      .map(monster => this.monstersService.getViewDataFor(monster));
+    const stateViewData: BiddingStateViewData = {
+      dungeon: dungeonViewData,
+      hero: heroViewData, 
+      remainingMonsters: state.remainingMonsters,
+      remainingPlayers: state.remainingPlayers
+    }
+
+    const request = new BidParticipationRequest(player.name, stateViewData);
     this.bidParticipationRequest.emit(request) ;
     const response = await request.promise;
     

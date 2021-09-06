@@ -5,6 +5,7 @@ import { Bidding } from './game-mechanics/bidding/bidding';
 import { 
   BiddingPlayersRound 
 } from "./game-mechanics/bidding/bidding-players-round";
+import { BiddingStateViewData } from './game-mechanics/bidding/bidding-state';
 import {
   BiddingActionRequestData, BiddingActionResponseContent,
   BidParticipationRequestData, BidParticipationResponseContent,
@@ -19,7 +20,7 @@ import { RaidResult } from './game-mechanics/raid/raid-result';
 
 export { 
   Game, PlayerRequirements,
-  Bidding, BiddingPlayersRound,
+  Bidding, BiddingPlayersRound, BiddingStateViewData,
   BiddingActionRequestData, BiddingActionResponseContent,
   BidParticipationRequestData, BidParticipationResponseContent,
   MonsterAdditionRequestData, MonsterAdditionResponseContent,
@@ -37,12 +38,14 @@ import { Hero } from "./hero/hero";
 import { HeroType, heroTypes } from "./hero/hero-type";
 import { HeroDataMap, HeroDataMapIT, heroDataMap } from "./hero/hero-data";
 import { 
-  AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, heroViewDataMap 
+  AnyHeroViewData, PlayingHeroViewData,
+  HeroViewDataMap, HeroViewDataMapIT, heroViewDataMap 
 } from "./hero/hero-view-data";
 
 export { 
   Hero, HeroType, heroTypes, HeroDataMap, HeroDataMapIT, heroDataMap, 
-  AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, heroViewDataMap 
+  AnyHeroViewData, PlayingHeroViewData,
+  HeroViewDataMap, HeroViewDataMapIT, heroViewDataMap 
 }
 
 // EQUIPMENT
@@ -74,17 +77,21 @@ export {
 
 // MONSTER
 import { Monster, AnyMonster } from './monster/monster';
-import { MonsterType, monsterTypes } from './monster/monster-type';
+import { 
+  MonsterType, MonsterTypeSecret, monsterTypes 
+} from './monster/monster-type';
 import { 
   MonsterDataMap, MonsterDataMapIT, monsterDataMap 
 } from './monster/monster-data';
 import { 
+  AnyMonsterViewData, 
   MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap 
 } from './monster/monster-view-data';
 
 export { 
-  Monster, AnyMonster, MonsterType, monsterTypes, 
+  Monster, AnyMonster, MonsterType, MonsterTypeSecret, monsterTypes, 
   MonsterDataMap, MonsterDataMapIT, monsterDataMap,
+  AnyMonsterViewData, 
   MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap 
 }
 

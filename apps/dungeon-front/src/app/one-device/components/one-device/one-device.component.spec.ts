@@ -28,6 +28,10 @@ describe('OneDeviceComponent', () => {
     
     uiMediator = TestBed.inject(UiMediatorService);
     
+    Object.defineProperty(uiMediator, 'bidParticipationRequest', {
+      value: new EventEmitter<HeroChoiceRequest>()
+    });
+
     Object.defineProperty(uiMediator, 'heroChoiceRequest', {
       value: new EventEmitter<HeroChoiceRequest>()
     });

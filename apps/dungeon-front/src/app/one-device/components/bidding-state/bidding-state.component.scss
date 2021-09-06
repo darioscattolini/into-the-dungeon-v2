@@ -1,0 +1,25 @@
+mat-divider {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.tabular-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabular-flex p {
+  margin-bottom: 0;
+}
+
+.swiper-container {
+  display: flex;
+  align-items: center;
+  margin-left: -5px;
+  margin-right: -5px;
+}
+
+.swiper-container swiper {
+  flex-grow: 1;
+}

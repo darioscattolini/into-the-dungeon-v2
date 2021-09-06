@@ -1,10 +1,10 @@
-import { BidParticipationRequestData } from '../models';
 import { Request } from './request';
+import { BiddingStateViewData } from '../models';
 
 export class BidParticipationRequest extends Request<boolean> {
-  public readonly state: BidParticipationRequestData['state'];
+  public readonly state: BiddingStateViewData;
 
-  constructor(player: string, state: BidParticipationRequestData['state']) {
+  constructor(player: string, state: BiddingStateViewData) {
     super(player);
     this.state = state;
   }

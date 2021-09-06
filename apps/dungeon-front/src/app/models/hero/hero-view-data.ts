@@ -19,6 +19,9 @@ export type PartialHeroViewData<T extends HeroType>
 
 export type AnyHeroViewData = HeroViewData<HeroType>;
 
+export type PlayingHeroViewData = Omit<AnyHeroViewData, 'baseHitPoints'> 
+  & { hitPoints: number };
+
 export type HeroViewDataMap = {
   readonly [key in HeroType]: PartialHeroViewData<key>;
 };

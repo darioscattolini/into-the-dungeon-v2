@@ -1,26 +1,13 @@
-import { MonsterType, EquipmentName, Player, HeroType } from '../../models';
+import { BiddingState } from './bidding-state';
+import { MonsterType, EquipmentName, Player } from '../../models';
 
 export type BiddingAction = 'play-bidding' | 'add-monster' | 'remove-equipment';
-
-type DungeonExposableData = (MonsterType | 'unknown')[];
-
-interface HeroExposableData {
-  type: HeroType,
-  equipment: EquipmentName[]
-}
-
-export interface BiddingExposableState {
-  dungeon: DungeonExposableData;
-  hero: HeroExposableData;
-  remainingMonsters: number;
-  remainingPlayers: number;
-}
 
 interface BiddingActionRequestDataBase {
   action: BiddingAction;
   player: Player;
   content?: MonsterType | EquipmentName[];
-  state: BiddingExposableState;
+  state: BiddingState;
 }
 
 export interface BidParticipationRequestData 

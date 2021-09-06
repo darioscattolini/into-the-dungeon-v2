@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { 
-  Monster, AnyMonster, MonsterType, monsterTypes, 
+  Monster, AnyMonster, MonsterTypeSecret, monsterTypes, 
   MonsterDataMap, MonsterDataMapIT, MonsterViewDataMap, MonsterViewDataMapIT
 } from '../../models/models';
 
@@ -24,7 +24,9 @@ export class MonstersService {
     return pack;
   }
 
-  public getViewDataFor<T extends MonsterType>(name: T): MonsterViewDataMap[T] {
+  public getViewDataFor<T extends MonsterTypeSecret>(
+    name: T
+  ): MonsterViewDataMap[T] {
     return this.viewData[name];
   }
 

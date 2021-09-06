@@ -3,46 +3,36 @@ import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
 
 import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
+import { MonstersService } from './monsters.service';
 import { 
   Player, PlayerRequirements,
-  BiddingActionRequestData, BidParticipationRequestData,
-  HeroType, AnyHeroViewData, heroTypes, heroViewDataMap,
-  EquipmentName, WeaponName, AnyEquipmentViewData, equipmentViewDataMap,
+  BiddingActionRequestData, BidParticipationRequestData, BiddingStateViewData,
+  HeroType, AnyHeroViewData, heroTypes, heroViewDataMap, PlayingHeroViewData,
+  EquipmentName, WeaponName, monsterViewDataMap,
 } from '../../models/models';
 import { 
-  PlayerDouble, HeroDouble, pickRandomMonsterTypes, pickRandomEquipmentNames 
+  PlayerDouble, HeroDouble, pickRandomMonsterTypes, buildEquipmentViewDataDummy
 } from '../../models/test-doubles';
 import { EventEmitter } from '@angular/core';
 
 jest.mock('./heroes.service');
+jest.mock('./monsters.service');
 
 function buildHeroOptionsDummy(): AnyHeroViewData[] {
-  return heroTypes.reduce(
-    (options, type) => {
-      const partialData = heroViewDataMap[type];
-      const equipment = pickRandomEquipmentNames(6).reduce(
-        (pieces, pieceName) => {
-          pieces.push(equipmentViewDataMap[pieceName])
-          return pieces;
-        }, 
-        [] as AnyEquipmentViewData[]
-      );
+  return heroTypes.reduce((options, type) => {
+    const partialData = heroViewDataMap[type];
+    const equipment = buildEquipmentViewDataDummy();
 
-      options.push({ ...partialData, equipment });
-      
-      return options;
-    }, 
-    [] as AnyHeroViewData[]
-  );
+    options.push({ ...partialData, equipment });
+    
+    return options;
+  }, [] as AnyHeroViewData[]);
 }
 
 function buildRequestStateDummy(): BiddingActionRequestData['state'] {
   return {
     dungeon: pickRandomMonsterTypes(4),
-    hero: {
-      type: HeroDouble.createDouble().type,
-      equipment: pickRandomEquipmentNames(5)
-    },
+    hero: HeroDouble.createDouble(),
     remainingMonsters: randomInteger(7),
     remainingPlayers: randomInteger(4)
   };
@@ -71,17 +61,20 @@ function fakePlayerAddition(names: string[], uiMediator: UiMediatorService) {
 describe('UiMediatorService', () => {
   let uiMediator: UiMediatorService;
   let heroesServiceMock: HeroesService;
+  let monstersServiceMock: MonstersService;
   let playerDummy: Player;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         UiMediatorService,
-        HeroesService
+        HeroesService,
+        MonstersService
       ]
     });
     uiMediator = TestBed.inject(UiMediatorService);
     heroesServiceMock = TestBed.inject(HeroesService);
+    monstersServiceMock = TestBed.inject(MonstersService);
 
     playerDummy = PlayerDouble.createDouble();
   });
@@ -133,22 +126,73 @@ describe('UiMediatorService', () => {
       fakeBidParticipationDecision(acceptedDummy, uiMediator);
     });
 
-    test('it emits BidParticipationRequest with expected properties', async () => {      
-      jest.spyOn(uiMediator.bidParticipationRequest, 'emit');
-
+    test('it asks HeroesService for Hero view data', async () => {
       expect.assertions(2);
 
       await uiMediator.requestBidParticipation(requestDataDummy);
 
-      expect(uiMediator.bidParticipationRequest.emit).toHaveBeenCalledTimes(1);
-      expect(uiMediator.bidParticipationRequest.emit)
-        .toHaveBeenCalledWith(expect.objectContaining({
-          player: playerDummy.name,
-          state: requestDataDummy.state,
-          promise: expect.toSatisfy(x => x instanceof Promise),
-          onResponse: expect.toBeFunction()
-        }));
+      expect(heroesServiceMock.getPlayingHeroViewData).toHaveBeenCalledTimes(1);
+      expect(heroesServiceMock.getPlayingHeroViewData)
+        .toHaveBeenCalledWith(requestDataDummy.state.hero);
     });
+
+    test('it asks MonsterService for Monster view data', async () => {
+      const dungeonDummy = requestDataDummy.state.dungeon;
+      
+      expect.assertions(1 + dungeonDummy.length);
+
+      await uiMediator.requestBidParticipation(requestDataDummy);
+
+      expect(monstersServiceMock.getViewDataFor)
+        .toHaveBeenCalledTimes(dungeonDummy.length);
+      dungeonDummy.forEach((monster, index) => {
+        expect(monstersServiceMock.getViewDataFor)
+          .toHaveBeenNthCalledWith(index + 1, monster);
+      });
+    });
+
+    test(
+      'it emits BidParticipationRequest with expected properties', 
+      async () => {
+        const heroViewDataDummy: PlayingHeroViewData = {
+          type: 'bard',
+          image: '...',
+          hitPoints: 3,
+          equipment: buildEquipmentViewDataDummy(),
+          description: randomString(10)
+        };
+
+        jest.spyOn(uiMediator.bidParticipationRequest, 'emit');
+        jest.spyOn(heroesServiceMock, 'getPlayingHeroViewData')
+          .mockReturnValue(heroViewDataDummy);
+        const getMonsterViewDataSpy = jest
+          .spyOn(monstersServiceMock, 'getViewDataFor')
+          .mockImplementation(name => monsterViewDataMap[name]);
+
+        expect.assertions(2);
+
+        await uiMediator.requestBidParticipation(requestDataDummy);
+
+        const dungeonViewData = getMonsterViewDataSpy.mock.results
+          .map(result => result.value);
+
+        const expectedState: BiddingStateViewData = {
+          dungeon: dungeonViewData,
+          hero: heroViewDataDummy,
+          remainingMonsters: requestDataDummy.state.remainingMonsters,
+          remainingPlayers: requestDataDummy.state.remainingPlayers
+        };
+
+        expect(uiMediator.bidParticipationRequest.emit).toHaveBeenCalledTimes(1);
+        expect(uiMediator.bidParticipationRequest.emit)
+          .toHaveBeenCalledWith(expect.objectContaining({
+            player: playerDummy.name,
+            state: expectedState,
+            promise: expect.toSatisfy(x => x instanceof Promise),
+            onResponse: expect.toBeFunction()
+          }));
+      }
+    );
 
     test('it returns response to request', async () => {
       expect.assertions(1);

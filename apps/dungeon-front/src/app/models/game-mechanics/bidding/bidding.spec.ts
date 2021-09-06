@@ -280,10 +280,7 @@ describe('Bidding', () => {
       const state = bidding.getActionRequestData().state;
 
       expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
-      expect(state.hero).toEqual({
-        type: heroMock.type,
-        equipment: heroMock.getMountedEquipment()
-      });
+      expect(state.hero).toBe(heroMock);
       expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
       expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
     });
@@ -508,10 +505,7 @@ describe('Bidding', () => {
         const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
-        expect(state.hero).toEqual({
-          type: heroMock.type,
-          equipment: heroMock.getMountedEquipment()
-        });
+        expect(state.hero).toBe(heroMock);
         expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
@@ -655,10 +649,7 @@ describe('Bidding', () => {
         const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
-        expect(state.hero).toEqual({
-          type: heroMock.type,
-          equipment: heroMock.getMountedEquipment()
-        });
+        expect(state.hero).toBe(heroMock);
         expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
@@ -895,10 +886,7 @@ describe('Bidding', () => {
         const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
-        expect(state.hero).toEqual({
-          type: heroMock.type,
-          equipment: heroMock.getMountedEquipment()
-        });
+        expect(state.hero).toBe(heroMock);
         expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
@@ -1227,10 +1215,7 @@ describe('Bidding', () => {
         const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
-        expect(state.hero).toEqual({
-          type: heroMock.type,
-          equipment: heroMock.getMountedEquipment()
-        });
+        expect(state.hero).toBe(heroMock);
         expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
@@ -1362,10 +1347,7 @@ describe('Bidding', () => {
       const state = bidding.getActionRequestData().state;
 
       expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
-      expect(state.hero).toEqual({
-        type: heroMock.type,
-        equipment: heroMock.getMountedEquipment()
-      });
+      expect(state.hero).toBe(heroMock);
       expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
       expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
     });
@@ -1737,10 +1719,7 @@ describe('Bidding', () => {
         const state = bidding.getActionRequestData().state;
   
         expect(state.dungeon.length).toBe(bidding.monstersInDungeonAmount);
-        expect(state.hero).toEqual({
-          type: heroMock.type,
-          equipment: heroMock.getMountedEquipment()
-        });
+        expect(state.hero).toBe(heroMock);
         expect(state.remainingMonsters).toBe(bidding.monstersPackAmount);
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });

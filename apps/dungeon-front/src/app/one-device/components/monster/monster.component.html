@@ -1,0 +1,36 @@
+<div *ngIf="miniComponent; then miniTemplate; else normalTemplate"></div>
+
+<ng-template #miniTemplate>
+  <div class="mini-component">
+    <img [src]="image" class="avatar">
+    <div>
+      <p class="mat-body-strong">{{ name | titlecase }}</p>
+      <p class="mat-caption">{{ damage }} damage</p>
+    </div>
+    
+  </div>
+</ng-template>
+
+<ng-template #normalTemplate>
+  <mat-card [ngClass]="{ 'container-spacing-small': smallComponent }">
+    <mat-card-title-group *ngIf="!smallComponent">
+      <mat-card-title>{{ name | titlecase }}</mat-card-title>
+      <img mat-card-sm-image src="{{ image }}">
+    </mat-card-title-group>
+  
+    <mat-card-header *ngIf="smallComponent" class="header-small">
+      <mat-card-title>{{ name | titlecase }}</mat-card-title>
+      <img mat-card-avatar src="{{ image }}">
+    </mat-card-header>
+  
+    <mat-card-content [ngClass]="{ 'text-small': smallComponent }">
+      <div class="tabular-flex">
+        <p class="mat-body-strong">DAMAGE</p>
+        <p>{{ damage }}</p>
+      </div>
+      <p class="mat-body-strong">DESCRIPTION</p>
+      <p>{{ description }}</p>
+    </mat-card-content>
+  </mat-card>  
+</ng-template>
+

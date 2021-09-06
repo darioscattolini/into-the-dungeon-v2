@@ -1,7 +1,7 @@
 import { BiddingPlayersRound } from './bidding-players-round';
+import { BiddingState } from './bidding-state';
 import { 
-  BiddingAction, BiddingActionRequestData, BiddingActionResponseContent, 
-  BiddingExposableState, 
+  BiddingAction, BiddingActionRequestData, BiddingActionResponseContent
 } from './bidding-action';
 import { BiddingNotification } from './bidding-notification';
 import {
@@ -161,18 +161,20 @@ export class Bidding {
     return this.monstersInDungeon.map(entry => entry.monster);
   }
 
-  private getExposableState(): BiddingExposableState {
-    const dungeon = this.monstersInDungeon.map(
+  private getExposableState(): BiddingState {
+    const dungeon: BiddingState['dungeon'] = this.monstersInDungeon.map(
       entry => entry.adder === this.currentPlayer 
         ? entry.monster.type 
-        : 'unknown'
+        : 'secret'
     );
-    const hero = {
-      type: this.hero.type,
-      equipment: this.hero.getMountedEquipment()
-    };
-    const remainingPlayers = this.players.remainingPlayersAmount;
-    const remainingMonsters = this.monstersPackAmount;
+
+    const hero: BiddingState['hero'] = this.hero;
+
+    const remainingPlayers: BiddingState['remainingPlayers'] 
+      = this.players.remainingPlayersAmount;
+    
+    const remainingMonsters: BiddingState['remainingMonsters'] 
+      = this.monstersPackAmount;
 
     return { dungeon, hero, remainingMonsters, remainingPlayers };
   }

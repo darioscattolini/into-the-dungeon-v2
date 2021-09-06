@@ -11,3 +11,5 @@ export const monsterTypes = [
 ] as const;
 
 export type MonsterType = typeof monsterTypes[number];
+
+export type MonsterTypeSecret = MonsterType | 'secret';

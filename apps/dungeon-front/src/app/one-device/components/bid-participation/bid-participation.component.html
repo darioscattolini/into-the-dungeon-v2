@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>{{ data.request.player }}'s turn</h2>
+
+<div
+  *ngIf="!playerNotified; then notifyPlayer; else decideParticipation"
+></div>
+
+<ng-template #notifyPlayer>
+  <mat-dialog-content>
+    {{ data.request.player }}'s bidding turn starts. 
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="playerNotified = true">
+      I'm {{ data.request.player }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #decideParticipation>
+  <mat-dialog-content>
+    <p>
+      <span class="strong">Stay</span> in bidding if you want to raid the 
+      dungeon (+1 victory point if you succeed).
+    </p>
+    <p>
+      Beware: every turn a monster enters the dungeon or the 
+      {{ data.request.state.hero.type }} loses a piece of equipment, making the
+      hero's death more likely (+1 defeat point).
+    </p>
+    <p>
+      If the situation turns grim, <span class="strong">withdraw</span> and let 
+      someone else take the risk. You can rejoin after the raid, at the next 
+      bidding phase.
+    </p>
+
+    <mat-expansion-panel class="state-container">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Check situation
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <dungeon-bidding-state
+        [dungeon]="data.request.state.dungeon"
+        [hero]="data.request.state.hero"
+        [remainingMonsters]="data.request.state.remainingMonsters"
+        [remainingPlayers]="data.request.state.remainingPlayers"
+      ></dungeon-bidding-state>
+    </mat-expansion-panel>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions class="bid-participation-actions">
+    <button mat-raised-button color="accent" [mat-dialog-close]="true">
+      Stay
+    </button>
+    <button mat-raised-button color="accent" [mat-dialog-close]="false">
+      Quit
+    </button>
+  </mat-dialog-actions>
+</ng-template>

@@ -78,10 +78,7 @@ describe('BiddingService', () => {
         content: undefined,
         state: { 
           dungeon: [],
-          hero: {
-            type: heroDummy.type,
-            equipment: []
-          },
+          hero: heroDummy,
           remainingMonsters: 2,
           remainingPlayers: 2
         }
