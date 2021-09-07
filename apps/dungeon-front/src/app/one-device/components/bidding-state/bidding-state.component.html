@@ -14,6 +14,10 @@
   </p>
 </div>
 
+<p *ngIf="hero.equipment.length === 0" class="warning mat-caption">
+  No equipment: you're forced to add monster in dungeon if you stay.
+</p>
+
 <div *ngIf="hero.equipment.length > 0" class="swiper-container">
   <div>
     <button mat-icon-button color="primary" 
@@ -85,6 +89,10 @@
   <p class="mat-body-strong">Monsters to add</p>
   <p>{{ remainingMonsters }}</p>
 </div>
+
+<p *ngIf="remainingMonsters === 1" class="warning mat-caption">
+  Last monster: you will be the raider if you stay.
+</p>
 
 <mat-divider></mat-divider>
 

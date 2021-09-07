@@ -2,9 +2,9 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Player, PlayerRequirements, PlayersRequest, MonsterType,
+  Player, PlayerRequirements, PlayersRequest, MonsterType, BiddingEndReason,
   BidParticipationRequestData, BidParticipationRequest, BiddingStateViewData,
-  Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon,
+  Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon
 } from '../../models/models';
 
 @Injectable()
@@ -19,7 +19,13 @@ export class UiMediatorService {
     private monstersService: MonstersService
   ) { }
 
-  public notifyError(error: string): void {
+  public notifyBiddingResult(raider: Player, reason: BiddingEndReason): void {
+    //
+  }
+
+  public notifyForcibleMonsterAddition(
+    player: Player, monster: MonsterType
+  ): void {
     //
   }
 

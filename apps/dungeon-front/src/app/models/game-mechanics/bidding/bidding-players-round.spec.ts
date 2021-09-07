@@ -3,28 +3,39 @@ import { Player } from '../../models';
 import { PlayerDouble } from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
-function indexCheckerFactory(
-  quittingPlayersIndexes: number[], initialPlayersAmount: number
-) {
-  return (indexes: number[]) => {
-    let satisfies = true;
+function findPlayerIndex(players: Player[], searched: Player): number {
+  return players.findIndex(player => player === searched);
+}
 
-    for (let i = 0; i < indexes.length - 1; i++) {
+function checkPlayerIndexes(
+  totalPlayers: number, indexes: number[], withdrawalTurns: number[]
+): boolean {
+  let validIndexes = true;
+  let previousIndex = indexes[0];
+  const withdrawingPlayersIndexes: number[] = [];
 
-      let expectedNextIndex = (indexes[i] + 1) % initialPlayersAmount;
+  for (let i = 0; i < indexes.length; i++) {
+    if (i !== 0) {
+      let expectedIndex = previousIndex;
+    
+      do {
+        expectedIndex = (expectedIndex + 1) % totalPlayers;
+      } while (withdrawingPlayersIndexes.includes(expectedIndex));
 
-      while (quittingPlayersIndexes.includes(expectedNextIndex)) {
-        expectedNextIndex = (expectedNextIndex + 1) % initialPlayersAmount;
-      }
-
-      if (indexes[i + 1] !== expectedNextIndex) {
-        satisfies = false;
+      if (expectedIndex !== indexes[i]) {
+        validIndexes = false;
         break;
       }
+
+      previousIndex = expectedIndex;
     }
 
-    return satisfies;
-  };
+    if (withdrawalTurns.includes(i)) {
+      withdrawingPlayersIndexes.push(indexes[i]);
+    }
+  }
+
+  return validIndexes;
 }
 
 describe('BiddingPlayersRound', () => {
@@ -54,37 +65,19 @@ describe('BiddingPlayersRound', () => {
         .toThrowError('starterIndex must be within activePlayers index range.');
     });
 
-    test('getCurrentPlayer can be called', () => {
-      round = new BiddingPlayersRound(players, starter);
+    test('active bidding methods can be called', () => {
+      round.currentPlayerWithdraws();
 
       expect(() => { round.getCurrentPlayer(); }).not.toThrowError();
-    });
-
-    test('advanceToNextPlayer can be called', () => {
-      round = new BiddingPlayersRound(players, starter);
-
       expect(() => { round.advanceToNextPlayer(); }).not.toThrowError();
-    });
-
-    test('currentPlayerWithdraws can be called', () => {
-      round = new BiddingPlayersRound(players, starter);
-
       expect(() => { round.currentPlayerWithdraws(); }).not.toThrowError();
     });
 
-    test('declareCurrentPlayerRaider can be called', () => {
+    test('getLastBiddingPlayer cannot be called', () => {
       round = new BiddingPlayersRound(players, starter);
 
-      expect(() => { round.declareCurrentPlayerRaider(); }).not.toThrowError();
-    });
-
-    test('getRaider cannot be called', () => {
-      round = new BiddingPlayersRound(players, starter);
-
-      expect(() => { round.getRaider(); })
-        .toThrowError(
-          'Bidding phase still active. Method should not have been called.'
-        );
+      expect(() => { round.getLastBiddingPlayer(); })
+        .toThrowError('More than 1 player left. Bidding is still active.');
     });
 
     test('current player is starter player', () => {
@@ -114,430 +107,300 @@ describe('BiddingPlayersRound', () => {
       }
     });
 
-    test('getCurrentPlayer can be called', () => {
+    test('active bidding methods can be called', () => {
+      round.currentPlayerWithdraws();
+
       expect(() => { round.getCurrentPlayer(); }).not.toThrowError();
-    });
-  
-    test('advanceToNextPlayer can be called', () => {
       expect(() => { round.advanceToNextPlayer(); }).not.toThrowError();
-    });
-  
-    test('currentPlayerWithdraws can be called', () => {
       expect(() => { round.currentPlayerWithdraws(); }).not.toThrowError();
     });
   
-    test('declareCurrentPlayerRaider can be called', () => {
-      expect(() => { round.declareCurrentPlayerRaider(); }).not.toThrowError();
-    });
-  
-    test('getRaider cannot be called', () => {
-      expect(() => { round.getRaider(); })
-        .toThrowError(
-          'Bidding phase still active. Method should not have been called.'
-        );
+    test('getLastBiddingPlayer cannot be called', () => {
+      expect(() => { round.getLastBiddingPlayer(); })
+        .toThrowError('More than 1 player left. Bidding is still active.');
     });
 
     test('remainingPlayersAmount is still length of players parameter', () => {
       expect(round.remainingPlayersAmount).toBe(players.length);
     });
   
-    test('advanceToNextPlayer returns next player', () => {
-      const player = round.advanceToNextPlayer();
+    test('advanceToNextPlayer makes next player currentPlayer', () => {
+      round.advanceToNextPlayer();
       const index = (starter + turn + 1) % players.length;
       
-      expect(player).toBe(players[index]);
+      expect(round.getCurrentPlayer()).toBe(players[index]);
     });
   });
 
-  describe('currentPlayerWithdraws', () => {
-    let starter: number;
+  describe.each([
+    // not all possible combinations because there would be too many tests
+    [0, 1], /*[0, 2], [0, 3],*/ [0, 4], 
+    //[1, 1], [1, 2], [1, 3], [1, 4], 
+    /*[3, 1],*/ [3, 2], /*[3, 3],*/ [3, 4],
+    //[4, 1], [4, 2], [4, 3], [4, 4]
+  ])(
+    'currentPlayerWithdraws: starts %i, %i turns after 1st withdrawal', 
+    (starter, turnsAfter1stWithdrawal) => {
+      // maps turns (trackerIndex) with index of currentPlayer of those turns
+      let playerTracker: number[];
 
-    beforeEach(() => {
-      starter = randomInteger(players.length, false);
-    });
+      // tracks turns in which a player withdraws
+      let withdrawalsTracker: number[];
 
-    describe.each([0, 1, 2, 3])('only player %i', quittingPlayerIndex => {
-  
       beforeEach(() => {
-        round = new BiddingPlayersRound(players, starter);
-  
-        while (round.getCurrentPlayer() !== players[quittingPlayerIndex]) {
-          round.advanceToNextPlayer();
-        }
-      });
-  
-      test('getCurrentPlayer can be called', () => {
-        round.currentPlayerWithdraws();
-  
-        expect(() => { round.getCurrentPlayer(); }).not.toThrowError();
+        playerTracker = [];
+        withdrawalsTracker = [];
       });
     
-      test('advanceToNextPlayer can be called', () => {
-        round.currentPlayerWithdraws();
-  
-        expect(() => { round.advanceToNextPlayer(); }).not.toThrowError();
-      });
+      describe.each([0, 1, 2, 3])('only player %i', quittingPlayerIndex => {
     
-      test('currentPlayerWithdraws can be called', () => {
-        round.currentPlayerWithdraws();
-  
-        expect(() => { round.currentPlayerWithdraws(); }).not.toThrowError();
-      });
-    
-      test('declareCurrentPlayerRaider can be called', () => {
-        round.currentPlayerWithdraws();
-  
-        expect(() => { round.declareCurrentPlayerRaider(); }).not.toThrowError();
-      });
-    
-      test('getRaider cannot be called', () => {
-        round.currentPlayerWithdraws();
-  
-        expect(() => { round.getRaider(); })
-          .toThrowError(
-            'Bidding phase still active. Method should not have been called.'
-          );
-      });
-  
-      test('remainingPlayersAmount has decreased by one', () => {
-        round.currentPlayerWithdraws();
-  
-        expect(round.remainingPlayersAmount).toBe(players.length - 1);
-      });
-  
-      test('currentPlayer has advanced by one', () => {
-        const currentIndex = players
-          .findIndex(player => player === round.getCurrentPlayer());
-        const nextIndex = (currentIndex + 1) % players.length;
-        const nextPlayer = players[nextIndex];
-        
-        round.currentPlayerWithdraws();
-  
-        expect(round.getCurrentPlayer()).toBe(nextPlayer);
-      });
-  
-      test('round goes on without quitting player', () => {
-        const turns = 10;
-        const activePlayers: Player[] = [];
-        const quittingPlayer = round.getCurrentPlayer();
-  
-        round.currentPlayerWithdraws();
-  
-        for (let i = 0; i < turns; i++) {
-          activePlayers.push(round.getCurrentPlayer());
-        }
-  
-        expect(activePlayers).not.toContain(quittingPlayer);
-      });
-  
-      test('round keeps player order skipping quitting player', () => {
-        const quittingPlayerIndexes = [quittingPlayerIndex];
-        const indexChecker = 
-          indexCheckerFactory(quittingPlayerIndexes, players.length);
-  
-        const turns = 10;
-        const activePlayersIndexes: number[] = [];
-  
-        round.currentPlayerWithdraws();
-  
-        for (let i = 0; i < turns; i++) {
-          const playerIndex = players
-            .findIndex(player => player === round.getCurrentPlayer());
-          activePlayersIndexes.push(playerIndex);
-          round.advanceToNextPlayer();
-        }
-  
-        expect(activePlayersIndexes).toSatisfy(indexChecker);
-      });
-    });
-
-    describe.each([
-      [0, 1], [0, 2], [0, 3],
-      [1, 0], [1, 2], [1, 3],
-      [2, 0], [2, 1], [2, 3],
-      [3, 0], [3, 1], [3, 2]
-    ])(
-      'first player %i, then player %i', 
-      (quittingPlayer1Index, quittingPlayer2Index) => {
-        let roundsBetweenWithdrawals: number;
-
         beforeEach(() => {
-          roundsBetweenWithdrawals = randomInteger(4);
-
           round = new BiddingPlayersRound(players, starter);
-    
-          while (round.getCurrentPlayer() !== players[quittingPlayer1Index]) {
+          
+          // advance round to first quitting player's turn
+          while (round.getCurrentPlayer() !== players[quittingPlayerIndex]) {
+            const currentPlayer = round.getCurrentPlayer();
+            const currentPlayerIndex = findPlayerIndex(players, currentPlayer);
+            playerTracker.push(currentPlayerIndex);
+
             round.advanceToNextPlayer();
           }
 
-          round.currentPlayerWithdraws();
-
-          while (roundsBetweenWithdrawals > 0) {
-            round.advanceToNextPlayer();
-            roundsBetweenWithdrawals--;
-          }
-
-          while (round.getCurrentPlayer() !== players[quittingPlayer2Index]) {
-            round.advanceToNextPlayer();
-          }
         });
     
-        test('getCurrentPlayer can be called', () => {
+        test('active bidding methods can be called', () => {
           round.currentPlayerWithdraws();
     
           expect(() => { round.getCurrentPlayer(); }).not.toThrowError();
-        });
-      
-        test('advanceToNextPlayer can be called', () => {
-          round.currentPlayerWithdraws();
-    
           expect(() => { round.advanceToNextPlayer(); }).not.toThrowError();
-        });
-      
-        test('currentPlayerWithdraws can be called', () => {
-          round.currentPlayerWithdraws();
-    
           expect(() => { round.currentPlayerWithdraws(); }).not.toThrowError();
         });
       
-        test('declareCurrentPlayerRaider can be called', () => {
+        test('getLastBiddingPlayer cannot be called', () => {
           round.currentPlayerWithdraws();
     
-          expect(() => { round.declareCurrentPlayerRaider(); }).not.toThrowError();
+          expect(() => { round.getLastBiddingPlayer(); })
+            .toThrowError('More than 1 player left. Bidding is still active.');
         });
-      
-        test('getRaider cannot be called', () => {
+    
+        test('remainingPlayersAmount has decreased by one', () => {
           round.currentPlayerWithdraws();
     
-          expect(() => { round.getRaider(); })
-            .toThrowError(
-              'Bidding phase still active. Method should not have been called.'
-            );
+          expect(round.remainingPlayersAmount).toBe(players.length - 1);
         });
     
-        test('remainingPlayersAmount has decreased by 2', () => {
-          round.currentPlayerWithdraws();
-    
-          expect(round.remainingPlayersAmount).toBe(players.length - 2);
-        });
-    
-        test('currentPlayer has advanced by 1', () => {
-          const activePlayers = Array.from(players);
-          activePlayers.splice(quittingPlayer1Index, 1);
-
-          const currentIndex = activePlayers
-            .findIndex(player => player === round.getCurrentPlayer());
-          const nextIndex = (currentIndex + 1) % activePlayers.length;
-          const nextPlayer = activePlayers[nextIndex];
-          
-          round.currentPlayerWithdraws();
-    
-          expect(round.getCurrentPlayer()).toBe(nextPlayer);
-        });
-    
-        test('round goes on without quitting player', () => {
-          const turns = 10;
-          const activePlayers: Player[] = [];
+        test('currentPlayer has not advanced yet (triggered from outside)', () => {
           const quittingPlayer = round.getCurrentPlayer();
-    
           round.currentPlayerWithdraws();
     
-          for (let i = 0; i < turns; i++) {
-            activePlayers.push(round.getCurrentPlayer());
-          }
-    
-          expect(activePlayers).not.toContain(quittingPlayer);
+          expect(round.getCurrentPlayer()).toBe(quittingPlayer);
         });
     
         test('round keeps player order skipping quitting player', () => {
-          const quittingPlayerIndexes = [
-            quittingPlayer1Index, quittingPlayer2Index
-          ];
-          const indexChecker = 
-            indexCheckerFactory(quittingPlayerIndexes, players.length);
-    
-          const turns = 10;
-          const activePlayersIndexes: number[] = [];
-    
+          turnsAfter1stWithdrawal = 10;
+      
           round.currentPlayerWithdraws();
-    
-          for (let i = 0; i < turns; i++) {
-            const playerIndex = players
-              .findIndex(player => player === round.getCurrentPlayer());
-            activePlayersIndexes.push(playerIndex);
+
+          // playerTracker.length represents current turn
+          withdrawalsTracker.push(playerTracker.length);
+          
+          // advance round 10 more turns
+          for (let i = 0; i < turnsAfter1stWithdrawal; i++) {
+            const currentPlayer = round.getCurrentPlayer();
+            const currentPlayerIndex = findPlayerIndex(players, currentPlayer);
+            playerTracker.push(currentPlayerIndex);
+
             round.advanceToNextPlayer();
           }
-    
-          expect(activePlayersIndexes).toSatisfy(indexChecker);
+
+          const indexesCheckResult = checkPlayerIndexes(
+            players.length, playerTracker, withdrawalsTracker
+          );
+
+          const playersAfterWithdrawal = playerTracker
+            .slice(withdrawalsTracker[0] + 1);
+          
+          expect(playersAfterWithdrawal).not.toContain(quittingPlayerIndex);
+          expect(indexesCheckResult).toBeTrue();
         });
-      }
-    );
+      });
 
-    describe.each([
-      [0, 1, 2], [0, 1, 3], [0, 2, 1], [0, 2, 3], [0, 3, 1], [0, 3, 2],
-      [1, 0, 2], [1, 0, 3], [1, 2, 0], [1, 2, 3], [1, 3, 0], [1, 3, 2], 
-      [2, 0, 1], [2, 0, 3], [2, 1, 0], [2, 1, 3], [2, 3, 0], [2, 3, 1], 
-      [3, 0, 1], [3, 0, 2], [3, 1, 0], [3, 1, 2], [3, 2, 0], [3, 2, 1]
-    ])(
-      'first player %i, then player %i, then player %i', 
-      (quittingPlayer1Index, quittingPlayer2Index, quittingPlayer3Index) => {
-        let roundsBetweenWithdrawals: number;
+      describe.each([
+        [0, 1], [0, 2], [0, 3],
+        [1, 0], [1, 2], [1, 3],
+        [2, 0], [2, 1], [2, 3],
+        [3, 0], [3, 1], [3, 2]
+      ])(
+        'first player %i, then player %i', 
+        (quittingPlayer1Index, quittingPlayer2Index) => {        
+          beforeEach(() => {
+            round = new BiddingPlayersRound(players, starter);
 
-        beforeEach(() => {
-          roundsBetweenWithdrawals = randomInteger(4);
+            // advance round to first quitting player's turn
+            while (round.getCurrentPlayer() !== players[quittingPlayer1Index]) {
+              const currentPlayer = round.getCurrentPlayer();
+              const currentPlayerIndex = findPlayerIndex(players, currentPlayer);
+              playerTracker.push(currentPlayerIndex);
 
-          round = new BiddingPlayersRound(players, starter);
-          const quittingIndexes = [
-            quittingPlayer1Index, quittingPlayer2Index, quittingPlayer3Index
-          ];
-
-          while (quittingIndexes.length > 0) {
-            const [index] = quittingIndexes.splice(0, 1);
-
-            while (round.getCurrentPlayer() !== players[index]) {
               round.advanceToNextPlayer();
             }
 
-            if (quittingIndexes.length > 0) {
-              round.currentPlayerWithdraws();
-  
-              while (roundsBetweenWithdrawals > 0) {
+            // first quitting player withdraws
+            round.currentPlayerWithdraws();
+            // playerTracker.length represents current turn
+            withdrawalsTracker.push(playerTracker.length);
+
+            // advance round some more random turns
+            while (turnsAfter1stWithdrawal > 0) {
+              const currentPlayer = round.getCurrentPlayer();
+              const currentPlayerIndex = findPlayerIndex(players, currentPlayer);
+              playerTracker.push(currentPlayerIndex);
+
+              round.advanceToNextPlayer();
+              turnsAfter1stWithdrawal--;
+            }
+
+            // advance round to second quitting player's turn
+            while (round.getCurrentPlayer() !== players[quittingPlayer2Index]) {
+              const currentPlayer = round.getCurrentPlayer();
+              const currentPlayerIndex = findPlayerIndex(players, currentPlayer);
+              playerTracker.push(currentPlayerIndex);
+
+              round.advanceToNextPlayer();
+            }
+          });
+      
+          test('active bidding methods can be called', () => {
+            round.currentPlayerWithdraws();
+      
+            expect(() => { round.getCurrentPlayer(); }).not.toThrowError();
+            expect(() => { round.advanceToNextPlayer(); }).not.toThrowError();
+            expect(() => { round.currentPlayerWithdraws(); }).not.toThrowError();
+          });
+        
+          test('getLastBiddingPlayer cannot be called', () => {
+            round.currentPlayerWithdraws();
+      
+            expect(() => { round.getLastBiddingPlayer(); })
+              .toThrowError('More than 1 player left. Bidding is still active.');
+          });
+      
+          test('remainingPlayersAmount has decreased by 2', () => {
+            round.currentPlayerWithdraws();
+      
+            expect(round.remainingPlayersAmount).toBe(players.length - 2);
+          });
+      
+          test('currentPlayer has advanced by 1', () => {
+            const lastQuittingPlayer = round.getCurrentPlayer();
+            round.currentPlayerWithdraws();
+    
+            expect(round.getCurrentPlayer()).toBe(lastQuittingPlayer);
+          });
+      
+          test('round keeps player order skipping quitting player', () => {
+            const turnsAfter2ndWithdrawal = 10;
+      
+            round.currentPlayerWithdraws();
+
+            // playerTracker.length represents current turn
+            withdrawalsTracker.push(playerTracker.length);
+            
+            // advance round 10 more turns
+            for (let i = 0; i < turnsAfter2ndWithdrawal; i++) {
+              const currentPlayer = round.getCurrentPlayer();
+              const currentPlayerIndex = findPlayerIndex(players, currentPlayer);
+              playerTracker.push(currentPlayerIndex);
+
+              round.advanceToNextPlayer();
+            }
+
+            const indexesCheckResult = checkPlayerIndexes(
+              players.length, playerTracker, withdrawalsTracker
+            );
+
+            const playersAfter1stWithdrawal = playerTracker
+              .slice(withdrawalsTracker[0] + 1);
+            const playersAfter2ndWithdrawal = playerTracker
+              .slice(withdrawalsTracker[1] + 1);
+          
+            expect(playersAfter1stWithdrawal).not.toContain(quittingPlayer1Index);
+            expect(playersAfter2ndWithdrawal).not.toContain(quittingPlayer2Index);
+            expect(indexesCheckResult).toBeTrue();
+          });
+        }
+      );
+
+      describe.each([
+        // not all possible combinations because there would be too many tests
+        [0, 1, 2], /*[0, 1, 3], [0, 2, 1], [0, 2, 3],*/ [0, 3, 1], //[0, 3, 2],
+        /*[1, 0, 2], [1, 0, 3], [1, 2, 0],*/ [1, 2, 3], /*[1, 3, 0],*/ [1, 3, 2], 
+        /*[2, 0, 1],*/ [2, 0, 3], [2, 1, 0], /*[2, 1, 3], [2, 3, 0], [2, 3, 1],*/
+        [3, 0, 1], /*[3, 0, 2], [3, 1, 0], [3, 1, 2],*/ [3, 2, 0], //[3, 2, 1]
+      ])(
+        'first player %i, then player %i, then player %i', 
+        (quittingPlayer1Index, quittingPlayer2Index, quittingPlayer3Index) => {
+          beforeEach(() => {
+            round = new BiddingPlayersRound(players, starter);
+            const quittingIndexes = [
+              quittingPlayer1Index, quittingPlayer2Index, quittingPlayer3Index
+            ];
+
+            while (quittingIndexes.length > 0) {
+              const turnsAfterWithdrawal = turnsAfter1stWithdrawal;
+              const [index] = quittingIndexes.splice(0, 1);
+
+              while (round.getCurrentPlayer() !== players[index]) {
                 round.advanceToNextPlayer();
-                roundsBetweenWithdrawals--;
               }
 
-              roundsBetweenWithdrawals = randomInteger(4);
+              if (quittingIndexes.length > 0) {
+                round.currentPlayerWithdraws();
+    
+                while (turnsAfter1stWithdrawal > 0) {
+                  round.advanceToNextPlayer();
+                  turnsAfter1stWithdrawal--;
+                }
+              }
             }
-          }
-        });
-    
-        test('getCurrentPlayer cannot be called', () => {
-          round.currentPlayerWithdraws();
-    
-          expect(() => { round.getCurrentPlayer(); })
-            .toThrowError(
-              'Bidding phase has ended. Method should not have been called.'
-            );
-        });
+          });
+
+          test('active bidding methods cannot be called', () => {
+            round.currentPlayerWithdraws();
+            const message 
+              = 'Bidding phase has ended. Method should not have been called.';
       
-        test('advanceToNextPlayer cannot be called', () => {
-          round.currentPlayerWithdraws();
-    
-          expect(() => { round.advanceToNextPlayer(); })
-            .toThrowError(
-              'Bidding phase has ended. Method should not have been called.'
-            );
-        });
+            expect(() => { round.getCurrentPlayer(); }).toThrowError(message);
+            expect(() => { round.advanceToNextPlayer(); }).toThrowError(message);
+            expect(() => { round.currentPlayerWithdraws(); })
+              .toThrowError(message);
+          });
+        
+          test('getLastBiddingPlayer can be called', () => {
+            round.currentPlayerWithdraws();
       
-        test('currentPlayerWithdraws cannot be called', () => {
-          round.currentPlayerWithdraws();
-    
-          expect(() => { round.currentPlayerWithdraws(); })
-            .toThrowError(
-              'Bidding phase has ended. Method should not have been called.'
-            );
-        });
+            expect(() => { round.getLastBiddingPlayer(); }).not.toThrowError();
+          });
       
-        test('declareCurrentPlayerRaider cannnot be called', () => {
-          round.currentPlayerWithdraws();
-    
-          expect(() => { round.declareCurrentPlayerRaider(); })
-            .toThrowError(
-              'Bidding phase has ended. Method should not have been called.'
-            );
-        });
+          test('remainingPlayersAmount has decreased by 3', () => {
+            round.currentPlayerWithdraws();
       
-        test('getRaider can be called', () => {
-          round.currentPlayerWithdraws();
-    
-          expect(() => { round.getRaider(); }).not.toThrowError();
-        });
-    
-        test('remainingPlayersAmount has decreased by 3', () => {
-          round.currentPlayerWithdraws();
-    
-          expect(round.remainingPlayersAmount).toBe(players.length - 3);
-        });
-    
-        test('getRaider returns last active player', () => {
-          const quittingIndexes = [
-            quittingPlayer1Index, quittingPlayer2Index, quittingPlayer3Index
-          ];
-          const [activePlayer] = players
-            .filter((player, index) => !quittingIndexes.includes(index));
+            expect(round.remainingPlayersAmount).toBe(players.length - 3);
+          });
+      
+          test('getLastBiddingPlayer returns last bidding player', () => {
+            const quittingIndexes = [
+              quittingPlayer1Index, quittingPlayer2Index, quittingPlayer3Index
+            ];
+            const [expectedLastBiddingPlayer] = players
+              .filter((player, index) => !quittingIndexes.includes(index));
 
-          round.currentPlayerWithdraws();
+            round.currentPlayerWithdraws();
 
-          expect(round.getRaider()).toBe(activePlayer);
-        });
-      }
-    );
-  });
-
-  describe.each([0, 1, 2, 3, 4, 5, 6, 7])('declareCurrentPlayerRaider', turn => {
-    beforeEach(() => {
-      const starter = randomInteger(4, false);
-      round = new BiddingPlayersRound(players, starter);
-
-      for (let i = 0; i < turn; i++) {
-        round.advanceToNextPlayer();
-      }
-    });
-
-    test('getCurrentPlayer cannot be called', () => {
-      round.declareCurrentPlayerRaider();
-
-      expect(() => { round.getCurrentPlayer(); })
-        .toThrowError(
-          'Bidding phase has ended. Method should not have been called.'
-        );
-    });
-  
-    test('advanceToNextPlayer cannot be called', () => {
-      round.declareCurrentPlayerRaider();
-
-      expect(() => { round.advanceToNextPlayer(); })
-        .toThrowError(
-          'Bidding phase has ended. Method should not have been called.'
-        );
-    });
-  
-    test('currentPlayerWithdraws cannot be called', () => {
-      round.declareCurrentPlayerRaider();
-
-      expect(() => { round.currentPlayerWithdraws(); })
-        .toThrowError(
-          'Bidding phase has ended. Method should not have been called.'
-        );
-    });
-  
-    test('declareCurrentPlayerRaider cannnot be called', () => {
-      round.declareCurrentPlayerRaider();
-
-      expect(() => { round.declareCurrentPlayerRaider(); })
-        .toThrowError(
-          'Bidding phase has ended. Method should not have been called.'
-        );
-    });
-  
-    test('getRaider can be called', () => {
-      round.declareCurrentPlayerRaider();
-
-      expect(() => { round.getRaider(); }).not.toThrowError();
-    });
-
-    test('remainingPlayersAmount to be 1', () => {
-      round.declareCurrentPlayerRaider();
-
-      expect(round.remainingPlayersAmount).toBe(1);
-    });
-
-    test('getRaider returns last turn\'s player', () => {
-      const activePlayer = round.getCurrentPlayer();
-
-      round.declareCurrentPlayerRaider();
-
-      expect(round.getRaider()).toBe(activePlayer);
-    });
-  });
+            expect(round.getLastBiddingPlayer()).toBe(expectedLastBiddingPlayer);
+          });
+        }
+      );
+    }
+  );
 });

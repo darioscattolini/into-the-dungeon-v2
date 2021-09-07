@@ -6,8 +6,8 @@ import { BiddingService } from './bidding.service';
 import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Player, BiddingPlayersRound, Bidding, BiddingActionRequestData,
-  Hero, EquipmentName, Monster, AnyMonster, MonsterType
+  Player, Hero, EquipmentName, Monster, AnyMonster, MonsterType,
+  Bidding, BiddingPlayersRound, BiddingEndReason, BiddingActionRequestData
 } from '../../models/models';
 import { 
   PlayerDouble, BiddingPlayersRoundDouble, 
@@ -35,6 +35,9 @@ describe('BiddingService', () => {
   let biddingService: BiddingService;
   let uiMediator: UiMediatorService;
   let monstersService: MonstersService;
+  let raiderDummy: Player;
+  let heroDummy: Hero;
+  let enemiesDummy: AnyMonster[];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -48,6 +51,24 @@ describe('BiddingService', () => {
     biddingService = TestBed.inject(BiddingService);
     uiMediator = TestBed.inject(UiMediatorService);
     monstersService = TestBed.inject(MonstersService);
+
+    raiderDummy = PlayerDouble.createDouble();
+    heroDummy = HeroDouble.createDouble();
+    enemiesDummy = [
+      MonsterDouble.createDouble(), 
+      MonsterDouble.createDouble(),
+      MonsterDouble.createDouble()
+    ];
+
+    jest.spyOn(Bidding.prototype, 'onResponse').mockReturnValue({});
+
+    jest.spyOn(Bidding.prototype, 'getResult')
+      .mockReturnValue({
+        endReason: 'no-monsters',
+        raider: raiderDummy, 
+        hero: heroDummy, 
+        enemies: enemiesDummy 
+      });
   });
 
   afterEach(() => {
@@ -61,13 +82,11 @@ describe('BiddingService', () => {
 
   describe('playBidding', () => {
     let playersDummy: BiddingPlayersRound;
-    let heroDummy: Hero;
     let monstersPackDummy: AnyMonster[];
     let actionRequestGenericDummy: BiddingActionRequestData;
 
     beforeEach(() => {
       playersDummy = BiddingPlayersRoundDouble.createDouble();
-      heroDummy = HeroDouble.createDouble();
       monstersPackDummy = [
         MonsterDouble.createDouble(),
         MonsterDouble.createDouble()
@@ -242,6 +261,34 @@ describe('BiddingService', () => {
             );
         }
       );
+
+      test('it notifies nothing on empty onResponse notification', async () => {
+        jest.spyOn(Bidding.prototype, 'onResponse').mockReturnValue({});
+        
+        expect.assertions(1);
+
+        await biddingService.playBidding(playersDummy);
+
+        expect(uiMediator.notifyForcibleMonsterAddition).not.toHaveBeenCalled();
+      });
+
+      test('it notifies on forcibleMonsterAddition', async () => {
+        const notificationDummy = {
+          player: PlayerDouble.createDouble(),
+          forciblyAddedMonster: 'goblin' as MonsterType
+        };
+
+        jest.spyOn(Bidding.prototype, 'onResponse')
+          .mockReturnValue({ notification: notificationDummy });
+
+        expect.assertions(1);
+
+        await biddingService.playBidding(playersDummy);
+
+        expect(uiMediator.notifyForcibleMonsterAddition).toHaveBeenCalledWith(
+          notificationDummy.player, notificationDummy.forciblyAddedMonster
+        );
+      });
     });
 
     describe('loop run for monster addition (add-monster)', () => {
@@ -349,6 +396,34 @@ describe('BiddingService', () => {
             );
         }
       );
+
+      test('it notifies nothing on empty onResponse notification', async () => {
+        jest.spyOn(Bidding.prototype, 'onResponse').mockReturnValue({});
+        
+        expect.assertions(1);
+
+        await biddingService.playBidding(playersDummy);
+
+        expect(uiMediator.notifyForcibleMonsterAddition).not.toHaveBeenCalled();
+      });
+
+      test('it notifies on forcibleMonsterAddition', async () => {
+        const notificationDummy = {
+          player: PlayerDouble.createDouble(),
+          forciblyAddedMonster: 'goblin' as MonsterType
+        };
+
+        jest.spyOn(Bidding.prototype, 'onResponse')
+          .mockReturnValue({ notification: notificationDummy });
+
+        expect.assertions(1);
+
+        await biddingService.playBidding(playersDummy);
+
+        expect(uiMediator.notifyForcibleMonsterAddition).toHaveBeenCalledWith(
+          notificationDummy.player, notificationDummy.forciblyAddedMonster
+        );
+      });
     });
 
     describe('loop run for equipment removal (remove-equipment)', () => {
@@ -489,36 +564,63 @@ describe('BiddingService', () => {
             );
         }
       );
+
+      test('it notifies nothing on empty onResponse notification', async () => {
+        jest.spyOn(Bidding.prototype, 'onResponse').mockReturnValue({});
+        
+        expect.assertions(1);
+
+        await biddingService.playBidding(playersDummy);
+
+        expect(uiMediator.notifyForcibleMonsterAddition).not.toHaveBeenCalled();
+      });
+
+      test('it notifies on forcibleMonsterAddition', async () => {
+        const notificationDummy = {
+          player: PlayerDouble.createDouble(),
+          forciblyAddedMonster: 'goblin' as MonsterType
+        };
+
+        jest.spyOn(Bidding.prototype, 'onResponse')
+          .mockReturnValue({ notification: notificationDummy });
+
+        expect.assertions(1);
+
+        await biddingService.playBidding(playersDummy);
+
+        expect(uiMediator.notifyForcibleMonsterAddition).toHaveBeenCalledWith(
+          notificationDummy.player, notificationDummy.forciblyAddedMonster
+        );
+      });
     });
 
-    describe('return value', () => {
-      let raiderDummy: Player;
-      let heroDummy: Hero;
-      let enemiesDummy: AnyMonster[];
-
-      beforeEach(() => {
-        raiderDummy = PlayerDouble.createDouble();
-        heroDummy = HeroDouble.createDouble();
-        enemiesDummy = [
-          MonsterDouble.createDouble(), 
-          MonsterDouble.createDouble(),
-          MonsterDouble.createDouble()
-        ];
-
-        jest.spyOn(Bidding.prototype, 'getResult')
-          .mockReturnValue({ 
+    describe('end of bidding and return value', () => {
+      test.each(['last-bidding-player', 'no-monsters'] as BiddingEndReason[])(
+        'it sends notification of bidding result', 
+        async endReason => {
+          jest.spyOn(Bidding.prototype, 'getResult').mockReturnValue({
+            endReason: endReason,
             raider: raiderDummy, 
             hero: heroDummy, 
             enemies: enemiesDummy 
           });
-      });
+
+          expect.assertions(1);
+    
+          await biddingService.playBidding(playersDummy);
+
+          expect(uiMediator.notifyBiddingResult)
+            .toHaveBeenCalledWith(raiderDummy, endReason);
+        }
+      );
 
       test('it is an instance of BiddingResult', async () => {
         expect.assertions(5);
   
         const biddingResult = await biddingService.playBidding(playersDummy);
   
-        expect(biddingResult).toContainAllKeys(['raider', 'hero', 'enemies']);
+        expect(biddingResult).toContainKeys(['raider', 'hero', 'enemies']);
+
         expect(biddingResult.raider).toBeInstanceOf(Player);
         expect(biddingResult.hero).toBeInstanceOf(Hero);
         expect(biddingResult.enemies).toBeArray();

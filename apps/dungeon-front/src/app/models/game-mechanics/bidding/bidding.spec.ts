@@ -61,7 +61,7 @@ describe('Bidding', () => {
   let nextPlayerDummy: Player;
   let pickedMonster: AnyMonster;
   let equipmentOptions: EquipmentName[];
-  let raider: Player;
+  let lastBiddingPlayerDummy: Player;
   let previousState: BiddingPublicState;
 
   beforeEach(() => {
@@ -73,10 +73,9 @@ describe('Bidding', () => {
     currentPlayerDummy = PlayerDouble.createDouble();
     nextPlayerDummy = PlayerDouble.createDouble();
     equipmentOptions = pickRandomEquipmentNames(6);
-    raider = PlayerDouble.createDouble();
+    lastBiddingPlayerDummy = PlayerDouble.createDouble();
     
-    jest.spyOn(BiddingPlayersRound.prototype, 'remainingPlayersAmount', 'get')
-      .mockReturnValue(3);
+    Object.defineProperty(playersMock, 'remainingPlayersAmount', { value: 3 });
     
     jest.spyOn(playersMock, 'getCurrentPlayer')
       .mockReturnValue(currentPlayerDummy);
@@ -85,9 +84,9 @@ describe('Bidding', () => {
       .mockImplementation(() => {
         const playersAmount = playersMock.remainingPlayersAmount;
 
-        jest.spyOn(
-          BiddingPlayersRound.prototype, 'remainingPlayersAmount', 'get'
-        ).mockReturnValue(playersAmount - 1);
+        Object.defineProperty(playersMock, 'remainingPlayersAmount', { 
+          value: playersAmount - 1 
+        });
 
         jest.spyOn(playersMock, 'getCurrentPlayer')
           .mockReturnValue(nextPlayerDummy);
@@ -100,9 +99,8 @@ describe('Bidding', () => {
         return nextPlayerDummy;
       });
     
-    jest.spyOn(playersMock, 'declareCurrentPlayerRaider');
-
-    jest.spyOn(playersMock, 'getRaider').mockReturnValue(raider);
+    jest.spyOn(playersMock, 'getLastBiddingPlayer')
+      .mockReturnValue(lastBiddingPlayerDummy);
 
     jest.spyOn(heroMock, 'getMountedEquipment')
       .mockReturnValue(equipmentOptions);
@@ -145,7 +143,6 @@ describe('Bidding', () => {
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
 
       expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-      expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
 
     test('monstersPackAmount equals initial monstersPack length', () => {
@@ -213,7 +210,6 @@ describe('Bidding', () => {
       bidding.getActionRequestData();
 
       expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-      expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
     
     test('getActionRequestData cannot be called right after', () => {
@@ -288,6 +284,8 @@ describe('Bidding', () => {
 
   describe('play-bidding request accepted', () => {    
     describe('0 equipment, 1 monster left', () => {
+      // SCENARIO (2) IN bidding.ts
+
       beforeEach(() => {
         jest.spyOn(heroMock, 'getMountedEquipment')
           .mockReturnValue(pickRandomEquipmentNames(0));
@@ -309,12 +307,6 @@ describe('Bidding', () => {
         bidding.onResponse(playBiddingDummy());
 
         expect(bidding.currentPlayer).toBeNull();
-      });
-
-      test('players.declareCurrentPlayerRaider has been called', () => {
-        bidding.onResponse(playBiddingDummy());
-
-        expect(playersMock.declareCurrentPlayerRaider).toHaveBeenCalled();
       });
 
       test('players.currentPlayerWithdraws has not been called', () => {
@@ -370,31 +362,29 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeFalse();
       });
 
-      test('correct notification is returned', () => {
-        const notification = bidding.onResponse(playBiddingDummy());
+      test('onResponse returns notification of forcibly added monster', () => {
+        const notification = bidding.onResponse(playBiddingDummy()).notification;
 
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('necessarily-add-monster');
-        expect(notification.entity).toBe(pickedMonster.type);
-        expect(notification.endOfTurn).toBeUndefined();
-        expect(notification.endOfBidding).toEqual({
-          raider: expect.toSatisfy(x => x === raider),
-          reason: expect.toSatisfy(x => x === 'last-monster')
-        });
+        expect(notification).toBeDefined();
+        expect(notification?.player).toBe(previousState.currentPlayer);
+        expect(notification?.forciblyAddedMonster).toBe(pickedMonster.type);
       });
 
-      test('getResult returns expected raid participants', () => {
+      test('getResult returns expected reason and raid participants', () => {
         bidding.onResponse(playBiddingDummy());
 
         const result = bidding.getResult();
   
-        expect(result.raider).toBe(raider);
+        expect(result.endReason).toBe('no-monsters');
+        expect(result.raider).toBe(previousState.currentPlayer);
         expect(result.hero).toBe(heroMock);
         expect(result.enemies).toEqual([pickedMonster]);
       });
     });
 
     describe.each([2, 3, 4])('0 equipment, %i monsters left', monstersLeft => {
+      // SCENARIO (1) IN bidding.ts
+
       beforeEach(() => {
         jest.spyOn(heroMock, 'getMountedEquipment')
           .mockReturnValue(pickRandomEquipmentNames(0));
@@ -434,7 +424,6 @@ describe('Bidding', () => {
         bidding.onResponse(playBiddingDummy());
 
         expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-        expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
       });
 
       test('monstersPackAmount has decreased by 1', () => {
@@ -510,20 +499,12 @@ describe('Bidding', () => {
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
-      test('correct notification is returned', () => {
-        const notification = bidding.onResponse(playBiddingDummy());
+      test('onResponse returns notification of forcibly added monster', () => {
+        const notification = bidding.onResponse(playBiddingDummy()).notification;
 
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('necessarily-add-monster');
-        expect(notification.entity).toBe(pickedMonster.type);
-        expect(notification.endOfTurn).toEqual({
-          nextPlayer: expect.toSatisfy(x => x === nextPlayerDummy),
-          warnings: expect.toContainAllEntries([
-            ['lastMonster', monstersLeft - 1 === 1],
-            ['noEquipment', false]
-          ])
-        });
-        expect(notification.endOfBidding).toBeUndefined();
+        expect(notification).toBeDefined();
+        expect(notification?.player).toBe(previousState.currentPlayer);
+        expect(notification?.forciblyAddedMonster).toBe(pickedMonster.type);
       });
     });
 
@@ -532,6 +513,8 @@ describe('Bidding', () => {
       [2, 1], [2, 2], [2, 3],
       [3, 1], [3, 2], [3, 3]
     ])('%i equipment, %i monsters left', (equipmentLeft, monstersLeft) => {
+      // SCENARIO (3) IN bidding.ts
+
       beforeEach(() => {
         jest.spyOn(heroMock, 'getMountedEquipment')
           .mockReturnValue(pickRandomEquipmentNames(equipmentLeft));
@@ -571,7 +554,6 @@ describe('Bidding', () => {
         bidding.onResponse(playBiddingDummy());
 
         expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-        expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
       });
       
       test('monstersPackAmount has decreased by one', () => {
@@ -654,24 +636,22 @@ describe('Bidding', () => {
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
 
-      test('correct notification is returned', () => {
+      test('onResponse returns empty notification', () => {
         const notification = bidding.onResponse(playBiddingDummy());
 
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('monster-equipment-choice');
-        expect(notification.entity).toBeUndefined();
-        expect(notification.endOfTurn).toBeUndefined();
-        expect(notification.endOfBidding).toBeUndefined();
+        expect(notification.notification).toBeUndefined();
       });
     });
   });
 
   describe('play-bidding request rejected (withdraw)', () => {
     describe('2 players left', () => {
+      // SCENARIO (5) IN bidding.ts
+
       beforeEach(() => {
-        jest.spyOn(
-          BiddingPlayersRound.prototype, 'remainingPlayersAmount', 'get'
-        ).mockReturnValue(2);
+        Object.defineProperty(playersMock, 'remainingPlayersAmount', {
+          value: 2
+        });
 
         bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
         bidding.getActionRequestData();
@@ -694,12 +674,6 @@ describe('Bidding', () => {
         bidding.onResponse(withdrawDummy());
 
         expect(playersMock.currentPlayerWithdraws).toHaveBeenCalled();
-      });
-
-      test('players.declareCurrentPlayerRaider has not been called', () => {
-        bidding.onResponse(withdrawDummy());
-
-        expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
       });
 
       test('monstersPackAmount has not changed', () => {
@@ -749,31 +723,27 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeFalse();
       });
 
-      test('correct notification is returned', () => {
+      test('onResponse returns empty notification', () => {
         const notification = bidding.onResponse(withdrawDummy());
 
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('bidding-withdrawal');
-        expect(notification.entity).toBeUndefined();
-        expect(notification.endOfTurn).toBeUndefined();
-        expect(notification.endOfBidding).toEqual({
-          raider: expect.toSatisfy(x => x === raider),
-          reason: expect.toSatisfy(x => x === 'last-bidder')
-        });
+        expect(notification.notification).toBeUndefined();
       });
 
-      test('getResult returns expected raid participants', () => {
+      test('getResult returns expected reason and raid participants', () => {
         bidding.onResponse(withdrawDummy());
 
         const result = bidding.getResult();
-  
-        expect(result.raider).toBe(raider);
+        
+        expect(result.endReason).toBe('last-bidding-player');
+        expect(result.raider).toBe(lastBiddingPlayerDummy);
         expect(result.hero).toBe(heroMock);
         expect(result.enemies).toBeArrayOfSize(0);
       });
     });
 
     describe.each([3, 4])('%i (more than 2) players left', playersAmount => {
+      // SCENARIO (4) IN bidding.ts
+
       beforeEach(() => {
         Object.defineProperty(playersMock, 'remainingPlayersAmount', {
           get: jest.fn(() => playersAmount),
@@ -810,12 +780,6 @@ describe('Bidding', () => {
         bidding.onResponse(withdrawDummy());
 
         expect(playersMock.currentPlayerWithdraws).toHaveBeenCalled();
-      });
-
-      test('players.declareCurrentPlayerRaider has not been called', () => {
-        bidding.onResponse(withdrawDummy());
-
-        expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
       });
 
       test('monstersPackAmount has not changed', () => {
@@ -891,25 +855,16 @@ describe('Bidding', () => {
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
-      test('correct notification is returned', () => {
+      test('onResponse returns empty notification', () => {
         const notification = bidding.onResponse(withdrawDummy());
 
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('bidding-withdrawal');
-        expect(notification.entity).toBeUndefined();
-        expect(notification.endOfTurn).toEqual({
-          nextPlayer: expect.toSatisfy(x => x === nextPlayerDummy),
-          warnings: expect.toContainAllEntries([
-            ['lastMonster', false],
-            ['noEquipment', false]
-          ])
-        });
-        expect(notification.endOfBidding).toBeUndefined();
+        expect(notification.notification).toBeUndefined();
       });
     });
   });
 
   describe('play-bidding accepted, add-monster action request demanded', () => {
+
     beforeEach(() => {
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
       bidding.getActionRequestData();
@@ -939,7 +894,6 @@ describe('Bidding', () => {
       bidding.getActionRequestData();
 
       expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-      expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
     
     test('monstersPackAmount has not changed', () => {
@@ -1000,6 +954,8 @@ describe('Bidding', () => {
 
   describe('add-monster request accepted', () => {
     describe('1 monster left', () => {
+      // SCENARIO (7) IN bidding.ts
+
       beforeEach(() => {
         monstersPackDummy = [ MonsterDouble.createDouble() ];
         [pickedMonster] = monstersPackDummy;
@@ -1020,12 +976,6 @@ describe('Bidding', () => {
         bidding.onResponse(addMonsterDummy());
 
         expect(bidding.currentPlayer).toBeNull();
-      });
-
-      test('players.declareCurrentPlayerRaider has been called', () => {
-        bidding.onResponse(addMonsterDummy());
-
-        expect(playersMock.declareCurrentPlayerRaider).toHaveBeenCalled();
       });
 
       test('players.currentPlayerWithdraws has not been called', () => {
@@ -1081,31 +1031,27 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeFalse();
       });
 
-      test('correct notification is returned', () => {
-        const notification = bidding.onResponse(addMonsterDummy());
+      test('onResponse returns empty notification', () => {
+        const notification = bidding.onResponse(addMonsterDummy()).notification;
 
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('monster-added');
-        expect(notification.entity).toBe(pickedMonster.type);
-        expect(notification.endOfTurn).toBeUndefined();
-        expect(notification.endOfBidding).toEqual({
-          raider: expect.toSatisfy(x => x === raider),
-          reason: expect.toSatisfy(x => x === 'last-monster')
-        });
+        expect(notification).toBeUndefined();
       });
 
-      test('getResult returns expected raid participants', () => {
+      test('getResult returns expected reason and raid participants', () => {
         bidding.onResponse(addMonsterDummy());
 
         const result = bidding.getResult();
   
-        expect(result.raider).toBe(raider);
+        expect(result.endReason).toBe('no-monsters');
+        expect(result.raider).toBe(previousState.currentPlayer);
         expect(result.hero).toBe(heroMock);
         expect(result.enemies).toEqual([pickedMonster]);
       });
     });
 
     describe.each([2, 3, 4])('%i monsters left', monstersLeft => {
+      // SCENARIO (6) IN bidding.ts
+
       beforeEach(() => {
         monstersPackDummy = [];
   
@@ -1144,7 +1090,6 @@ describe('Bidding', () => {
         bidding.onResponse(addMonsterDummy());
   
         expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-        expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
       });
   
       test('monstersPackAmount has not changed', () => {
@@ -1220,25 +1165,17 @@ describe('Bidding', () => {
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
-      test('correct notification is returned', () => {
+      test('onResponse returns empty notification', () => {
         const notification = bidding.onResponse(addMonsterDummy());
   
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('monster-added');
-        expect(notification.entity).toBe(pickedMonster.type);
-        expect(notification.endOfTurn).toEqual({
-          nextPlayer: expect.toSatisfy(x => x === nextPlayerDummy),
-          warnings: expect.toContainAllEntries([
-            ['lastMonster', monstersLeft === 2],
-            ['noEquipment', false]
-          ])
-        });
-        expect(notification.endOfBidding).toBeUndefined();
+        expect(notification.notification).toBeUndefined();
       });
     });
   });
 
   describe('add-monster request rejected', () => {
+    // SCENARIO (8) IN bidding.ts
+
     beforeEach(() => {
       bidding = new Bidding(playersMock, heroMock, monstersPackDummy);
       bidding.getActionRequestData();
@@ -1269,7 +1206,6 @@ describe('Bidding', () => {
       bidding.onResponse(dontAddMonsterDummy());
 
       expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-      expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
     
     test('monstersPackAmount has not decreased', () => {
@@ -1352,14 +1288,10 @@ describe('Bidding', () => {
       expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
     });
 
-    test('correct notification is returned', () => {
+    test('onResponse returns empty notification', () => {
       const notification = bidding.onResponse(dontAddMonsterDummy());
 
-      expect(notification.target).toBe(previousState.currentPlayer);
-      expect(notification.message).toBe('no-monster-added');
-      expect(notification.entity).toBeUndefined();
-      expect(notification.endOfTurn).toBeUndefined();
-      expect(notification.endOfBidding).toBeUndefined();
+      expect(notification.notification).toBeUndefined();
     });
   });
 
@@ -1395,7 +1327,6 @@ describe('Bidding', () => {
       bidding.getActionRequestData();
 
       expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-      expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
     });
     
     test('monstersPackAmount has not decreased', () => {
@@ -1458,6 +1389,8 @@ describe('Bidding', () => {
     describe.each([
       1, 2, 3
     ])('1 monster left, %i equipment left', equipmentLeft => {
+      // SCENARIO (10) IN bidding.ts
+
       beforeEach(() => {
         equipmentOptions = pickRandomEquipmentNames(equipmentLeft);
         
@@ -1484,12 +1417,6 @@ describe('Bidding', () => {
         bidding.onResponse(removeEquipmentDummy());
 
         expect(bidding.currentPlayer).toBeNull();
-      });
-
-      test('players.declareCurrentPlayerRaider has been called', () => {
-        bidding.onResponse(removeEquipmentDummy());
-
-        expect(playersMock.declareCurrentPlayerRaider).toHaveBeenCalled();
       });
 
       test('players.currentPlayerWithdraws has not been called', () => {
@@ -1556,27 +1483,19 @@ describe('Bidding', () => {
         expect(bidding.goesOn()).toBeFalse();
       });
 
-      test('correct notification is returned', () => {
-        const response = removeEquipmentDummy();
-        const chosenEquipment = response.content;
-        const notification = bidding.onResponse(response);
+      test('onResponse returns empty notification', () => {
+        const notification = bidding.onResponse(removeEquipmentDummy());
 
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('equipment-removed');
-        expect(notification.entity).toBe(chosenEquipment);
-        expect(notification.endOfTurn).toBeUndefined();
-        expect(notification.endOfBidding).toEqual({
-          raider: expect.toSatisfy(x => x === raider),
-          reason: expect.toSatisfy(x => x === 'last-monster')
-        });
+        expect(notification.notification).toBeUndefined();
       });
 
-      test('getResult returns expected raid participants', () => {
+      test('getResult returns expected reason and raid participants', () => {
         bidding.onResponse(removeEquipmentDummy());
 
         const result = bidding.getResult();
-  
-        expect(result.raider).toBe(raider);
+        
+        expect(result.endReason).toBe('no-monsters');
+        expect(result.raider).toBe(previousState.currentPlayer);
         expect(result.hero).toBe(heroMock);
         expect(result.enemies).toBeArrayOfSize(0);
       });
@@ -1587,6 +1506,8 @@ describe('Bidding', () => {
       [3, 1], [3, 2], [3, 3],
       [4, 1], [4, 2], [4, 3],
     ])('%i monsters left, %i equipment left', (monstersLeft, equipmentLeft) => {
+      // SCENARIO (9) IN bidding.ts
+
       beforeEach(() => {
         equipmentOptions = pickRandomEquipmentNames(equipmentLeft);
         
@@ -1639,7 +1560,6 @@ describe('Bidding', () => {
         bidding.onResponse(removeEquipmentDummy());
   
         expect(playersMock.currentPlayerWithdraws).not.toHaveBeenCalled();
-        expect(playersMock.declareCurrentPlayerRaider).not.toHaveBeenCalled();
       });
   
       test('monstersPackAmount has not changed', () => {
@@ -1724,22 +1644,10 @@ describe('Bidding', () => {
         expect(state.remainingPlayers).toBe(playersMock.remainingPlayersAmount);
       });
       
-      test('correct notification is returned', () => {
-        const response = removeEquipmentDummy();
-        const chosenEquipment = response.content;
-        const notification = bidding.onResponse(response);
+      test('onResponse returns empty notification', () => {
+        const notification = bidding.onResponse(removeEquipmentDummy());
   
-        expect(notification.target).toBe(previousState.currentPlayer);
-        expect(notification.message).toBe('equipment-removed');
-        expect(notification.entity).toBe(chosenEquipment);
-        expect(notification.endOfTurn).toEqual({
-          nextPlayer: expect.toSatisfy(x => x === nextPlayerDummy),
-          warnings: expect.toContainAllEntries([
-            ['lastMonster', monstersLeft === 2],
-            ['noEquipment', equipmentLeft === 1]
-          ])
-        });
-        expect(notification.endOfBidding).toBeUndefined();
+        expect(notification.notification).toBeUndefined();
       });
     });
   });

@@ -1,12 +1,11 @@
 import { BiddingPlayersRound } from './bidding-players-round';
 import { BiddingState } from './bidding-state';
 import { 
-  BiddingAction, BiddingActionRequestData, BiddingActionResponseContent
+  BiddingAction, BiddingActionRequestData, BiddingActionResponseContent,
+  BiddingResponseNotification
 } from './bidding-action';
-import { BiddingNotification } from './bidding-notification';
-import {
-  Player, Hero, EquipmentName, AnyMonster, MonsterType, RaidParticipants 
-} from '../../models';
+import { BiddingEndReason, BiddingResult } from './bidding-result';
+import { Player, Hero, EquipmentName, AnyMonster } from '../../models';
 
 type DungeonEntry = {
   monster: AnyMonster;
@@ -37,6 +36,7 @@ export class Bidding {
     return this.monstersPack.length;
   }
 
+  private endReason?: BiddingEndReason;
   private hasEnded = false;
   private currentAction: BiddingAction = 'play-bidding';
   private hero: Hero;
@@ -44,6 +44,7 @@ export class Bidding {
   private monstersPack: AnyMonster[];
   private pickedMonster: AnyMonster | undefined;
   private players: BiddingPlayersRound;
+  private raider?: Player;
   private responsePending = false;
   
   constructor(players: BiddingPlayersRound, hero: Hero, monsters: AnyMonster[]) {
@@ -86,11 +87,14 @@ export class Bidding {
     }
   }
 
-  public getResult(): RaidParticipants {
+  public getResult(): BiddingResult {
     if (!this.hasEnded) throw new Error ('Bidding phase has not ended yet.');
+    if (!this.raider) throw new Error ('Raider has not been declared.');
+    if (!this.endReason) throw new Error ('End reason has not been stated.');
   
     return {
-      raider: this.players.getRaider(),
+      endReason: this.endReason,
+      raider: this.raider,
       hero: this.hero,
       enemies: this.getDungeonDataForRaid()
     }
@@ -100,7 +104,9 @@ export class Bidding {
     return !this.hasEnded;
   }
 
-  public onResponse(response: BiddingActionResponseContent): BiddingNotification {
+  public onResponse(
+    response: BiddingActionResponseContent
+  ): BiddingResponseNotification {
     if (this.hasEnded) {
       throw new Error(
         'Bidding phase has ended, method should not have been called.'
@@ -115,7 +121,7 @@ export class Bidding {
       throw new Error(`A response of "${this.currentAction}" type was expected.`);
     }
 
-    let outcome: BiddingNotification;
+    let outcome: BiddingResponseNotification;
 
     switch (response.action) {
       case 'play-bidding':
@@ -150,11 +156,22 @@ export class Bidding {
     this.pickedMonster = undefined;
   }
 
-  private endTurn(): Player {
-    const nextPlayer = this.players.advanceToNextPlayer();
-    this.currentAction = 'play-bidding';  
-
-    return nextPlayer;
+  private endTurn(): void {
+    if (this.players.remainingPlayersAmount === 1) {
+      // SCENARIO (5) (see below)
+      this.hasEnded = true;
+      this.endReason = 'last-bidding-player';
+      this.raider = this.players.getLastBiddingPlayer();
+    } if (this.monstersPack.length === 0) {
+      // SCENARIOS (2), (7) and (10) (see below)
+      this.hasEnded = true;
+      this.endReason = 'no-monsters';
+      this.raider = this.players.getCurrentPlayer();
+    } else {
+      // SCENARIOS (1), (4), (6) and (9) (see below)
+      this.players.advanceToNextPlayer();
+      this.currentAction = 'play-bidding';
+    }
   }
 
   private getDungeonDataForRaid(): AnyMonster[] {
@@ -183,224 +200,122 @@ export class Bidding {
     return this.hero.getMountedEquipment();
   }
 
-  private manageMonsterAdditionResponse(response: boolean): BiddingNotification {
-    let notification: BiddingNotification;
+  private manageMonsterAdditionResponse(
+    response: boolean
+  ): BiddingResponseNotification {
     const pickedMonster = this.pickedMonster;
-    const target = this.players.getCurrentPlayer();
 
     if (!pickedMonster) {
       throw new Error('Expected pickedMonster property to be defined.');
     }
     
     if (response) {
-      const message = 'monster-added';
-      const entity = pickedMonster.type;
+      // SCENARIOS (6) and (7) (see below)
       this.addPickedMonsterToDungeon();
-      const nextPlayer = this.endTurn();
-      
-      if (this.monstersPack.length >= 1) {
-        const lastMonster = this.monstersPack.length === 1;
-        
-        notification = {
-          target,
-          message,
-          entity,
-          endOfTurn: {
-            nextPlayer,
-            warnings: {
-              noEquipment: false,
-              lastMonster
-            }
-          },
-          endOfBidding: undefined
-        };
-      } else {
-        this.hasEnded = true;
-        this.players.declareCurrentPlayerRaider();
-        const raider = this.players.getRaider();
-        
-        notification = {
-          target, 
-          message, 
-          entity,
-          endOfBidding: {
-            raider,
-            reason: 'last-monster'
-          },
-          endOfTurn: undefined
-        };
-      }
+      this.endTurn();
     } else {
+      // SCENARIO (8) (see below)
       this.currentAction = 'remove-equipment';
-
-      notification = {
-        target,
-        message: 'no-monster-added',
-        entity: undefined,
-        endOfTurn: undefined,
-        endOfBidding: undefined
-      };
     }
 
-    return notification;
+    return {};
   }
 
-  private managePlayBiddingResponse(response: boolean): BiddingNotification {
-    let notification: BiddingNotification;
-    const target = this.players.getCurrentPlayer();
-
+  private managePlayBiddingResponse(
+    response: boolean
+  ): BiddingResponseNotification {
     if (response) {
-      const pickedMonster = this.pickCurrentMonster();
+      this.pickCurrentMonster();
 
       if (this.getRemovableEquipment().length === 0) {
-        const message = 'necessarily-add-monster';
-        this.addPickedMonsterToDungeon();
-        
-        if (this.monstersPack.length === 0) {
-          this.hasEnded = true;
-          this.players.declareCurrentPlayerRaider();
-          const raider = this.players.getRaider();
-          
-          notification = {
-            target, 
-            message, 
-            entity: pickedMonster,
-            endOfBidding: {
-              raider,
-              reason: 'last-monster'
-            },
-            endOfTurn: undefined
-          };
-        } else {
-          const nextPlayer = this.endTurn();
-          const lastMonster = this.monstersPack.length === 1;
-
-          notification = {
-            target, 
-            message, 
-            entity: pickedMonster,
-            endOfBidding: undefined,
-            endOfTurn: {
-              nextPlayer,
-              warnings: {
-                lastMonster,
-                noEquipment: false
-              }
-            }
-          };
+        // SCENARIOS (1) AND (2) (see below)
+        const pickedMonster = this.pickedMonster as AnyMonster;
+        const notification: BiddingResponseNotification['notification'] = {
+          player: this.players.getCurrentPlayer(),
+          forciblyAddedMonster: pickedMonster.type
         }
-      } else {
-        this.currentAction = 'add-monster';
 
-        notification = {
-          target, 
-          message: 'monster-equipment-choice', 
-          entity: undefined,
-          endOfBidding: undefined,
-          endOfTurn: undefined
-        };
+        this.addPickedMonsterToDungeon();
+        this.endTurn();
+
+        return { notification };
+      } else {
+        // SCENARIO (3) (see below)
+        this.currentAction = 'add-monster';
       }
     } else {
-      const message = 'bidding-withdrawal';
+      // SCENARIOS (4) AND (5) (see below)
       this.players.currentPlayerWithdraws();
-
-      if (this.players.remainingPlayersAmount > 1) {
-        const nextPlayer = this.endTurn();
-
-        notification = {
-          target, 
-          message, 
-          entity: undefined,
-          endOfBidding: undefined,
-          endOfTurn: {
-            nextPlayer,
-            warnings: {
-              lastMonster: false,
-              noEquipment: false
-            }
-          }
-        };
-      } else {
-        this.hasEnded = true;
-        const raider = this.players.getRaider();
-
-        notification = {
-          target, 
-          message, 
-          entity: undefined,
-          endOfBidding: {
-            raider,
-            reason: 'last-bidder'
-          },
-          endOfTurn: undefined
-        };
-      }
+      this.endTurn();
     }
 
-    return notification;
+    return {};
   }
 
   private manageRemoveEquipmentResponse(
     equipment: EquipmentName
-  ): BiddingNotification {
+  ): BiddingResponseNotification {
     if (this.getRemovableEquipment().length === 0) {
       throw new Error('Hero has no equipment, method should not have been called.');
     }
 
-    let notification: BiddingNotification;
-
+    // SCENARIOS (9) AND (10) (see below)
     this.hero.discardEquipmentPiece(equipment);
+    this.endTurn();
 
-    const target = this.players.getCurrentPlayer();
-    const message = 'equipment-removed';
-    const entity = equipment;
-
-    if (this.monstersPack.length > 0) {
-      const nextPlayer = this.endTurn();
-      const noEquipment = this.getRemovableEquipment().length === 0;
-      const lastMonster = this.monstersPack.length === 1;
-
-      notification = {
-        target,
-        message,
-        entity,
-        endOfTurn: {
-          nextPlayer,
-          warnings: {
-            noEquipment,
-            lastMonster
-          }
-        },
-        endOfBidding: undefined
-      };
-    } else {
-      this.hasEnded = true;
-      this.players.declareCurrentPlayerRaider();
-      const raider = this.players.getRaider();
-      
-      notification = {
-        target, 
-        message, 
-        entity,
-        endOfBidding: {
-          raider,
-          reason: 'last-monster'
-        },
-        endOfTurn: undefined
-      };
-    }
-
-    return notification;
+    return {};
   }
 
-  private pickCurrentMonster(): MonsterType {
+  private pickCurrentMonster(): void {
     if (this.monstersPack.length === 0) {
       throw new Error('There are no monsters in pack, bidding should have ended.');
     }
 
-    const pickedMonster = this.monstersPack.pop() as AnyMonster;
-    this.pickedMonster = pickedMonster;
-
-    return pickedMonster.type;
+    this.pickedMonster = this.monstersPack.pop() as AnyMonster;
   }
 }
+
+/*
+  ALL POSSIBLE RESPONSE SCENARIOS:
+
+  (1)
+  * Bidding accepted
+  * 0 equipment left: monster forcibly added in dungeon
+  * >0 monsters left: current player's turn ends, it's next player's turn
+  
+  (2)
+  * Bidding accepted
+  * 0 equipment left: monster forcibly added in dungeon
+  * 0 monsters left: bidding ends, current player is raider
+  
+  (3)
+  * Bidding accepted
+  * >0 equipment left: current player's turn continues
+ 
+  (4)
+  * Bidding rejected
+  * >1 players left: it's next player's turn
+  
+  (5)
+  * Bidding rejected
+  * 1 player left: bidding ends, next player is raider
+   
+  (6) 
+  * Add monster accepted
+  * >0 monsters left: current player's turn ends, it's next player's turn
+  
+  (7)
+  * Add monster accepted
+  * 0 monsters left: bidding ends, current player is raider
+  
+  (8)
+  * Add monster rejected: current player's turn continues
+
+  (9)
+  * Equipment removed
+  * >0 monsters left: current player's turn ends, it's next player's turn
+
+  (10)
+  * Equipment removed
+  * 0 monsters left: bidding ends, current player is raider
+*/

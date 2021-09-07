@@ -7,7 +7,7 @@ import {
   BidParticipationRequestData, BidParticipationResponseContent,
   MonsterAdditionRequestData, MonsterAdditionResponseContent,
   EquipmentRemovalRequestData, EquipmentRemovalResponseContent,
-  RaidParticipants
+  BiddingResult, RaidParticipants
 } from '../../models/models';
 
 @Injectable()
@@ -24,6 +24,8 @@ export class BiddingService {
     const bidding = await this.setBiddingUp(players);
     const result = await this.manageBidding(bidding);
     
+    this.uiMediator.notifyBiddingResult(result.raider, result.endReason);
+
     return result;
   }
 
@@ -42,12 +44,17 @@ export class BiddingService {
     };
   }
 
-  private async manageBidding(bidding: Bidding): Promise<RaidParticipants> {
+  private async manageBidding(bidding: Bidding): Promise<BiddingResult> {
     while (bidding.goesOn()) {
       const request = bidding.getActionRequestData();
       const response = await this.makeRequest(request);
       const outcome = bidding.onResponse(response);
-      // Notify state update
+      
+      if (outcome.notification) {
+        const { player, forciblyAddedMonster: monster } = outcome.notification;
+        this.uiMediator.notifyForcibleMonsterAddition(player, monster);
+        // wait for it to be confirmed
+      }
     }
 
     return bidding.getResult();

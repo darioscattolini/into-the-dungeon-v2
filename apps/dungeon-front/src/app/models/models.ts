@@ -7,11 +7,15 @@ import {
 } from "./game-mechanics/bidding/bidding-players-round";
 import { BiddingStateViewData } from './game-mechanics/bidding/bidding-state';
 import {
+  ForcibleMonsterAdditionNotification, BiddingResponseNotification,
   BiddingActionRequestData, BiddingActionResponseContent,
   BidParticipationRequestData, BidParticipationResponseContent,
   MonsterAdditionRequestData, MonsterAdditionResponseContent,
   EquipmentRemovalRequestData, EquipmentRemovalResponseContent
 } from './game-mechanics/bidding/bidding-action';
+import { 
+  BiddingResult, BiddingEndReason 
+} from './game-mechanics/bidding/bidding-result';
 import { Raid } from './game-mechanics/raid/raid';
 import { RaidParticipants } from './game-mechanics/raid/raid-participants';
 import { Encounter, EncounterOutcome } from './game-mechanics/raid/encounter';
@@ -19,8 +23,9 @@ import { ChosenWeapon } from './game-mechanics/raid/encounter';
 import { RaidResult } from './game-mechanics/raid/raid-result';
 
 export { 
-  Game, PlayerRequirements,
-  Bidding, BiddingPlayersRound, BiddingStateViewData,
+  Game, PlayerRequirements, ForcibleMonsterAdditionNotification,
+  Bidding, BiddingPlayersRound, BiddingResult, BiddingEndReason,
+  BiddingStateViewData, BiddingResponseNotification,
   BiddingActionRequestData, BiddingActionResponseContent,
   BidParticipationRequestData, BidParticipationResponseContent,
   MonsterAdditionRequestData, MonsterAdditionResponseContent,
