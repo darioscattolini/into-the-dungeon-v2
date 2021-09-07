@@ -1,22 +1,28 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockBuilder, MockedDebugElement, MockRender, ngMocks } from 'ng-mocks';
 
 import { MonsterComponent } from './monster.component';
+import { OneDeviceModule } from '../../one-device.module';
+import { AnyMonsterViewData } from '../../../models/models';
 
 describe('MonsterComponent', () => {
-  let component: MonsterComponent;
-  let fixture: ComponentFixture<MonsterComponent>;
+  let component: MockedDebugElement<MonsterComponent>;
+  let monsterViewDataDummy: AnyMonsterViewData;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ MonsterComponent ]
-    })
-    .compileComponents();
-  });
+  beforeEach(() => MockBuilder(MonsterComponent, OneDeviceModule));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MonsterComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    monsterViewDataDummy = {
+      name: 'fairy',
+      damage: 3,
+      description: '......',
+      image: '...'
+    };
+
+    MockRender(MonsterComponent, {
+      'monster': monsterViewDataDummy
+    });
+
+    component = ngMocks.find(MonsterComponent);
   });
 
   it('should create', () => {
