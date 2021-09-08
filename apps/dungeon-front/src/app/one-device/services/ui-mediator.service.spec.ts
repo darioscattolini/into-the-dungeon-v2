@@ -5,10 +5,10 @@ import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Player, PlayerRequirements,
+  Player, PlayerRequirements, ForcibleMonsterAdditionNotificationData,
   BiddingActionRequestData, BidParticipationRequestData, BiddingStateViewData,
   HeroType, AnyHeroViewData, heroTypes, heroViewDataMap, PlayingHeroViewData,
-  EquipmentName, WeaponName, monsterViewDataMap,
+  EquipmentName, WeaponName, MonsterType, MonsterViewData, monsterViewDataMap
 } from '../../models/models';
 import { 
   PlayerDouble, HeroDouble, pickRandomMonsterTypes, buildEquipmentViewDataDummy
@@ -106,8 +106,66 @@ describe('UiMediatorService', () => {
     });
   });
 
-  describe('notifyError', () => {
-    //
+  describe('notifyForcibleMonsterAddition', () => {
+    let dataDummy: ForcibleMonsterAdditionNotificationData;
+
+    beforeEach(() => {
+      dataDummy = {
+        player: PlayerDouble.createDouble(),
+        forciblyAddedMonster: pickRandomMonsterTypes(1)[0]
+      }
+
+      uiMediator.forcibleMonsterAdditionNotification.subscribe(notification => {
+        notification.onResponse(true);
+      });
+    });
+
+    test('it asks monstersService for view data of added monster', async () => {
+      expect.assertions(1);
+
+      await uiMediator.notifyForcibleMonsterAddition(dataDummy);
+
+      expect(monstersServiceMock.getViewDataFor)
+        .toHaveBeenCalledWith(dataDummy.forciblyAddedMonster);
+    });
+
+    test('it emits notification with expected properties', async () => {
+      const monsterViewDataDummy: MonsterViewData<MonsterType> = {
+        name: 'orc',
+        image: '...',
+        damage: randomInteger(5),
+        description: randomString(10)
+      };
+
+      jest.spyOn(uiMediator.forcibleMonsterAdditionNotification, 'emit');
+      jest.spyOn(monstersServiceMock, 'getViewDataFor')
+        .mockReturnValue(monsterViewDataDummy);
+      
+      expect.assertions(2);
+
+      await uiMediator.notifyForcibleMonsterAddition(dataDummy);
+
+      expect(uiMediator.forcibleMonsterAdditionNotification.emit)
+        .toHaveBeenCalledTimes(1);
+      expect(uiMediator.forcibleMonsterAdditionNotification.emit)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          player: dataDummy.player.name,
+          content: monsterViewDataDummy,
+          promise: expect.toSatisfy(x => x instanceof Promise),
+          onResponse: expect.toBeFunction()
+        }));
+    });
+
+    test('it awaits notification resolution', () => {
+      const resolved = uiMediator.notifyForcibleMonsterAddition(dataDummy);
+      
+      expect(resolved).toResolve();
+
+      uiMediator.forcibleMonsterAdditionNotification.unsubscribe();
+      const unResolved = uiMediator.notifyForcibleMonsterAddition(dataDummy);
+
+      expect(unResolved).not.toResolve();
+    });
   });
 
   describe.each([
