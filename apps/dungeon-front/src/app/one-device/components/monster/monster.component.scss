@@ -1,3 +1,25 @@
+.container-spacing-normal {
+  margin: 4px;
+}
+
+.title-group-normal {
+  align-items: center;
+}
+
+.title-group-normal mat-card-title {
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.container-spacing-normal .stat-title {
+  margin-bottom: 4px!important;
+}
+
+mat-divider {
+  margin-top: 16px!important;
+  margin-bottom: 16px!important;
+}
+
 .container-spacing-small {
   margin: 2px;
   padding: 8px;
@@ -21,4 +43,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.mini-component {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.avatar {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.data-mini p {
+  line-height: 1.3;
+  margin-bottom: 0;
 }

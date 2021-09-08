@@ -3,17 +3,26 @@
 <ng-template #miniTemplate>
   <div class="mini-component">
     <img [src]="image" class="avatar">
-    <div>
+    
+    <div class="data-mini" *ngIf="name !== 'secret'">
       <p class="mat-body-strong">{{ name | titlecase }}</p>
       <p class="mat-caption">{{ damage }} damage</p>
     </div>
     
+    <div class="data-mini" *ngIf="name === 'secret'">
+      <p class="mat-caption">
+        Monster added by another player
+      </p>
+    </div>
   </div>
 </ng-template>
 
 <ng-template #normalTemplate>
-  <mat-card [ngClass]="{ 'container-spacing-small': smallComponent }">
-    <mat-card-title-group *ngIf="!smallComponent">
+  <mat-card 
+    [ngClass]="{ 'container-spacing-small': smallComponent }"
+    [ngClass]="{ 'container-spacing-normal': !smallComponent }"
+  >
+    <mat-card-title-group *ngIf="!smallComponent" class="title-group-normal">
       <mat-card-title>{{ name | titlecase }}</mat-card-title>
       <img mat-card-sm-image src="{{ image }}">
     </mat-card-title-group>
@@ -22,13 +31,15 @@
       <mat-card-title>{{ name | titlecase }}</mat-card-title>
       <img mat-card-avatar src="{{ image }}">
     </mat-card-header>
+
+    <mat-divider *ngIf="!smallComponent" [inset]="true"></mat-divider>
   
     <mat-card-content [ngClass]="{ 'text-small': smallComponent }">
-      <div class="tabular-flex">
-        <p class="mat-body-strong">DAMAGE</p>
+      <div [ngClass]="{ 'tabular-flex': smallComponent }">
+        <p class="mat-body-strong stat-title">DAMAGE</p>
         <p>{{ damage }}</p>
       </div>
-      <p class="mat-body-strong">DESCRIPTION</p>
+      <p class="mat-body-strong stat-title">DESCRIPTION</p>
       <p>{{ description }}</p>
     </mat-card-content>
   </mat-card>  
