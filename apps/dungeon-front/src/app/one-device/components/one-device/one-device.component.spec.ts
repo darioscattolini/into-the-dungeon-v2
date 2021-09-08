@@ -5,7 +5,9 @@ import { UiMediatorService } from '../../services/ui-mediator.service';
 import { GameService } from '../../services/game.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventEmitter } from '@angular/core';
-import { HeroChoiceRequest } from '../../../models/models';
+import { 
+  ForcibleMonsterAdditionNotification, HeroChoiceRequest 
+} from '../../../models/models';
 
 jest.mock('../../services/ui-mediator.service');
 jest.mock('../../services/game.service');
@@ -30,6 +32,10 @@ describe('OneDeviceComponent', () => {
     
     Object.defineProperty(uiMediator, 'bidParticipationRequest', {
       value: new EventEmitter<HeroChoiceRequest>()
+    });
+
+    Object.defineProperty(uiMediator, 'forcibleMonsterAdditionNotification', {
+      value: new EventEmitter<ForcibleMonsterAdditionNotification>()
     });
 
     Object.defineProperty(uiMediator, 'heroChoiceRequest', {

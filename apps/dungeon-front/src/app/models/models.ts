@@ -89,25 +89,28 @@ import {
   MonsterDataMap, MonsterDataMapIT, monsterDataMap 
 } from './monster/monster-data';
 import { 
-  AnyMonsterViewData, 
+  MonsterViewData, AnyMonsterViewData, 
   MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap 
 } from './monster/monster-view-data';
 
 export { 
   Monster, AnyMonster, MonsterType, MonsterTypeSecret, monsterTypes, 
   MonsterDataMap, MonsterDataMapIT, monsterDataMap,
-  AnyMonsterViewData, 
+  MonsterViewData, AnyMonsterViewData, 
   MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap 
 }
 
 // REQUEST
 import { Request } from './request/request';
-import { Notification } from './request/notification';
 import { BidParticipationRequest } from './request/bid-participation-request';
-import { PlayersRequest } from './request/players-request';
 import { HeroChoiceRequest } from './request/hero-choice-request';
+import { PlayersRequest } from './request/players-request';
+import { Notification } from './request/notification';
+import { 
+  ForcibleMonsterAdditionNotification 
+} from './request/forcible-monster-addition-notification';
 
 export { 
-  Request, Notification,
-  BidParticipationRequest, PlayersRequest, HeroChoiceRequest 
+  Request, BidParticipationRequest, PlayersRequest, HeroChoiceRequest,
+  Notification, ForcibleMonsterAdditionNotification
 }

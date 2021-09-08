@@ -6,6 +6,9 @@ import { Request } from '../../../models/models';
 import { 
   BidParticipationComponent 
 } from '../bid-participation/bid-participation.component';
+import { 
+  ForcibleMonsterAdditionComponent 
+} from '../forcible-monster-addition/forcible-monster-addition.component';
 import { HeroSelectComponent } from '../hero-select/hero-select.component';
 import { 
   PlayerRecorderComponent 
@@ -26,14 +29,18 @@ export class OneDeviceComponent implements OnInit {
   public ngOnInit() {
     this.uiMediator.bidParticipationRequest.subscribe(request => {
       this.triggerDialogComponent(BidParticipationComponent, request);
+    });  
+    
+    this.uiMediator.forcibleMonsterAdditionNotification.subscribe(request => {
+      this.triggerDialogComponent(ForcibleMonsterAdditionComponent, request);
+    });
+    
+    this.uiMediator.heroChoiceRequest.subscribe(request => {
+      this.triggerDialogComponent(HeroSelectComponent, request);
     });
 
     this.uiMediator.playersRequest.subscribe(request => {
       this.triggerDialogComponent(PlayerRecorderComponent, request);
-    });
-
-    this.uiMediator.heroChoiceRequest.subscribe(request => {
-      this.triggerDialogComponent(HeroSelectComponent, request);
     });
 
     this.gameService.play(); // no await?

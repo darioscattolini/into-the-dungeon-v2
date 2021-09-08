@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Add monster</h2>
+
+<div
+  *ngIf="!playerNotified; then notifyPlayer; else showMonster"
+></div>
+
+<ng-template #notifyPlayer>
+  <mat-dialog-content>
+    <h3 class="mat-h3">
+      Notification for {{ data.request.player }}
+    </h3>
+    <p>
+      You have decided to bid one more round. The hero hasn't any equipment left,
+      so your only choice is to add the following monster in the dungeon. 
+    </p>
+    <p>
+      If you are {{ data.request.player }}, click the button to see the monster,
+      and don't show it to other players.
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="playerNotified = true">
+      See monster
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #showMonster>
+  <mat-dialog-content>
+    <dungeon-monster [monster]="data.request.content">
+    </dungeon-monster>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions>
+    <button mat-raised-button color="accent" [mat-dialog-close]="true">
+      End turn
+    </button>
+  </mat-dialog-actions>
+</ng-template>

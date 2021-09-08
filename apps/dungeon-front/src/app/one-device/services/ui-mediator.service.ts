@@ -5,10 +5,9 @@ import {
   Player, PlayerRequirements, PlayersRequest, MonsterType, BiddingEndReason,
   BidParticipationRequestData, BidParticipationRequest, BiddingStateViewData,
   Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon,
-  ForcibleMonsterAdditionNotificationData,
+  ForcibleMonsterAdditionNotificationData, ForcibleMonsterAdditionNotification
 } from '../../models/models';
 import { Notification } from '../../models/request/notification';
-import { MonsterViewData } from '../../models/monster/monster-view-data';
 
 @Injectable()
 export class UiMediatorService {
@@ -18,7 +17,7 @@ export class UiMediatorService {
   public readonly heroChoiceRequest = new EventEmitter<HeroChoiceRequest>();
 
   public readonly forcibleMonsterAdditionNotification 
-    = new EventEmitter<Notification<MonsterViewData<MonsterType>>>();
+    = new EventEmitter<ForcibleMonsterAdditionNotification>();
 
   public readonly playersRequest = new EventEmitter<PlayersRequest>();
 
