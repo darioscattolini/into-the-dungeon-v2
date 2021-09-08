@@ -13,10 +13,6 @@ export abstract class Request<T> {
     return this._promise;
   }
 
-  constructor(player?: string) {
-    this.player = player;
-  }
-
   public onResponse(response: T) {
     this._resolve(response);
   }
