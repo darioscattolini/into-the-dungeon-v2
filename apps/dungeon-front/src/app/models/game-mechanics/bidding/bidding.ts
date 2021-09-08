@@ -162,7 +162,7 @@ export class Bidding {
       this.hasEnded = true;
       this.endReason = 'last-bidding-player';
       this.raider = this.players.getLastBiddingPlayer();
-    } if (this.monstersPack.length === 0) {
+    } else if (this.monstersPack.length === 0) {
       // SCENARIOS (2), (7) and (10) (see below)
       this.hasEnded = true;
       this.endReason = 'no-monsters';
