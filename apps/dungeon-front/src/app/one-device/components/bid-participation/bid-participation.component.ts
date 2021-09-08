@@ -13,5 +13,4 @@ export class BidParticipationComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { request: BidParticipationRequest }
   ) { }
-
 }
