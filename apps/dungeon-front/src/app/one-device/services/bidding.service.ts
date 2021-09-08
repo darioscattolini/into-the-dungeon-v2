@@ -24,7 +24,7 @@ export class BiddingService {
     const bidding = await this.setBiddingUp(players);
     const result = await this.manageBidding(bidding);
     
-    this.uiMediator.notifyBiddingResult(result.raider, result.endReason);
+    await this.uiMediator.notifyBiddingResult(result.raider, result.endReason);
 
     return result;
   }
