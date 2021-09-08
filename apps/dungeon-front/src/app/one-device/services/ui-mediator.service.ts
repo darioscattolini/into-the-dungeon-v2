@@ -4,14 +4,22 @@ import { MonstersService } from './monsters.service';
 import { 
   Player, PlayerRequirements, PlayersRequest, MonsterType, BiddingEndReason,
   BidParticipationRequestData, BidParticipationRequest, BiddingStateViewData,
-  Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon
+  Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon,
+  ForcibleMonsterAdditionNotificationData,
 } from '../../models/models';
+import { Notification } from '../../models/request/notification';
+import { MonsterViewData } from '../../models/monster/monster-view-data';
 
 @Injectable()
 export class UiMediatorService {
   public readonly bidParticipationRequest 
     = new EventEmitter<BidParticipationRequest>();
+
   public readonly heroChoiceRequest = new EventEmitter<HeroChoiceRequest>();
+
+  public readonly forcibleMonsterAdditionNotification 
+    = new EventEmitter<Notification<MonsterViewData<MonsterType>>>();
+
   public readonly playersRequest = new EventEmitter<PlayersRequest>();
 
   constructor(
@@ -23,10 +31,15 @@ export class UiMediatorService {
     //
   }
 
-  public notifyForcibleMonsterAddition(
-    player: Player, monster: MonsterType
-  ): void {
-    //
+  public async notifyForcibleMonsterAddition(
+    data: ForcibleMonsterAdditionNotificationData
+  ): Promise<void> {
+    const { player, forciblyAddedMonster: monster } = data;
+    const monsterViewData = this.monstersService.getViewDataFor(monster);
+    
+    const notification = new Notification(player.name, monsterViewData);
+    this.forcibleMonsterAdditionNotification.emit(notification);
+    await notification.promise;
   }
 
   public async requestBidParticipation(

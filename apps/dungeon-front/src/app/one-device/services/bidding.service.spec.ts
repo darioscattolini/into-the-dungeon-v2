@@ -285,9 +285,8 @@ describe('BiddingService', () => {
 
         await biddingService.playBidding(playersDummy);
 
-        expect(uiMediator.notifyForcibleMonsterAddition).toHaveBeenCalledWith(
-          notificationDummy.player, notificationDummy.forciblyAddedMonster
-        );
+        expect(uiMediator.notifyForcibleMonsterAddition)
+          .toHaveBeenCalledWith(notificationDummy);
       });
     });
 
@@ -420,9 +419,8 @@ describe('BiddingService', () => {
 
         await biddingService.playBidding(playersDummy);
 
-        expect(uiMediator.notifyForcibleMonsterAddition).toHaveBeenCalledWith(
-          notificationDummy.player, notificationDummy.forciblyAddedMonster
-        );
+        expect(uiMediator.notifyForcibleMonsterAddition)
+          .toHaveBeenCalledWith(notificationDummy);
       });
     });
 
@@ -588,9 +586,8 @@ describe('BiddingService', () => {
 
         await biddingService.playBidding(playersDummy);
 
-        expect(uiMediator.notifyForcibleMonsterAddition).toHaveBeenCalledWith(
-          notificationDummy.player, notificationDummy.forciblyAddedMonster
-        );
+        expect(uiMediator.notifyForcibleMonsterAddition)
+          .toHaveBeenCalledWith(notificationDummy);
       });
     });
 

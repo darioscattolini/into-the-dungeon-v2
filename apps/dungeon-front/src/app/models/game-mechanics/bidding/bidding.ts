@@ -2,7 +2,7 @@ import { BiddingPlayersRound } from './bidding-players-round';
 import { BiddingState } from './bidding-state';
 import { 
   BiddingAction, BiddingActionRequestData, BiddingActionResponseContent,
-  BiddingResponseNotification
+  BiddingResponseNotificationData
 } from './bidding-action';
 import { BiddingEndReason, BiddingResult } from './bidding-result';
 import { Player, Hero, EquipmentName, AnyMonster } from '../../models';
@@ -106,7 +106,7 @@ export class Bidding {
 
   public onResponse(
     response: BiddingActionResponseContent
-  ): BiddingResponseNotification {
+  ): BiddingResponseNotificationData {
     if (this.hasEnded) {
       throw new Error(
         'Bidding phase has ended, method should not have been called.'
@@ -121,7 +121,7 @@ export class Bidding {
       throw new Error(`A response of "${this.currentAction}" type was expected.`);
     }
 
-    let outcome: BiddingResponseNotification;
+    let outcome: BiddingResponseNotificationData;
 
     switch (response.action) {
       case 'play-bidding':
@@ -202,7 +202,7 @@ export class Bidding {
 
   private manageMonsterAdditionResponse(
     response: boolean
-  ): BiddingResponseNotification {
+  ): BiddingResponseNotificationData {
     const pickedMonster = this.pickedMonster;
 
     if (!pickedMonster) {
@@ -223,14 +223,14 @@ export class Bidding {
 
   private managePlayBiddingResponse(
     response: boolean
-  ): BiddingResponseNotification {
+  ): BiddingResponseNotificationData {
     if (response) {
       this.pickCurrentMonster();
 
       if (this.getRemovableEquipment().length === 0) {
         // SCENARIOS (1) AND (2) (see below)
         const pickedMonster = this.pickedMonster as AnyMonster;
-        const notification: BiddingResponseNotification['notification'] = {
+        const notification: BiddingResponseNotificationData['notification'] = {
           player: this.players.getCurrentPlayer(),
           forciblyAddedMonster: pickedMonster.type
         }
@@ -254,7 +254,7 @@ export class Bidding {
 
   private manageRemoveEquipmentResponse(
     equipment: EquipmentName
-  ): BiddingResponseNotification {
+  ): BiddingResponseNotificationData {
     if (this.getRemovableEquipment().length === 0) {
       throw new Error('Hero has no equipment, method should not have been called.');
     }

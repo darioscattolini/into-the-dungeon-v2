@@ -51,8 +51,7 @@ export class BiddingService {
       const outcome = bidding.onResponse(response);
       
       if (outcome.notification) {
-        const { player, forciblyAddedMonster: monster } = outcome.notification;
-        this.uiMediator.notifyForcibleMonsterAddition(player, monster);
+        this.uiMediator.notifyForcibleMonsterAddition(outcome.notification);
         // wait for it to be confirmed
       }
     }

@@ -53,10 +53,10 @@ export type BiddingActionResponseContent =
   | MonsterAdditionResponseContent 
   | EquipmentRemovalResponseContent;
 
-export interface ForcibleMonsterAdditionNotification {
+export interface ForcibleMonsterAdditionNotificationData {
   player: Player;
   forciblyAddedMonster: MonsterType;
 }
-export interface BiddingResponseNotification {
-  notification?: ForcibleMonsterAdditionNotification;
+export interface BiddingResponseNotificationData {
+  notification?: ForcibleMonsterAdditionNotificationData;
 }

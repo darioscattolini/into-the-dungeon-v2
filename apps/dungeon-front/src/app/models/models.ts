@@ -7,7 +7,7 @@ import {
 } from "./game-mechanics/bidding/bidding-players-round";
 import { BiddingStateViewData } from './game-mechanics/bidding/bidding-state';
 import {
-  ForcibleMonsterAdditionNotification, BiddingResponseNotification,
+  ForcibleMonsterAdditionNotificationData, BiddingResponseNotificationData,
   BiddingActionRequestData, BiddingActionResponseContent,
   BidParticipationRequestData, BidParticipationResponseContent,
   MonsterAdditionRequestData, MonsterAdditionResponseContent,
@@ -23,9 +23,9 @@ import { ChosenWeapon } from './game-mechanics/raid/encounter';
 import { RaidResult } from './game-mechanics/raid/raid-result';
 
 export { 
-  Game, PlayerRequirements, ForcibleMonsterAdditionNotification,
+  Game, PlayerRequirements, ForcibleMonsterAdditionNotificationData,
   Bidding, BiddingPlayersRound, BiddingResult, BiddingEndReason,
-  BiddingStateViewData, BiddingResponseNotification,
+  BiddingStateViewData, BiddingResponseNotificationData,
   BiddingActionRequestData, BiddingActionResponseContent,
   BidParticipationRequestData, BidParticipationResponseContent,
   MonsterAdditionRequestData, MonsterAdditionResponseContent,
@@ -102,8 +102,12 @@ export {
 
 // REQUEST
 import { Request } from './request/request';
+import { Notification } from './request/notification';
 import { BidParticipationRequest } from './request/bid-participation-request';
 import { PlayersRequest } from './request/players-request';
 import { HeroChoiceRequest } from './request/hero-choice-request';
 
-export { Request, BidParticipationRequest, PlayersRequest, HeroChoiceRequest }
+export { 
+  Request, Notification,
+  BidParticipationRequest, PlayersRequest, HeroChoiceRequest 
+}
