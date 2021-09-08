@@ -102,7 +102,9 @@ export {
 
 // REQUEST
 import { Request } from './request/request';
-import { BidParticipationRequest } from './request/bid-participation-request';
+import { 
+  BidParticipationRequest, MonsterAdditionRequest, EquipmentRemovalRequest
+} from './request/bidding-action-request';
 import { HeroChoiceRequest } from './request/hero-choice-request';
 import { PlayersRequest } from './request/players-request';
 import { Notification } from './request/notification';
@@ -112,6 +114,7 @@ import {
 } from './request/forcible-monster-addition-notification';
 
 export { 
-  Request, BidParticipationRequest, PlayersRequest, HeroChoiceRequest,
+  Request, PlayersRequest, HeroChoiceRequest,
+  BidParticipationRequest, MonsterAdditionRequest, EquipmentRemovalRequest,
   Notification, BiddingEndNotification, ForcibleMonsterAdditionNotification
 }
