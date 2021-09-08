@@ -3,6 +3,7 @@ import { GameService } from '../../services/game.service';
 import { UiMediatorService } from '../../services/ui-mediator.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Request } from '../../../models/models';
+import { BiddingEndComponent } from '../bidding-end/bidding-end.component';
 import { 
   BidParticipationComponent 
 } from '../bid-participation/bid-participation.component';
@@ -27,6 +28,10 @@ export class OneDeviceComponent implements OnInit {
   ) { }
 
   public ngOnInit() {
+    this.uiMediator.biddingEndNotification.subscribe(request => {
+      this.triggerDialogComponent(BiddingEndComponent, request);
+    });
+
     this.uiMediator.bidParticipationRequest.subscribe(request => {
       this.triggerDialogComponent(BidParticipationComponent, request);
     });  

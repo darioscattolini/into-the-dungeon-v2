@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Bidding phase has ended</h2>
+
+<mat-dialog-content>
+  <p>
+    {{ data.request.player }} will raid the dungeon because 
+  
+    <span 
+      *ngIf="data.request.content === 'last-bidding-player'; 
+      then lastBiddingPlayerReason"
+    ></span>
+
+    <span 
+      *ngIf="data.request.content === 'no-monsters'; 
+      then noMonstersReason"
+    ></span>
+  </p>
+
+  <p>
+    {{ data.request.player }} will raid the dungeon alone, choosing (when 
+    possible) the hero's weapons to be used against each monster. Other players
+    can watch.
+  </p>
+</mat-dialog-content>
+
+<ng-template #lastBiddingPlayerReason>
+  all other players have withdrawn.
+</ng-template>
+
+<ng-template #noMonstersReason>
+  there aren't any monsters left to add in dungeon.
+</ng-template>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true">
+    Start raid
+  </button>
+</mat-dialog-actions>

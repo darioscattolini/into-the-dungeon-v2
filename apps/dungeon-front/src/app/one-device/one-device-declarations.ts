@@ -1,4 +1,7 @@
 import { 
+  BiddingEndComponent 
+} from './components/bidding-end/bidding-end.component';
+import { 
   BiddingStateComponent 
 } from './components/bidding-state/bidding-state.component';
 import { 
@@ -20,6 +23,7 @@ import {
 } from './components/player-recorder/player-recorder.component';
 
 export const oneDeviceModuleDeclarations = [
+  BiddingEndComponent,
   BiddingStateComponent,
   BidParticipationComponent,
   EquipmentComponent,
