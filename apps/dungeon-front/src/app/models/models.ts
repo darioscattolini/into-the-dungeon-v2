@@ -106,11 +106,12 @@ import { BidParticipationRequest } from './request/bid-participation-request';
 import { HeroChoiceRequest } from './request/hero-choice-request';
 import { PlayersRequest } from './request/players-request';
 import { Notification } from './request/notification';
+import { BiddingEndNotification } from './request/bidding-end-notification';
 import { 
   ForcibleMonsterAdditionNotification 
 } from './request/forcible-monster-addition-notification';
 
 export { 
   Request, BidParticipationRequest, PlayersRequest, HeroChoiceRequest,
-  Notification, ForcibleMonsterAdditionNotification
+  Notification, BiddingEndNotification, ForcibleMonsterAdditionNotification
 }

@@ -2,32 +2,42 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Player, PlayerRequirements, PlayersRequest, MonsterType, BiddingEndReason,
+  Player, PlayerRequirements, PlayersRequest, MonsterType, 
+  BiddingEndReason, BiddingEndNotification,
   BidParticipationRequestData, BidParticipationRequest, BiddingStateViewData,
   Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon,
-  ForcibleMonsterAdditionNotificationData, ForcibleMonsterAdditionNotification
+  ForcibleMonsterAdditionNotificationData, ForcibleMonsterAdditionNotification, 
 } from '../../models/models';
 import { Notification } from '../../models/request/notification';
 
 @Injectable()
 export class UiMediatorService {
+  public readonly biddingEndNotification 
+    = new EventEmitter<BiddingEndNotification>();
+
   public readonly bidParticipationRequest 
     = new EventEmitter<BidParticipationRequest>();
-
-  public readonly heroChoiceRequest = new EventEmitter<HeroChoiceRequest>();
 
   public readonly forcibleMonsterAdditionNotification 
     = new EventEmitter<ForcibleMonsterAdditionNotification>();
 
-  public readonly playersRequest = new EventEmitter<PlayersRequest>();
+  public readonly heroChoiceRequest 
+    = new EventEmitter<HeroChoiceRequest>();
+
+  public readonly playersRequest 
+    = new EventEmitter<PlayersRequest>();
 
   constructor(
     private heroesService: HeroesService,
     private monstersService: MonstersService
   ) { }
 
-  public notifyBiddingResult(raider: Player, reason: BiddingEndReason): void {
-    //
+  public async notifyBiddingResult(
+    raider: Player, reason: BiddingEndReason
+  ): Promise<void> {
+    const notification = new Notification(raider.name, reason);
+    this.biddingEndNotification.emit(notification);
+    await notification.promise;
   }
 
   public async notifyForcibleMonsterAddition(

@@ -5,7 +5,8 @@ import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Player, PlayerRequirements, ForcibleMonsterAdditionNotificationData,
+  Player, PlayerRequirements, 
+  ForcibleMonsterAdditionNotificationData, BiddingEndReason,
   BiddingActionRequestData, BidParticipationRequestData, BiddingStateViewData,
   HeroType, AnyHeroViewData, heroTypes, heroViewDataMap, PlayingHeroViewData,
   EquipmentName, WeaponName, MonsterType, MonsterViewData, monsterViewDataMap
@@ -103,6 +104,51 @@ describe('UiMediatorService', () => {
       
       expect(uiMediator.playersRequest).toBeInstanceOf(EventEmitter);
       expect(uiMediator.playersRequest.emit).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('notifyBiddingResult', () => {
+    let raiderDummy: Player;
+    let endReasonDummy: BiddingEndReason;
+
+    beforeEach(() => {
+      raiderDummy = PlayerDouble.createDouble();
+      endReasonDummy = 'last-bidding-player';
+
+      uiMediator.biddingEndNotification.subscribe(notification => {
+        notification.onResponse(true);
+      });
+    });
+
+    test('it emits notification with expected properties', async () => {
+      jest.spyOn(uiMediator.biddingEndNotification, 'emit');
+      
+      expect.assertions(2);
+
+      await uiMediator.notifyBiddingResult(raiderDummy, endReasonDummy);
+
+      expect(uiMediator.biddingEndNotification.emit)
+        .toHaveBeenCalledTimes(1);
+      expect(uiMediator.biddingEndNotification.emit)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          player: raiderDummy.name,
+          content: endReasonDummy,
+          promise: expect.toSatisfy(x => x instanceof Promise),
+          onResponse: expect.toBeFunction()
+        }));
+    });
+
+    test('it awaits notification resolution', () => {
+      const resolved = uiMediator
+        .notifyBiddingResult(raiderDummy, endReasonDummy);
+      
+      expect(resolved).toResolve();
+
+      uiMediator.biddingEndNotification.unsubscribe();
+      const unResolved = uiMediator
+        .notifyBiddingResult(raiderDummy, endReasonDummy);
+
+      expect(unResolved).not.toResolve();
     });
   });
 
