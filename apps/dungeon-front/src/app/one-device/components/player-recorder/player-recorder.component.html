@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>Add players</h2>
-<p mat-h4>{{ data.request.range.join('-') }} players required</p>
+<p mat-h4>{{ data.range.join('-') }} players required</p>
 
 <mat-dialog-content>
   <p *ngFor="let name of addedNames" class="mat-elevation-z1">
@@ -10,7 +10,7 @@
   </p>
 
   <mat-form-field appearance="fill"
-    *ngIf="addedNames.length < data.request.range[1]" 
+    *ngIf="addedNames.length < data.range[1]" 
   >
     <mat-label>Player name</mat-label>
     

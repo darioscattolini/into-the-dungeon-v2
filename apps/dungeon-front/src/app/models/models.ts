@@ -5,9 +5,11 @@ import { Bidding } from './game-mechanics/bidding/bidding';
 import { 
   BiddingPlayersRound 
 } from "./game-mechanics/bidding/bidding-players-round";
-import { BiddingStateViewData } from './game-mechanics/bidding/bidding-state';
+import { 
+  BiddingState, BiddingStateViewData 
+} from './game-mechanics/bidding/bidding-state';
 import {
-  ForcibleMonsterAdditionNotificationData, BiddingResponseNotificationData,
+  BiddingResponseNotificationData,
   BiddingActionRequestData, BiddingActionResponseContent,
   BidParticipationRequestData, BidParticipationResponseContent,
   MonsterAdditionRequestData, MonsterAdditionResponseContent,
@@ -23,9 +25,9 @@ import { ChosenWeapon } from './game-mechanics/raid/encounter';
 import { RaidResult } from './game-mechanics/raid/raid-result';
 
 export { 
-  Game, PlayerRequirements, ForcibleMonsterAdditionNotificationData,
+  Game, PlayerRequirements,
   Bidding, BiddingPlayersRound, BiddingResult, BiddingEndReason,
-  BiddingStateViewData, BiddingResponseNotificationData,
+  BiddingState, BiddingStateViewData, BiddingResponseNotificationData,
   BiddingActionRequestData, BiddingActionResponseContent,
   BidParticipationRequestData, BidParticipationResponseContent,
   MonsterAdditionRequestData, MonsterAdditionResponseContent,
@@ -105,16 +107,15 @@ import { Request } from './request/request';
 import { 
   BidParticipationRequest, MonsterAdditionRequest, EquipmentRemovalRequest
 } from './request/bidding-action-request';
-import { HeroChoiceRequest } from './request/hero-choice-request';
-import { PlayersRequest } from './request/players-request';
-import { Notification } from './request/notification';
 import { BiddingEndNotification } from './request/bidding-end-notification';
 import { 
-  ForcibleMonsterAdditionNotification 
+  ForcibleMonsterAdditionNotification
 } from './request/forcible-monster-addition-notification';
+import { HeroChoiceRequest } from './request/hero-choice-request';
+import { PlayersRequest } from './request/players-request';
 
 export { 
-  Request, PlayersRequest, HeroChoiceRequest,
+  Request, HeroChoiceRequest, PlayersRequest,
   BidParticipationRequest, MonsterAdditionRequest, EquipmentRemovalRequest,
-  Notification, BiddingEndNotification, ForcibleMonsterAdditionNotification
+  ForcibleMonsterAdditionNotification, BiddingEndNotification
 }

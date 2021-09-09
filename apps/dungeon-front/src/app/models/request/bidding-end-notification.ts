@@ -1,5 +1,10 @@
-import { Notification } from './notification';
+import { Request } from './request';
 import { BiddingEndReason } from '../models';
 
-export type BiddingEndNotification = 
-  Notification<BiddingEndReason>;
+interface BiddingEndNotificationContent {
+  endReason: BiddingEndReason;
+  raider: string
+}
+
+export type BiddingEndNotification 
+  = Request<boolean, BiddingEndNotificationContent>;

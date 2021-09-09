@@ -7,14 +7,14 @@
 <ng-template #notifyPlayer>
   <mat-dialog-content>
     <h3 class="mat-h3">
-      Notification for {{ data.request.player }}
+      Notification for {{ data.player }}
     </h3>
     <p>
       You have decided to bid one more round. The hero hasn't any equipment left,
       so your only choice is to add the following monster in the dungeon. 
     </p>
     <p>
-      If you are {{ data.request.player }}, click the button to see the monster,
+      If you are {{ data.player }}, click the button to see the monster,
       and don't show it to other players.
     </p>
   </mat-dialog-content>
@@ -27,7 +27,7 @@
 
 <ng-template #showMonster>
   <mat-dialog-content>
-    <dungeon-monster [monster]="data.request.content">
+    <dungeon-monster [monster]="data.monster">
     </dungeon-monster>
   </mat-dialog-content>
   

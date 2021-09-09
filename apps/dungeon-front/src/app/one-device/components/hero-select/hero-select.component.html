@@ -6,7 +6,7 @@
 
 <ng-template #notifyPlayer>
   <mat-dialog-content>
-    A new bidding phase starts. {{ data.request.player }} must choose a hero.
+    A new bidding phase starts. {{ data.player }} must choose a hero.
   </mat-dialog-content>
   
   <mat-dialog-actions>
@@ -19,7 +19,7 @@
 <ng-template #selectHero>
   <mat-dialog-content>
     <swiper [slidesPerView]="1" [spaceBetween]="50" [setWrapperSize]="true">
-      <ng-template swiperSlide *ngFor="let hero of data.request.options">
+      <ng-template swiperSlide *ngFor="let hero of data.options">
   
         <mat-card class="mat-elevation-z0 hero-card">
           <mat-card-title-group>

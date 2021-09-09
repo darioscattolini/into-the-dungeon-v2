@@ -16,7 +16,7 @@ SwiperCore.use([Pagination]);
 export class HeroSelectComponent implements AfterContentChecked {
   public get currentHero() {
     const heroIndex = this.swiper?.swiperRef.realIndex as number;
-    const hero = this.data.request.options[heroIndex].type;
+    const hero = this.data.options[heroIndex].type;
 
     return hero;
   }
@@ -27,7 +27,7 @@ export class HeroSelectComponent implements AfterContentChecked {
   @ViewChild(SwiperComponent) swiper?: SwiperComponent;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { request: HeroChoiceRequest },
+    @Inject(MAT_DIALOG_DATA) public data: HeroChoiceRequest['content'],
     private changeDetector: ChangeDetectorRef
   ) {}
 

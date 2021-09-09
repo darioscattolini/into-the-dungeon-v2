@@ -2,13 +2,13 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import { 
-  Player, PlayerRequirements, PlayersRequest, MonsterType, 
-  BiddingEndReason, BiddingEndNotification,
-  BidParticipationRequestData, BidParticipationRequest, BiddingStateViewData,
-  Hero, HeroChoiceRequest, EquipmentName, WeaponName, ChosenWeapon,
-  ForcibleMonsterAdditionNotificationData, ForcibleMonsterAdditionNotification, 
+  BiddingEndNotification, BiddingEndReason, 
+  ForcibleMonsterAdditionNotification, 
+  BidParticipationRequest, BiddingState, 
+  HeroChoiceRequest, Hero, HeroType, 
+  PlayersRequest, Player, PlayerRequirements, 
+  MonsterType, EquipmentName, WeaponName, ChosenWeapon, 
 } from '../../models/models';
-import { Notification } from '../../models/request/notification';
 
 @Injectable()
 export class UiMediatorService {
@@ -33,42 +33,58 @@ export class UiMediatorService {
   ) { }
 
   public async notifyBiddingResult(
-    raider: Player, reason: BiddingEndReason
+    raider: Player, endReason: BiddingEndReason
   ): Promise<void> {
-    const notification = new Notification(raider.name, reason);
-    this.biddingEndNotification.emit(notification);
-    await notification.promise;
+    const content: BiddingEndNotification['content'] = {
+      endReason,
+      raider: raider.name
+    };
+
+    await new Promise(resolve => {
+      const notification: BiddingEndNotification = { resolve, content };
+      this.biddingEndNotification.emit(notification);
+    });
   }
 
   public async notifyForcibleMonsterAddition(
-    data: ForcibleMonsterAdditionNotificationData
+    player: Player, monster: MonsterType
   ): Promise<void> {
-    const { player, forciblyAddedMonster: monster } = data;
-    const monsterViewData = this.monstersService.getViewDataFor(monster);
-    
-    const notification = new Notification(player.name, monsterViewData);
-    this.forcibleMonsterAdditionNotification.emit(notification);
-    await notification.promise;
+    const content: ForcibleMonsterAdditionNotification['content'] = {
+      player: player.name,
+      monster: this.monstersService.getViewDataFor(monster)
+    };
+
+    await new Promise(resolve => {
+      const notification: ForcibleMonsterAdditionNotification = { 
+        resolve, content 
+      };
+
+      this.forcibleMonsterAdditionNotification.emit(notification);
+    });
   }
 
   public async requestBidParticipation(
-    requestData: BidParticipationRequestData
+    player: Player, state: BiddingState
   ): Promise<boolean> {
-    const { player, state } = requestData;
-    
     const heroViewData = this.heroesService.getPlayingHeroViewData(state.hero);
     const dungeonViewData = state.dungeon
       .map(monster => this.monstersService.getViewDataFor(monster));
-    const stateViewData: BiddingStateViewData = {
-      dungeon: dungeonViewData,
-      hero: heroViewData, 
-      remainingMonsters: state.remainingMonsters,
-      remainingPlayers: state.remainingPlayers
-    }
 
-    const request = new BidParticipationRequest(player.name, stateViewData);
-    this.bidParticipationRequest.emit(request) ;
-    const response = await request.promise;
+    const content: BidParticipationRequest['content'] = {
+      player: player.name,
+      state: {
+        dungeon: dungeonViewData,
+        hero: heroViewData, 
+        remainingMonsters: state.remainingMonsters,
+        remainingPlayers: state.remainingPlayers
+      }
+    };
+
+    const response = await new Promise<boolean>(resolve => {
+      const request: BidParticipationRequest = { resolve, content };
+
+      this.bidParticipationRequest.emit(request);
+    });
     
     return response;
   }
@@ -81,10 +97,17 @@ export class UiMediatorService {
   }
 
   public async requestHeroChoice(player: Player): Promise<Hero> {
-    const options = this.heroesService.getHeroOptions();
-    const request = new HeroChoiceRequest(player.name, options);
-    this.heroChoiceRequest.emit(request) ;
-    const choice = await request.promise;
+    const content: HeroChoiceRequest['content'] = {
+      player: player.name,
+      options: this.heroesService.getHeroOptions()
+    };
+
+    const choice = await new Promise<HeroType>(resolve => {
+      const request: HeroChoiceRequest = { resolve, content };
+
+      this.heroChoiceRequest.emit(request);
+    });
+    
     const hero = this.heroesService.createHero(choice);
 
     return hero;
@@ -98,9 +121,16 @@ export class UiMediatorService {
   }
 
   public async requestPlayers(range: PlayerRequirements): Promise<Player[]> {
-    const request = new PlayersRequest([range.min, range.max]);
-    this.playersRequest.emit(request);
-    const playerNames = await request.promise;
+    const content: PlayersRequest['content'] = {
+      range: [range.min, range.max]
+    };
+    
+    const playerNames = await new Promise<string[]>(resolve => {
+      const request: PlayersRequest = { resolve, content };
+
+      this.playersRequest.emit(request);
+    });
+
     const players = playerNames.map(name => new Player(name));
     
     return players;
@@ -112,4 +142,6 @@ export class UiMediatorService {
     // minimum required implementation
     return 'katana';
   }
+
+  // Extract promise creation as private method
 }

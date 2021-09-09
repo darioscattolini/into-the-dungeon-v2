@@ -11,6 +11,6 @@ export class BidParticipationComponent {
   public playerNotified = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { request: BidParticipationRequest }
+    @Inject(MAT_DIALOG_DATA) public data: BidParticipationRequest['content']
   ) { }
 }

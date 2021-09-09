@@ -51,7 +51,8 @@ export class BiddingService {
       const outcome = bidding.onResponse(response);
       
       if (outcome.notification) {
-        await this.uiMediator.notifyForcibleMonsterAddition(outcome.notification);
+        const { player, forciblyAddedMonster: monster } = outcome.notification;
+        await this.uiMediator.notifyForcibleMonsterAddition(player, monster);
       }
     }
 
@@ -69,7 +70,8 @@ export class BiddingService {
   private async requestBidParticipation(
     request: BidParticipationRequestData
   ): Promise<BidParticipationResponseContent> {
-    const response = await this.uiMediator.requestBidParticipation(request);
+    const { player, state } = request;
+    const response = await this.uiMediator.requestBidParticipation(player, state);
     
     return { 
       action: request.action, 

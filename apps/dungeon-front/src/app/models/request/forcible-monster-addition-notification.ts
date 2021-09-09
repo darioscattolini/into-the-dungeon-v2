@@ -1,5 +1,9 @@
-import { Notification } from './notification';
+import { HasTarget, TargetedRequest } from './request';
 import { MonsterViewData, MonsterType } from '../models';
 
-export type ForcibleMonsterAdditionNotification = 
-  Notification<MonsterViewData<MonsterType>>;
+interface ForcibleMonsterAdditionNotificationContent extends HasTarget {
+  monster: MonsterViewData<MonsterType>;
+}
+
+export type ForcibleMonsterAdditionNotification =
+  TargetedRequest<boolean, ForcibleMonsterAdditionNotificationContent>;

@@ -1,10 +1,10 @@
 import { 
   Player, PlayerRequirements, BiddingPlayersRound, 
-  Hero, HeroType, 
+  Hero, HeroType, heroTypes, AnyHeroViewData, PlayingHeroViewData,
   EquipmentName, equipmentNames, AnyEquipmentViewData, equipmentViewDataMap,
   Weapon, WeaponName, weaponNames, WeaponEffects,
   Protection, ProtectionName, protectionNames,
-  Monster, AnyMonster, MonsterType, monsterTypes, 
+  Monster, AnyMonster, MonsterType, monsterTypes, MonsterViewData
 } from './models';
 import { 
   TestDouble, TestDoubleClass, Identified, randomInteger, randomString
@@ -53,6 +53,33 @@ class HeroDouble {
 
     return new (Identified(Hero))(type, hitPoints);
   }
+  
+  public static createStartingHeroViewDataDouble(): AnyHeroViewData {
+    return {
+      type: this.pickRandomType(),
+      image: randomString(5),
+      description: randomString(10),
+      baseHitPoints: randomInteger(5),
+      equipment: buildEquipmentViewDataDummy()
+    };
+  }
+
+  public static createPlayingHeroViewDataDouble(): PlayingHeroViewData {
+    return {
+      type: this.pickRandomType(),
+      image: randomString(5),
+      description: randomString(10),
+      hitPoints: randomInteger(5),
+      equipment: buildEquipmentViewDataDummy()
+    };
+  }
+
+  private static pickRandomType(): HeroType {
+    const types = heroTypes;
+    const randomIndex = randomInteger(heroTypes.length, false);
+    
+    return types[randomIndex];
+  }
 }
 
 @staticImplements<TestDoubleClass<Weapon>>()
@@ -94,6 +121,15 @@ class MonsterDouble {
     const damage = randomInteger(10);
 
     return new (Identified(Monster))(type, damage);
+  }
+
+  public static createViewDataDouble(): MonsterViewData<MonsterType> {
+    return {
+      name: pickRandomMonsterTypes(1)[0],
+      damage: randomInteger(5),
+      description: randomString(10),
+      image: randomString(5)
+    };
   }
 }
 

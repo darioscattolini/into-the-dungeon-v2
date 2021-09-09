@@ -1,19 +1,11 @@
-export abstract class Request<T> {
-  public readonly player?: string;
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private _resolve: (value: T) => void = () => {};
-
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  private _promise: Promise<T> = new Promise<T>(resolve => {
-    this._resolve = resolve;
-  });
-
-  public get promise(): Promise<T> {
-    return this._promise;
-  }
-
-  public onResponse(response: T) {
-    this._resolve(response);
-  }
+export interface Request<Response, Content> {
+  readonly content: Readonly<Content>;
+  readonly resolve: (value: Response) => void;
 }
+
+export interface HasTarget {
+  player: string;
+}
+
+export type TargetedRequest<Response, Content extends HasTarget> 
+  = Request<Response, Content>;

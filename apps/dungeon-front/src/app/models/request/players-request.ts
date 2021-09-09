@@ -1,10 +1,9 @@
 import { Request } from './request';
 
-export class PlayersRequest extends Request<string[]> {
-  public readonly range: [number, number];
+type PlayersNames = string[];
 
-  constructor(range: [number, number]) {
-    super();
-    this.range = range;
-  }
-}
+interface PlayersRequestContent {
+  range: [number, number];
+};
+
+export type PlayersRequest = Request<PlayersNames, PlayersRequestContent>;

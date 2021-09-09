@@ -9,6 +9,6 @@ import { BiddingEndNotification } from '../../../models/models';
 })
 export class BiddingEndComponent{
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { request: BiddingEndNotification }
+    @Inject(MAT_DIALOG_DATA) public data: BiddingEndNotification['content']
   ) { }
 }

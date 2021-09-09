@@ -1,13 +1,9 @@
-import { Request } from './request';
+import { HasTarget, TargetedRequest } from './request';
 import { HeroType, AnyHeroViewData } from '../models';
 
-export class HeroChoiceRequest extends Request<HeroType> {
-  public readonly options: AnyHeroViewData[];
-  public readonly player: string;
-
-  constructor(player: string, options: AnyHeroViewData[]) {
-    super();
-    this.options = options;
-    this.player = player;
-  }
+interface HeroChoiceRequestContent extends HasTarget {
+  options: AnyHeroViewData[];
 }
+
+export type HeroChoiceRequest 
+  = TargetedRequest<HeroType, HeroChoiceRequestContent>;

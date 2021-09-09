@@ -6,15 +6,16 @@ import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import { 
   Player, PlayerRequirements, 
-  ForcibleMonsterAdditionNotificationData, BiddingEndReason,
+  BiddingEndReason,
   BiddingActionRequestData, BidParticipationRequestData, BiddingStateViewData,
   HeroType, AnyHeroViewData, heroTypes, heroViewDataMap, PlayingHeroViewData,
   EquipmentName, WeaponName, MonsterType, MonsterViewData, monsterViewDataMap
 } from '../../models/models';
 import { 
-  PlayerDouble, HeroDouble, pickRandomMonsterTypes, buildEquipmentViewDataDummy
+  PlayerDouble, HeroDouble, pickRandomMonsterTypes, buildEquipmentViewDataDummy, MonsterDouble
 } from '../../models/test-doubles';
 import { EventEmitter } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 jest.mock('./heroes.service');
 jest.mock('./monsters.service');
@@ -43,19 +44,19 @@ function fakeBidParticipationDecision(
   decision: boolean, uiMediator: UiMediatorService
 ) {
   uiMediator.bidParticipationRequest.subscribe(request => {
-    request.onResponse(decision);
+    request.resolve(decision);
   });
 }
 
 function fakeHeroChoice(chosenOption: HeroType, uiMediator: UiMediatorService) {
   uiMediator.heroChoiceRequest.subscribe(request => {
-    request.onResponse(chosenOption);
+    request.resolve(chosenOption);
   });
 }
 
 function fakePlayerAddition(names: string[], uiMediator: UiMediatorService) {
   uiMediator.playersRequest.subscribe(request => {
-    request.onResponse(names);
+    request.resolve(names);
   });
 }
 
@@ -110,14 +111,16 @@ describe('UiMediatorService', () => {
   describe('notifyBiddingResult', () => {
     let raiderDummy: Player;
     let endReasonDummy: BiddingEndReason;
+    let subscription: Subscription;
 
     beforeEach(() => {
       raiderDummy = PlayerDouble.createDouble();
       endReasonDummy = 'last-bidding-player';
 
-      uiMediator.biddingEndNotification.subscribe(notification => {
-        notification.onResponse(true);
-      });
+      subscription = uiMediator.biddingEndNotification
+        .subscribe(notification => {
+          notification.resolve(true);
+        });
     });
 
     test('it emits notification with expected properties', async () => {
@@ -131,57 +134,56 @@ describe('UiMediatorService', () => {
         .toHaveBeenCalledTimes(1);
       expect(uiMediator.biddingEndNotification.emit)
         .toHaveBeenCalledWith(expect.objectContaining({
-          player: raiderDummy.name,
-          content: endReasonDummy,
-          promise: expect.toSatisfy(x => x instanceof Promise),
-          onResponse: expect.toBeFunction()
+          content: expect.objectContaining({
+            raider: raiderDummy.name,
+            endReason: endReasonDummy,
+          }),
+          resolve: expect.toBeFunction()
         }));
     });
 
-    test('it awaits notification resolution', () => {
-      const resolved = uiMediator
-        .notifyBiddingResult(raiderDummy, endReasonDummy);
-      
-      expect(resolved).toResolve();
-
-      uiMediator.biddingEndNotification.unsubscribe();
+    test('notification.resolve makes method resolve', () => {
+      subscription.unsubscribe();
       const unResolved = uiMediator
         .notifyBiddingResult(raiderDummy, endReasonDummy);
 
       expect(unResolved).not.toResolve();
+
+      const resolved = uiMediator
+        .notifyBiddingResult(raiderDummy, endReasonDummy);
+      uiMediator.biddingEndNotification.subscribe(notification => {
+        notification.resolve(true);
+      });
+
+      expect(resolved).toResolve();
     });
   });
 
   describe('notifyForcibleMonsterAddition', () => {
-    let dataDummy: ForcibleMonsterAdditionNotificationData;
+    let playerDummy: Player;
+    let monsterDummy: MonsterType;
+    let subscription: Subscription;
 
     beforeEach(() => {
-      dataDummy = {
-        player: PlayerDouble.createDouble(),
-        forciblyAddedMonster: pickRandomMonsterTypes(1)[0]
-      }
-
-      uiMediator.forcibleMonsterAdditionNotification.subscribe(notification => {
-        notification.onResponse(true);
-      });
+      playerDummy = PlayerDouble.createDouble();
+      monsterDummy = pickRandomMonsterTypes(1)[0];
+      subscription = uiMediator.forcibleMonsterAdditionNotification
+        .subscribe(notification => {
+          notification.resolve(true);
+        });
     });
 
     test('it asks monstersService for view data of added monster', async () => {
       expect.assertions(1);
 
-      await uiMediator.notifyForcibleMonsterAddition(dataDummy);
+      await uiMediator.notifyForcibleMonsterAddition(playerDummy, monsterDummy);
 
       expect(monstersServiceMock.getViewDataFor)
-        .toHaveBeenCalledWith(dataDummy.forciblyAddedMonster);
+        .toHaveBeenCalledWith(monsterDummy);
     });
 
     test('it emits notification with expected properties', async () => {
-      const monsterViewDataDummy: MonsterViewData<MonsterType> = {
-        name: 'orc',
-        image: '...',
-        damage: randomInteger(5),
-        description: randomString(10)
-      };
+      const monsterViewDataDummy = MonsterDouble.createViewDataDouble()
 
       jest.spyOn(uiMediator.forcibleMonsterAdditionNotification, 'emit');
       jest.spyOn(monstersServiceMock, 'getViewDataFor')
@@ -189,43 +191,44 @@ describe('UiMediatorService', () => {
       
       expect.assertions(2);
 
-      await uiMediator.notifyForcibleMonsterAddition(dataDummy);
+      await uiMediator.notifyForcibleMonsterAddition(playerDummy, monsterDummy);
 
       expect(uiMediator.forcibleMonsterAdditionNotification.emit)
         .toHaveBeenCalledTimes(1);
       expect(uiMediator.forcibleMonsterAdditionNotification.emit)
         .toHaveBeenCalledWith(expect.objectContaining({
-          player: dataDummy.player.name,
-          content: monsterViewDataDummy,
-          promise: expect.toSatisfy(x => x instanceof Promise),
-          onResponse: expect.toBeFunction()
+          content: expect.objectContaining({
+            player: playerDummy.name,
+            monster: monsterViewDataDummy
+          }),
+          resolve: expect.toBeFunction()
         }));
     });
 
-    test('it awaits notification resolution', () => {
-      const resolved = uiMediator.notifyForcibleMonsterAddition(dataDummy);
-      
-      expect(resolved).toResolve();
-
-      uiMediator.forcibleMonsterAdditionNotification.unsubscribe();
-      const unResolved = uiMediator.notifyForcibleMonsterAddition(dataDummy);
+    test('notification.resolve makes method resolve', () => {
+      subscription.unsubscribe();
+      const unResolved = uiMediator
+        .notifyForcibleMonsterAddition(playerDummy, monsterDummy);
 
       expect(unResolved).not.toResolve();
+
+      const resolved = uiMediator
+        .notifyForcibleMonsterAddition(playerDummy, monsterDummy);
+      uiMediator.forcibleMonsterAdditionNotification.subscribe(notification => {
+        notification.resolve(true);
+      });
+
+      expect(resolved).toResolve();
     });
   });
 
   describe.each([
     true, false
   ])('requestBidParticipation (accepted: %s)', acceptedDummy => {
-    let requestDataDummy: BidParticipationRequestData;
+    let stateDummy: BiddingActionRequestData['state'];
 
     beforeEach(() => {
-      requestDataDummy = {
-        action: 'play-bidding',
-        player: playerDummy,
-        content: undefined,
-        state: buildRequestStateDummy()
-      };
+      stateDummy = buildRequestStateDummy();
 
       fakeBidParticipationDecision(acceptedDummy, uiMediator);
     });
@@ -233,23 +236,21 @@ describe('UiMediatorService', () => {
     test('it asks HeroesService for Hero view data', async () => {
       expect.assertions(2);
 
-      await uiMediator.requestBidParticipation(requestDataDummy);
+      await uiMediator.requestBidParticipation(playerDummy, stateDummy);
 
       expect(heroesServiceMock.getPlayingHeroViewData).toHaveBeenCalledTimes(1);
       expect(heroesServiceMock.getPlayingHeroViewData)
-        .toHaveBeenCalledWith(requestDataDummy.state.hero);
+        .toHaveBeenCalledWith(stateDummy.hero);
     });
 
-    test('it asks MonsterService for Monster view data', async () => {
-      const dungeonDummy = requestDataDummy.state.dungeon;
-      
-      expect.assertions(1 + dungeonDummy.length);
+    test('it asks MonsterService for Monster view data', async () => {   
+      expect.assertions(1 + stateDummy.dungeon.length);
 
-      await uiMediator.requestBidParticipation(requestDataDummy);
+      await uiMediator.requestBidParticipation(playerDummy, stateDummy);
 
       expect(monstersServiceMock.getViewDataFor)
-        .toHaveBeenCalledTimes(dungeonDummy.length);
-      dungeonDummy.forEach((monster, index) => {
+        .toHaveBeenCalledTimes(stateDummy.dungeon.length);
+      stateDummy.dungeon.forEach((monster, index) => {
         expect(monstersServiceMock.getViewDataFor)
           .toHaveBeenNthCalledWith(index + 1, monster);
       });
@@ -258,42 +259,37 @@ describe('UiMediatorService', () => {
     test(
       'it emits BidParticipationRequest with expected properties', 
       async () => {
-        const heroViewDataDummy: PlayingHeroViewData = {
-          type: 'bard',
-          image: '...',
-          hitPoints: 3,
-          equipment: buildEquipmentViewDataDummy(),
-          description: randomString(10)
-        };
+        const heroViewDataDummy = HeroDouble.createPlayingHeroViewDataDouble();
 
         jest.spyOn(uiMediator.bidParticipationRequest, 'emit');
         jest.spyOn(heroesServiceMock, 'getPlayingHeroViewData')
           .mockReturnValue(heroViewDataDummy);
         const getMonsterViewDataSpy = jest
           .spyOn(monstersServiceMock, 'getViewDataFor')
-          .mockImplementation(name => monsterViewDataMap[name]);
+          .mockImplementation(() => MonsterDouble.createViewDataDouble());
 
         expect.assertions(2);
 
-        await uiMediator.requestBidParticipation(requestDataDummy);
+        await uiMediator.requestBidParticipation(playerDummy, stateDummy);
 
-        const dungeonViewData = getMonsterViewDataSpy.mock.results
+        const dungeonViewDataDummy = getMonsterViewDataSpy.mock.results
           .map(result => result.value);
 
         const expectedState: BiddingStateViewData = {
-          dungeon: dungeonViewData,
+          dungeon: dungeonViewDataDummy,
           hero: heroViewDataDummy,
-          remainingMonsters: requestDataDummy.state.remainingMonsters,
-          remainingPlayers: requestDataDummy.state.remainingPlayers
+          remainingMonsters: stateDummy.remainingMonsters,
+          remainingPlayers: stateDummy.remainingPlayers
         };
 
         expect(uiMediator.bidParticipationRequest.emit).toHaveBeenCalledTimes(1);
         expect(uiMediator.bidParticipationRequest.emit)
           .toHaveBeenCalledWith(expect.objectContaining({
-            player: playerDummy.name,
-            state: expectedState,
-            promise: expect.toSatisfy(x => x instanceof Promise),
-            onResponse: expect.toBeFunction()
+            content: expect.objectContaining({
+              player: playerDummy.name,
+              state: expectedState,
+            }),
+            resolve: expect.toBeFunction()
           }));
       }
     );
@@ -301,7 +297,8 @@ describe('UiMediatorService', () => {
     test('it returns response to request', async () => {
       expect.assertions(1);
 
-      const response = await uiMediator.requestBidParticipation(requestDataDummy);
+      const response 
+        = await uiMediator.requestBidParticipation(playerDummy, stateDummy);
 
       expect(response).toBe(acceptedDummy);
     });
@@ -351,10 +348,11 @@ describe('UiMediatorService', () => {
       expect(uiMediator.heroChoiceRequest.emit).toHaveBeenCalledTimes(1);
       expect(uiMediator.heroChoiceRequest.emit)
         .toHaveBeenCalledWith(expect.objectContaining({
-          player: playerDummy.name,
-          options: expect.arrayContaining(heroOptionsDummy),
-          promise: expect.toSatisfy(x => x instanceof Promise),
-          onResponse: expect.toBeFunction()
+          content: expect.objectContaining({
+            player: playerDummy.name,
+            options: expect.arrayContaining(heroOptionsDummy)
+          }),
+          resolve: expect.toBeFunction()
         }));
     });
 
@@ -413,9 +411,10 @@ describe('UiMediatorService', () => {
       expect(uiMediator.playersRequest.emit).toHaveBeenCalledTimes(1);
       expect(uiMediator.playersRequest.emit)
         .toHaveBeenCalledWith(expect.objectContaining({
-          range: [rangeDummy.min, rangeDummy.max],
-          promise: expect.toSatisfy(x => x instanceof Promise),
-          onResponse: expect.toBeFunction()
+          content: expect.objectContaining({
+            range: [rangeDummy.min, rangeDummy.max],
+          }),
+          resolve: expect.toBeFunction()
         }));
     });
 

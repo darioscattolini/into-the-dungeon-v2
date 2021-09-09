@@ -206,7 +206,9 @@ describe('BiddingService', () => {
           await biddingService.playBidding(playersDummy);
       
           expect(uiMediator.requestBidParticipation)
-            .toHaveBeenCalledWith(requestDataDummy);
+            .toHaveBeenCalledWith(
+              requestDataDummy.player, requestDataDummy.state
+            );
         }
       );
 
@@ -273,20 +275,23 @@ describe('BiddingService', () => {
       });
 
       test('it notifies on forcibleMonsterAddition', async () => {
-        const notificationDummy = {
+        const notificationDataDummy = {
           player: PlayerDouble.createDouble(),
           forciblyAddedMonster: 'goblin' as MonsterType
         };
 
         jest.spyOn(Bidding.prototype, 'onResponse')
-          .mockReturnValue({ notification: notificationDummy });
+          .mockReturnValue({ notification: notificationDataDummy });
 
         expect.assertions(1);
 
         await biddingService.playBidding(playersDummy);
 
         expect(uiMediator.notifyForcibleMonsterAddition)
-          .toHaveBeenCalledWith(notificationDummy);
+          .toHaveBeenCalledWith(
+            notificationDataDummy.player,
+            notificationDataDummy.forciblyAddedMonster
+          );
       });
     });
 
@@ -407,20 +412,23 @@ describe('BiddingService', () => {
       });
 
       test('it notifies on forcibleMonsterAddition', async () => {
-        const notificationDummy = {
+        const notificationDataDummy = {
           player: PlayerDouble.createDouble(),
           forciblyAddedMonster: 'goblin' as MonsterType
         };
 
         jest.spyOn(Bidding.prototype, 'onResponse')
-          .mockReturnValue({ notification: notificationDummy });
+          .mockReturnValue({ notification: notificationDataDummy });
 
         expect.assertions(1);
 
         await biddingService.playBidding(playersDummy);
 
         expect(uiMediator.notifyForcibleMonsterAddition)
-          .toHaveBeenCalledWith(notificationDummy);
+          .toHaveBeenCalledWith(
+            notificationDataDummy.player,
+            notificationDataDummy.forciblyAddedMonster
+          );
       });
     });
 
@@ -574,20 +582,23 @@ describe('BiddingService', () => {
       });
 
       test('it notifies on forcibleMonsterAddition', async () => {
-        const notificationDummy = {
+        const notificationDataDummy = {
           player: PlayerDouble.createDouble(),
           forciblyAddedMonster: 'goblin' as MonsterType
         };
 
         jest.spyOn(Bidding.prototype, 'onResponse')
-          .mockReturnValue({ notification: notificationDummy });
+          .mockReturnValue({ notification: notificationDataDummy });
 
         expect.assertions(1);
 
         await biddingService.playBidding(playersDummy);
 
         expect(uiMediator.notifyForcibleMonsterAddition)
-          .toHaveBeenCalledWith(notificationDummy);
+          .toHaveBeenCalledWith(
+            notificationDataDummy.player,
+            notificationDataDummy.forciblyAddedMonster
+          );
       });
     });
 

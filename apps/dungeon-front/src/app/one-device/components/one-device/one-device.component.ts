@@ -51,14 +51,14 @@ export class OneDeviceComponent implements OnInit {
     this.gameService.play(); // no await?
   }
 
-  private triggerDialogComponent<T>(Component: Type<any>, request: Request<T>) {
+  private triggerDialogComponent(Component: Type<any>, request: Request<any, any>) {
     const dialogRef = this.dialog.open(Component, { 
-      data: { request },
+      data: request.content,
       disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(response => {
-      request.onResponse(response);
+      request.resolve(response);
     });
   }
 }

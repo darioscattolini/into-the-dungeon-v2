@@ -24,14 +24,14 @@ export class PlayerRecorderComponent {
   });
 
   public get ready(): boolean { 
-    return this.addedNames.length >= this.data.request.range[0]
-      && this.addedNames.length <= this.data.request.range[1];
+    return this.addedNames.length >= this.data.range[0]
+      && this.addedNames.length <= this.data.range[1];
   }
 
   public repeatedName = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { request: PlayersRequest }
+    @Inject(MAT_DIALOG_DATA) public data: PlayersRequest['content']
   ) { }
 
   public addPlayer(): void {

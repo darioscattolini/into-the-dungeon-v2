@@ -1,45 +1,30 @@
-import { Request } from './request';
+import { HasTarget, TargetedRequest } from './request';
 import { 
   BiddingStateViewData, MonsterType, MonsterViewData, EquipmentName
 } from '../models';
 import { AnyEquipmentViewData } from '../equipment/equipment-view-data';
 
-abstract class BiddingActionRequest<T> extends Request<T> {
-  public readonly player: string;
-  public readonly state: BiddingStateViewData;
-
-  constructor(player: string, state: BiddingStateViewData) {
-    super();
-    this.player = player;
-    this.state = state;
-  }
+interface BiddingActionRequestContent extends HasTarget {
+  state: BiddingStateViewData;
 }
 
-export class BidParticipationRequest extends BiddingActionRequest<boolean> {};
-
-export class MonsterAdditionRequest extends BiddingActionRequest<boolean> {
-  public readonly monster: MonsterViewData<MonsterType>;
-
-  constructor(
-    player: string, 
-    state: BiddingStateViewData, 
-    monster: MonsterViewData<MonsterType>) {
-      super(player, state);
-      this.monster = monster;
-  }
+interface MonsterAdditionRequestContent extends BiddingActionRequestContent {
+  monster: MonsterViewData<MonsterType>;
 }
 
-export class EquipmentRemovalRequest 
-  extends BiddingActionRequest<EquipmentName> {
-    public readonly options: AnyEquipmentViewData[];
+interface EquipmentRemovalRequestContent extends BiddingActionRequestContent {
+  options: AnyEquipmentViewData[];
+}
 
-    constructor(
-      player: string, 
-      state: BiddingStateViewData, 
-      options: AnyEquipmentViewData[]) {
-        super(player, state);
-        this.options = options;
-    }
-  }
+type BiddingActionRequest<Response, Content extends BiddingActionRequestContent> 
+  = TargetedRequest<Response, Content>;
 
+export type BidParticipationRequest 
+  = BiddingActionRequest<boolean, BiddingActionRequestContent>;
+
+export type MonsterAdditionRequest 
+  = BiddingActionRequest<boolean, MonsterAdditionRequestContent>;
+
+export type EquipmentRemovalRequest 
+  = BiddingActionRequest<EquipmentName, EquipmentRemovalRequestContent>;
   

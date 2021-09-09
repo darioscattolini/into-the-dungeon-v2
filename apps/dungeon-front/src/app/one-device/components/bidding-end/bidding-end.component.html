@@ -2,21 +2,21 @@
 
 <mat-dialog-content>
   <p>
-    {{ data.request.player }} will raid the dungeon because 
+    {{ data.raider }} will raid the dungeon because 
   
     <span 
-      *ngIf="data.request.content === 'last-bidding-player'; 
+      *ngIf="data.endReason === 'last-bidding-player'; 
       then lastBiddingPlayerReason"
     ></span>
 
     <span 
-      *ngIf="data.request.content === 'no-monsters'; 
+      *ngIf="data.endReason === 'no-monsters'; 
       then noMonstersReason"
     ></span>
   </p>
 
   <p>
-    {{ data.request.player }} will raid the dungeon alone, choosing (when 
+    {{ data.raider }} will raid the dungeon alone, choosing (when 
     possible) the hero's weapons to be used against each monster. Other players
     can watch.
   </p>
