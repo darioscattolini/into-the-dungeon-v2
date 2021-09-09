@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import { 
@@ -9,23 +9,23 @@ import {
   PlayersRequest, Player, PlayerRequirements, 
   MonsterType, EquipmentName, WeaponName, ChosenWeapon, 
 } from '../../models/models';
-
+import { Subject } from 'rxjs';
 @Injectable()
 export class UiMediatorService {
   public readonly biddingEndNotification 
-    = new EventEmitter<BiddingEndNotification>();
+    = new Subject<BiddingEndNotification>();
 
   public readonly bidParticipationRequest 
-    = new EventEmitter<BidParticipationRequest>();
+    = new Subject<BidParticipationRequest>();
 
   public readonly forcibleMonsterAdditionNotification 
-    = new EventEmitter<ForcibleMonsterAdditionNotification>();
+    = new Subject<ForcibleMonsterAdditionNotification>();
 
   public readonly heroChoiceRequest 
-    = new EventEmitter<HeroChoiceRequest>();
+    = new Subject<HeroChoiceRequest>();
 
   public readonly playersRequest 
-    = new EventEmitter<PlayersRequest>();
+    = new Subject<PlayersRequest>();
 
   constructor(
     private heroesService: HeroesService,
@@ -42,7 +42,7 @@ export class UiMediatorService {
 
     await new Promise(resolve => {
       const notification: BiddingEndNotification = { resolve, content };
-      this.biddingEndNotification.emit(notification);
+      this.biddingEndNotification.next(notification);
     });
   }
 
@@ -59,7 +59,7 @@ export class UiMediatorService {
         resolve, content 
       };
 
-      this.forcibleMonsterAdditionNotification.emit(notification);
+      this.forcibleMonsterAdditionNotification.next(notification);
     });
   }
 
@@ -83,7 +83,7 @@ export class UiMediatorService {
     const response = await new Promise<boolean>(resolve => {
       const request: BidParticipationRequest = { resolve, content };
 
-      this.bidParticipationRequest.emit(request);
+      this.bidParticipationRequest.next(request);
     });
     
     return response;
@@ -105,7 +105,7 @@ export class UiMediatorService {
     const choice = await new Promise<HeroType>(resolve => {
       const request: HeroChoiceRequest = { resolve, content };
 
-      this.heroChoiceRequest.emit(request);
+      this.heroChoiceRequest.next(request);
     });
     
     const hero = this.heroesService.createHero(choice);
@@ -128,7 +128,7 @@ export class UiMediatorService {
     const playerNames = await new Promise<string[]>(resolve => {
       const request: PlayersRequest = { resolve, content };
 
-      this.playersRequest.emit(request);
+      this.playersRequest.next(request);
     });
 
     const players = playerNames.map(name => new Player(name));

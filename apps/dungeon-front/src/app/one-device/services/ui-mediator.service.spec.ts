@@ -6,16 +6,15 @@ import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import { 
   Player, PlayerRequirements, 
-  BiddingEndReason,
-  BiddingActionRequestData, BidParticipationRequestData, BiddingStateViewData,
-  HeroType, AnyHeroViewData, heroTypes, heroViewDataMap, PlayingHeroViewData,
-  EquipmentName, WeaponName, MonsterType, MonsterViewData, monsterViewDataMap
+  BiddingEndReason, BiddingActionRequestData, BiddingStateViewData,
+  HeroType, AnyHeroViewData, heroTypes, heroViewDataMap,
+  EquipmentName, WeaponName, MonsterType
 } from '../../models/models';
 import { 
-  PlayerDouble, HeroDouble, pickRandomMonsterTypes, buildEquipmentViewDataDummy, MonsterDouble
+  PlayerDouble, HeroDouble, MonsterDouble, 
+  pickRandomMonsterTypes, buildEquipmentViewDataDummy,
 } from '../../models/test-doubles';
-import { EventEmitter } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 jest.mock('./heroes.service');
 jest.mock('./monsters.service');
@@ -86,25 +85,25 @@ describe('UiMediatorService', () => {
       expect(uiMediator).toBeTruthy();
     });
 
-    test('bidParticipationRequest is EventEmitter but has not emitted yet', () => {
-      jest.spyOn(uiMediator.bidParticipationRequest, 'emit');
+    test('bidParticipationRequest is Subject but has not emitted yet', () => {
+      jest.spyOn(uiMediator.bidParticipationRequest, 'next');
       
-      expect(uiMediator.bidParticipationRequest).toBeInstanceOf(EventEmitter);
-      expect(uiMediator.bidParticipationRequest.emit).not.toHaveBeenCalled();
+      expect(uiMediator.bidParticipationRequest).toBeInstanceOf(Subject);
+      expect(uiMediator.bidParticipationRequest.next).not.toHaveBeenCalled();
     });
 
-    test('heroChoiceRequest is EventEmitter but has not emitted yet', () => {
-      jest.spyOn(uiMediator.heroChoiceRequest, 'emit');
+    test('heroChoiceRequest is Subject but has not emitted yet', () => {
+      jest.spyOn(uiMediator.heroChoiceRequest, 'next');
       
-      expect(uiMediator.heroChoiceRequest).toBeInstanceOf(EventEmitter);
-      expect(uiMediator.heroChoiceRequest.emit).not.toHaveBeenCalled();
+      expect(uiMediator.heroChoiceRequest).toBeInstanceOf(Subject);
+      expect(uiMediator.heroChoiceRequest.next).not.toHaveBeenCalled();
     });
     
-    test('playersRequest is EventEmitter but has not emitted yet', () => {
-      jest.spyOn(uiMediator.playersRequest, 'emit');
+    test('playersRequest is Subject but has not emitted yet', () => {
+      jest.spyOn(uiMediator.playersRequest, 'next');
       
-      expect(uiMediator.playersRequest).toBeInstanceOf(EventEmitter);
-      expect(uiMediator.playersRequest.emit).not.toHaveBeenCalled();
+      expect(uiMediator.playersRequest).toBeInstanceOf(Subject);
+      expect(uiMediator.playersRequest.next).not.toHaveBeenCalled();
     });
   });
 
@@ -124,15 +123,15 @@ describe('UiMediatorService', () => {
     });
 
     test('it emits notification with expected properties', async () => {
-      jest.spyOn(uiMediator.biddingEndNotification, 'emit');
+      jest.spyOn(uiMediator.biddingEndNotification, 'next');
       
       expect.assertions(2);
 
       await uiMediator.notifyBiddingResult(raiderDummy, endReasonDummy);
 
-      expect(uiMediator.biddingEndNotification.emit)
+      expect(uiMediator.biddingEndNotification.next)
         .toHaveBeenCalledTimes(1);
-      expect(uiMediator.biddingEndNotification.emit)
+      expect(uiMediator.biddingEndNotification.next)
         .toHaveBeenCalledWith(expect.objectContaining({
           content: expect.objectContaining({
             raider: raiderDummy.name,
@@ -185,7 +184,7 @@ describe('UiMediatorService', () => {
     test('it emits notification with expected properties', async () => {
       const monsterViewDataDummy = MonsterDouble.createViewDataDouble()
 
-      jest.spyOn(uiMediator.forcibleMonsterAdditionNotification, 'emit');
+      jest.spyOn(uiMediator.forcibleMonsterAdditionNotification, 'next');
       jest.spyOn(monstersServiceMock, 'getViewDataFor')
         .mockReturnValue(monsterViewDataDummy);
       
@@ -193,9 +192,9 @@ describe('UiMediatorService', () => {
 
       await uiMediator.notifyForcibleMonsterAddition(playerDummy, monsterDummy);
 
-      expect(uiMediator.forcibleMonsterAdditionNotification.emit)
+      expect(uiMediator.forcibleMonsterAdditionNotification.next)
         .toHaveBeenCalledTimes(1);
-      expect(uiMediator.forcibleMonsterAdditionNotification.emit)
+      expect(uiMediator.forcibleMonsterAdditionNotification.next)
         .toHaveBeenCalledWith(expect.objectContaining({
           content: expect.objectContaining({
             player: playerDummy.name,
@@ -261,7 +260,7 @@ describe('UiMediatorService', () => {
       async () => {
         const heroViewDataDummy = HeroDouble.createPlayingHeroViewDataDouble();
 
-        jest.spyOn(uiMediator.bidParticipationRequest, 'emit');
+        jest.spyOn(uiMediator.bidParticipationRequest, 'next');
         jest.spyOn(heroesServiceMock, 'getPlayingHeroViewData')
           .mockReturnValue(heroViewDataDummy);
         const getMonsterViewDataSpy = jest
@@ -282,8 +281,8 @@ describe('UiMediatorService', () => {
           remainingPlayers: stateDummy.remainingPlayers
         };
 
-        expect(uiMediator.bidParticipationRequest.emit).toHaveBeenCalledTimes(1);
-        expect(uiMediator.bidParticipationRequest.emit)
+        expect(uiMediator.bidParticipationRequest.next).toHaveBeenCalledTimes(1);
+        expect(uiMediator.bidParticipationRequest.next)
           .toHaveBeenCalledWith(expect.objectContaining({
             content: expect.objectContaining({
               player: playerDummy.name,
@@ -339,14 +338,14 @@ describe('UiMediatorService', () => {
     });
 
     test('it emits HeroChoiceRequest with expected properties', async () => {      
-      jest.spyOn(uiMediator.heroChoiceRequest, 'emit');
+      jest.spyOn(uiMediator.heroChoiceRequest, 'next');
 
       expect.assertions(2);
 
       await uiMediator.requestHeroChoice(playerDummy);
 
-      expect(uiMediator.heroChoiceRequest.emit).toHaveBeenCalledTimes(1);
-      expect(uiMediator.heroChoiceRequest.emit)
+      expect(uiMediator.heroChoiceRequest.next).toHaveBeenCalledTimes(1);
+      expect(uiMediator.heroChoiceRequest.next)
         .toHaveBeenCalledWith(expect.objectContaining({
           content: expect.objectContaining({
             player: playerDummy.name,
@@ -402,14 +401,14 @@ describe('UiMediatorService', () => {
     });
 
     test('it emits PlayersRequest with expected properties', async () => {      
-      jest.spyOn(uiMediator.playersRequest, 'emit');
+      jest.spyOn(uiMediator.playersRequest, 'next');
 
       expect.assertions(2);
 
       await uiMediator.requestPlayers(rangeDummy);
 
-      expect(uiMediator.playersRequest.emit).toHaveBeenCalledTimes(1);
-      expect(uiMediator.playersRequest.emit)
+      expect(uiMediator.playersRequest.next).toHaveBeenCalledTimes(1);
+      expect(uiMediator.playersRequest.next)
         .toHaveBeenCalledWith(expect.objectContaining({
           content: expect.objectContaining({
             range: [rangeDummy.min, rangeDummy.max],
