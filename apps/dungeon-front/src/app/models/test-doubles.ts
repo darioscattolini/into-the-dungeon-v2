@@ -2,6 +2,7 @@ import {
   Player,
   PlayerRequirements,
   BiddingPlayersRound,
+  BiddingActionRequestData,
   Hero,
   HeroType,
   heroTypes,
@@ -47,6 +48,15 @@ class PlayerDouble {
     //
   }
 
+  public static buildRequirementsDouble(): PlayerRequirements {
+    const randomAmount = randomInteger(5);
+        
+    return {
+      min: randomAmount + 2,
+      max: randomAmount + 5
+    };
+  }
+
   public static createDouble(): TestDouble<Player> {
     const name = randomString(6);
     return new (Identified(Player))(name);
@@ -80,29 +90,49 @@ class HeroDouble {
   
   public static createStartingHeroViewDataDouble(): AnyHeroViewData {
     return {
-      type: this.pickRandomType(),
+      type: this.pickType(),
       image: randomString(5),
       description: randomString(10),
       baseHitPoints: randomInteger(5),
-      equipment: buildEquipmentViewDataDummy()
+      equipment: EquipmentDouble.buildViewDataDummy()
     };
   }
 
   public static createPlayingHeroViewDataDouble(): PlayingHeroViewData {
     return {
-      type: this.pickRandomType(),
+      type: this.pickType(),
       image: randomString(5),
       description: randomString(10),
       hitPoints: randomInteger(5),
-      equipment: buildEquipmentViewDataDummy()
+      equipment: EquipmentDouble.buildViewDataDummy()
     };
   }
 
-  private static pickRandomType(): HeroType {
+  public static pickType(): HeroType {
     const types = heroTypes;
     const randomIndex = randomInteger(heroTypes.length, false);
     
     return types[randomIndex];
+  }
+}
+
+class EquipmentDouble {
+  private constructor() {
+    //
+  }
+  
+  public static buildViewDataDummy(): AnyEquipmentViewData[] {
+    return this.pickNames(6).reduce((pieces, pieceName) => {
+      pieces.push(equipmentViewDataMap[pieceName]);
+  
+      return pieces;
+    }, [] as AnyEquipmentViewData[]);
+  }
+  
+  public static pickNames(amount: number, unique = true): EquipmentName[] {
+    const options = Array.from(equipmentNames);
+    
+    return buildRandomArray(options, amount, unique);
   }
 }
 
@@ -112,11 +142,41 @@ class WeaponDouble {
     //
   }
 
+  public static buildEffectsDouble(): WeaponEffects {
+    const targets = MonsterDouble.pickTypes(randomInteger(6));
+    const effects: WeaponEffects = { };
+  
+    for (const target of targets) {
+      const effect = randomInteger(10);
+      effects[target] = (damage: number) => effect * damage;
+    }
+  
+    return effects;
+  }
+
   public static createDouble(): TestDouble<Weapon> {
-    const [name] = pickRandomWeaponNames(1);
+    const [name] = this.pickNames(1);
+
+    return this.createSpecificDouble(name);
+  }
+
+  public static createDoublesSet(
+    amount: number, unique = true
+  ): TestDouble<Weapon>[] {
+    const names = this.pickNames(amount, unique);
+    return names.map(name => this.createSpecificDouble(name));
+  }
+
+  public static createSpecificDouble(name: WeaponName): TestDouble<Weapon> {
     const availableUses = randomInteger(3);
 
     return new (Identified(Weapon))(name, availableUses, {});
+  }
+
+  public static pickNames(amount: number, unique = true): WeaponName[] {
+    const options = Array.from(weaponNames);
+    
+    return buildRandomArray(options, amount, unique);
   }
 }
 
@@ -127,10 +187,30 @@ class ProtectionDouble {
   }
 
   public static createDouble(): TestDouble<Protection> {
-    const [name] = pickRandomProtectionNames(1);
+    const [name] = this.pickNames(1);
+
+    return this.createSpecificDouble(name);
+  }
+
+  public static createDoublesSet(
+    amount: number, unique = true
+  ): TestDouble<Protection>[] {
+    const names = this.pickNames(amount, unique);
+    return names.map(name => this.createSpecificDouble(name));
+  }
+
+  public static createSpecificDouble(
+    name: ProtectionName
+  ): TestDouble<Protection> {
     const hitPoints = randomInteger(5);
 
     return new (Identified(Protection))(name, hitPoints);
+  }
+
+  public static pickNames(amount: number, unique = true): ProtectionName[] {
+    const options = Array.from(protectionNames);
+    
+    return buildRandomArray(options, amount, unique);
   }
 }
 
@@ -141,7 +221,12 @@ class MonsterDouble {
   }
 
   public static createDouble(): TestDouble<AnyMonster> {
-    const [type] = pickRandomMonsterTypes(1);
+    const [type] = this.pickTypes(1);
+
+    return this.createSpecificDouble(type);
+  }
+
+  public static createSpecificDouble(type: MonsterType): TestDouble<AnyMonster> {
     const damage = randomInteger(10);
 
     return new (Identified(Monster))(type, damage);
@@ -149,23 +234,36 @@ class MonsterDouble {
 
   public static createViewDataDouble(): MonsterViewData<MonsterType> {
     return {
-      name: pickRandomMonsterTypes(1)[0],
+      name: this.pickTypes(1)[0],
       damage: randomInteger(5),
       description: randomString(10),
       image: randomString(5)
     };
   }
+
+  public static pickTypes(amount: number, unique = true): MonsterType[] {
+    const options = Array.from(monsterTypes);
+  
+    return buildRandomArray(options, amount, unique);
+  }
 }
 
-function buildEquipmentViewDataDummy(): AnyEquipmentViewData[] {
-  return pickRandomEquipmentNames(6).reduce((pieces, pieceName) => {
-    pieces.push(equipmentViewDataMap[pieceName]);
-
-    return pieces;
-  }, [] as AnyEquipmentViewData[]);
+function buildRequestStateDataDummy(): BiddingActionRequestData['state'] {
+  return {
+    dungeon: MonsterDouble.pickTypes(4),
+    hero: HeroDouble.createDouble(),
+    remainingMonsters: randomInteger(7),
+    remainingPlayers: randomInteger(4)
+  };
 }
 
 function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
+  if (unique && length > options.length) {
+    throw new Error(
+      'Array length cannot be larger than available options if items are unique.'
+    );
+  }
+
   const chosenItems: T[] = [];
 
   while(chosenItems.length < length) {
@@ -179,88 +277,13 @@ function buildRandomArray<T>(options: T[], length: number, unique = true): T[] {
   return chosenItems;
 }
 
-function buildPlayerRequirementsDummy(): PlayerRequirements {
-  const randomAmount = randomInteger(10);
-      
-  return {
-    min: randomAmount + 2,
-    max: randomAmount + 5
-  };
-}
-
-function pickRandomEquipmentNames(
-  amount: number, unique = true
-): EquipmentName[] {
-  const options = Array.from(equipmentNames);
-  
-  return buildRandomArray(options, amount, unique);
-}
-
-function pickRandomWeaponNames(amount: number, unique = true): WeaponName[] {
-  const options = Array.from(weaponNames);
-  
-  return buildRandomArray(options, amount, unique);
-}
-
-function pickRandomProtectionNames(
-  amount: number, unique = true
-): ProtectionName[] {
-  const options = Array.from(protectionNames);
-  
-  return buildRandomArray(options, amount, unique);
-}
-
-function buildUniqueWeaponDoublesArray(amount: number): Weapon[] {
-  const weapons: Weapon[] = [];
-  
-  for (let i = 0; i < amount; i++) {
-    let newWeapon: Weapon;
-
-    do {
-      newWeapon = WeaponDouble.createDouble();
-    } while (weapons.find(weapon => weapon.name === newWeapon.name));
-
-    weapons.push(newWeapon);
-  }
-
-  return weapons;
-}
-
-function buildWeaponEffects(targets: MonsterType[]): WeaponEffects {
-  const effects: WeaponEffects = { };
-
-  for (const target of targets) {
-    const effect = randomInteger(10);
-    effects[target] = (damage: number) => effect * damage;
-  }
-
-  return effects;
-}
-
-function pickRandomMonsterTypes(amount: number, unique = true): MonsterType[] {
-  const options = Array.from(monsterTypes);
-
-  return buildRandomArray(options, amount, unique);
-}
-
-const monsterDummyBuilder: { [key in MonsterType]: Monster<key> } = {
-  fairy: new Monster('fairy', randomInteger(10)),
-  goblin: new Monster('goblin', randomInteger(10)),
-  skeleton: new Monster('skeleton', randomInteger(10)),
-  orc: new Monster('orc', randomInteger(10)),
-  vampire: new Monster('vampire', randomInteger(10)),
-  golem: new Monster('golem', randomInteger(10)),
-  litch: new Monster('litch', randomInteger(10)),
-  demon: new Monster('demon', randomInteger(10)),
-  dragon: new Monster('dragon', randomInteger(10))
-};
-
 export { 
-  PlayerDouble, buildPlayerRequirementsDummy,
+  PlayerDouble,
   BiddingPlayersRoundDouble,
-  HeroDouble, pickRandomEquipmentNames,
-  ProtectionDouble, pickRandomProtectionNames,
-  WeaponDouble, pickRandomWeaponNames, buildUniqueWeaponDoublesArray, 
-  buildWeaponEffects, buildEquipmentViewDataDummy,
-  MonsterDouble, pickRandomMonsterTypes, monsterDummyBuilder
+  HeroDouble,
+  EquipmentDouble,
+  ProtectionDouble,
+  WeaponDouble, 
+  MonsterDouble,
+  buildRequestStateDataDummy
 }

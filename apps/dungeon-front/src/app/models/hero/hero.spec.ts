@@ -1,7 +1,6 @@
 import { Hero } from './hero';
 import { HeroType } from './hero-type';
 import {
-  Equipment,
   EquipmentName,
   Protection,
   Weapon,
@@ -9,35 +8,31 @@ import {
   AnyMonster
 } from '../models';
 import {
+  HeroDouble,
+  EquipmentDouble,
   ProtectionDouble,
   WeaponDouble,
-  pickRandomEquipmentNames,
-  pickRandomWeaponNames,
-  buildUniqueWeaponDoublesArray,
   MonsterDouble
 } from '../test-doubles';
-import { randomInteger } from '@into-the-dungeon/util-testing';
 
 function mountRandomEquipment(hero: Hero, amount: number): void {
-  if (amount > 6) throw new Error('Max amount is 6.');
+  let protectionAmount = 0;
+  let weaponAmount = 0;
 
-  for (let i = 0; i < amount; i++) {
-    let piece: Equipment; 
-    const PieceClass = i % 2 === 0 ? ProtectionDouble : WeaponDouble;
-    
-    do {
-      piece = PieceClass.createDouble();
-    } while (hero.getMountedEquipment().includes(piece.name));
-
-    hero.mountEquipmentPiece(piece);
+  while (amount > 0) {
+    if (Math.random() > 0.67) protectionAmount++;
+    else weaponAmount++;
+    amount--;
   }
-}
 
-function pickRandomHeroType(): HeroType {
-  const types: HeroType[] = ['bard', 'mage', 'ninja', 'princess'];
-  const type = types[randomInteger(types.length, false)];
+  const equipment = [
+    ...ProtectionDouble.createDoublesSet(protectionAmount, true), 
+    ...WeaponDouble.createDoublesSet(weaponAmount, true)
+  ];
 
-  return type;
+  equipment.forEach(piece => {
+    hero.mountEquipmentPiece(piece);
+  });
 }
 
 describe('Hero', () => {
@@ -46,7 +41,7 @@ describe('Hero', () => {
   const notReadyMessage = 'Mount 6 equipment pieces before using Hero.';
 
   beforeEach(() => {
-    type = pickRandomHeroType();
+    type = HeroDouble.pickType();
   });
 
   describe('instantiation and initial state', () => {
@@ -117,7 +112,8 @@ describe('Hero', () => {
     test('mounting of repeated equipment pieces is not allowed', () => {
       hero.mountEquipmentPiece(protectionDummy);
 
-      const duplicate = new Protection(protectionDummy.name, 4);
+      const duplicate = ProtectionDouble
+        .createSpecificDouble(protectionDummy.name);
 
       expect(() => { hero.mountEquipmentPiece(duplicate); })
         .toThrowError(`Hero has already mounted a piece of ${duplicate.name}.`);
@@ -183,7 +179,7 @@ describe('Hero', () => {
       let nonHeldPiece: EquipmentName;
 
       do {
-        [nonHeldPiece] = pickRandomEquipmentNames(1);
+        [nonHeldPiece] = EquipmentDouble.pickNames(1);
       } while (mountedEquipment.includes(nonHeldPiece));
       
       expect(() => { hero.discardEquipmentPiece(nonHeldPiece); })
@@ -218,7 +214,7 @@ describe('Hero', () => {
 
     beforeEach(() => {
       enemyDummy = MonsterDouble.createDouble();
-      weaponDoubles = buildUniqueWeaponDoublesArray(6);
+      weaponDoubles = WeaponDouble.createDoublesSet(6, true);
       
       hero = new Hero(type, 5);
 
@@ -251,7 +247,7 @@ describe('Hero', () => {
       let nonHeldWeapon: WeaponName;
 
       do {
-        [nonHeldWeapon] = pickRandomWeaponNames(1);
+        [nonHeldWeapon] = WeaponDouble.pickNames(1);
       } while (mountedEquipment.includes(nonHeldWeapon));
       
       

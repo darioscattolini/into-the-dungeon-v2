@@ -43,10 +43,8 @@ describe('Game', () => {
   let game: Game;
     
   beforeEach(() => {
-    playerDummy1 = PlayerDouble.createDouble();
-    playerDummy2 = PlayerDouble.createDouble();
-    playerDummy3 = PlayerDouble.createDouble();
-    playersDummy = [playerDummy1, playerDummy2, playerDummy3];
+    playersDummy = buildPlayersDummy(3);
+    [playerDummy1, playerDummy2, playerDummy3] = playersDummy;
     game = new Game(playersDummy);
   });
 

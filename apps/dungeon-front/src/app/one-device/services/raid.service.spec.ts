@@ -17,7 +17,7 @@ import {
   PlayerDouble,
   HeroDouble,
   MonsterDouble,
-  pickRandomWeaponNames
+  WeaponDouble
 } from '../../models/test-doubles';
 
 jest.mock('./ui-mediator.service');
@@ -176,9 +176,8 @@ describe('RaidService', () => {
       let weaponOptionsDummy: WeaponName[];
 
       beforeEach(() => {
-        weaponOptionsDummy = pickRandomWeaponNames(randomInteger(4) + 2);
-        const randomIndex = randomInteger(weaponOptionsDummy.length, false);
-        const chosenWeaponDummy = weaponOptionsDummy[randomIndex];
+        weaponOptionsDummy = WeaponDouble.pickNames(4);
+        const chosenWeaponDummy = weaponOptionsDummy[2];
 
         makeLoopRunTimes(1);
 

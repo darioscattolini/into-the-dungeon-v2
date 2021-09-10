@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
+import { randomString } from '@into-the-dungeon/util-testing';
+
 import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
@@ -8,10 +9,7 @@ import {
   BiddingActionRequestData,
   BiddingEndReason,
   BiddingStateViewData,
-  EquipmentName,
   HeroType,
-  heroTypes,
-  heroViewDataMap,
   MonsterType,
   Player,
   PlayerRequirements,
@@ -21,34 +19,13 @@ import {
   PlayerDouble,
   HeroDouble,
   MonsterDouble,
-  pickRandomMonsterTypes,
-  buildEquipmentViewDataDummy
+  EquipmentDouble,
+  buildRequestStateDataDummy
 } from '../../models/test-doubles';
 import { Subject, Subscription } from 'rxjs';
 
-
 jest.mock('./heroes.service');
 jest.mock('./monsters.service');
-
-function buildHeroOptionsDummy(): AnyHeroViewData[] {
-  return heroTypes.reduce((options, type) => {
-    const partialData = heroViewDataMap[type];
-    const equipment = buildEquipmentViewDataDummy();
-
-    options.push({ ...partialData, equipment });
-    
-    return options;
-  }, [] as AnyHeroViewData[]);
-}
-
-function buildRequestStateDummy(): BiddingActionRequestData['state'] {
-  return {
-    dungeon: pickRandomMonsterTypes(4),
-    hero: HeroDouble.createDouble(),
-    remainingMonsters: randomInteger(7),
-    remainingPlayers: randomInteger(4)
-  };
-}
 
 describe('UiMediatorService', () => {
   let uiMediator: UiMediatorService;
@@ -171,7 +148,7 @@ describe('UiMediatorService', () => {
 
     beforeEach(() => {
       playerDummy = PlayerDouble.createDouble();
-      monsterDummy = pickRandomMonsterTypes(1)[0];
+      [monsterDummy] = MonsterDouble.pickTypes(1);
 
       // fake reception confirmation
       subscription = uiMediator.forcibleMonsterAdditionNotification
@@ -233,7 +210,7 @@ describe('UiMediatorService', () => {
     let stateDummy: BiddingActionRequestData['state'];
 
     beforeEach(() => {
-      stateDummy = buildRequestStateDummy();
+      stateDummy = buildRequestStateDataDummy();
 
       // fake participation acceptance/rejection
       subscription = uiMediator.bidParticipationRequest.subscribe(request => {
@@ -328,7 +305,7 @@ describe('UiMediatorService', () => {
 
   describe('requestEquipmentRemoval', () => {
     test('it returns a string', async () => {
-      const optionsDummy: EquipmentName[] = [];
+      const optionsDummy = EquipmentDouble.pickNames(4);
 
       expect.assertions(1);
 
@@ -344,11 +321,15 @@ describe('UiMediatorService', () => {
     let heroOptionsDummy: AnyHeroViewData[];
 
     beforeEach(() => {
-      chosenHeroDummy = 'bard';
-      heroOptionsDummy = buildHeroOptionsDummy();
+      chosenHeroDummy = HeroDouble.pickType();
+      heroOptionsDummy = [
+        HeroDouble.createStartingHeroViewDataDouble(),
+        HeroDouble.createStartingHeroViewDataDouble(),
+        HeroDouble.createStartingHeroViewDataDouble()
+      ];
 
       // fake hero choice
-      uiMediator.heroChoiceRequest.subscribe(request => {
+      subscription = uiMediator.heroChoiceRequest.subscribe(request => {
         request.resolve(chosenHeroDummy);
       });
       
@@ -417,7 +398,7 @@ describe('UiMediatorService', () => {
 
   describe('requestMonsterAddition', () => {
     test('it returns a boolean', async () => {
-      const [monsterNameDummy] = pickRandomMonsterTypes(1);
+      const [monsterNameDummy] = MonsterDouble.pickTypes(1);
 
       expect.assertions(1);
 
@@ -433,13 +414,11 @@ describe('UiMediatorService', () => {
     let addedPlayersDummy: string[];
 
     beforeEach(() => {
-      const min = randomInteger(4);
-      const max = min + 5;
-      rangeDummy = { min, max };
+      rangeDummy = PlayerDouble.buildRequirementsDouble();
       addedPlayersDummy = [randomString(6), randomString(5), randomString(8)];
       
       // fake players addition
-      uiMediator.playersRequest.subscribe(request => {
+      subscription = uiMediator.playersRequest.subscribe(request => {
         request.resolve(addedPlayersDummy);
       });
     });

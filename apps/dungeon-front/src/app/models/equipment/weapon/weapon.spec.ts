@@ -2,12 +2,7 @@ import { Weapon } from './weapon';
 import { WeaponName } from '../equipment-name';
 import { WeaponEffects } from './weapon-effects';
 import { MonsterType, monsterTypes } from '../../models';
-import {
-  pickRandomWeaponNames,
-  buildWeaponEffects,
-  pickRandomMonsterTypes,
-  monsterDummyBuilder
-} from '../../test-doubles';
+import { WeaponDouble, MonsterDouble } from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 describe('Weapon', () => {
@@ -18,10 +13,10 @@ describe('Weapon', () => {
   let targetedMonsters: MonsterType[];
 
   beforeEach(() => {
-    [nameDummy] = pickRandomWeaponNames(1);
+    [nameDummy] = WeaponDouble.pickNames(1);
     availableUsesDummy = 1 + randomInteger(3);
-    effectsDummy = {};
-    targetedMonsters = pickRandomMonsterTypes(4);
+    effectsDummy = WeaponDouble.buildEffectsDouble();
+    targetedMonsters = Object.keys(effectsDummy) as MonsterType[];
     weapon = new Weapon(nameDummy, availableUsesDummy, effectsDummy);
   });
 
@@ -43,7 +38,7 @@ describe('Weapon', () => {
 
   test('it is useless if availableUses is 0', () => {
     weapon = new Weapon(nameDummy, 0, {});
-    const monsterDummy = monsterDummyBuilder.orc;
+    const monsterDummy = MonsterDouble.createDouble();
 
     expect(() => { weapon.isUsefulAgainst(monsterDummy); })
       .toThrowError(
@@ -60,7 +55,7 @@ describe('Weapon', () => {
     monsterTypes
   )('it is useless against %s if effects parameter empty', monsterType => {
     weapon = new Weapon(nameDummy, availableUsesDummy, {});
-    const monsterDummy = monsterDummyBuilder[monsterType];
+    const monsterDummy = MonsterDouble.createSpecificDouble(monsterType);
     
     expect(weapon.isUsefulAgainst(monsterDummy)).toBeFalse();
     expect(() => { weapon.useAgainst(monsterDummy); })
@@ -70,9 +65,8 @@ describe('Weapon', () => {
   test.each(
     monsterTypes
   )('it is useful against %s if monster included in effects', monsterType => {
-    const effects = buildWeaponEffects(targetedMonsters);
-    weapon = new Weapon(nameDummy, availableUsesDummy, effects);
-    const monsterDummy = monsterDummyBuilder[monsterType];
+    weapon = new Weapon(nameDummy, availableUsesDummy, effectsDummy);
+    const monsterDummy = MonsterDouble.createSpecificDouble(monsterType);
     
     expect(weapon.isUsefulAgainst(monsterDummy))
       .toBe(targetedMonsters.includes(monsterType));
@@ -88,10 +82,9 @@ describe('Weapon', () => {
   test.each(
     monsterTypes
   )('use against %s returns expected effect', monsterType => {
-    const effects = buildWeaponEffects(targetedMonsters);
-    weapon = new Weapon(nameDummy, availableUsesDummy, effects);
-    const monsterDummy = monsterDummyBuilder[monsterType];
-    const effectCalculator = effects[monsterType];
+    weapon = new Weapon(nameDummy, availableUsesDummy, effectsDummy);
+    const monsterDummy = MonsterDouble.createSpecificDouble(monsterType);
+    const effectCalculator = effectsDummy[monsterType];
 
     if (effectCalculator) {
       const expectedEffect = effectCalculator(monsterDummy.damage);
@@ -104,9 +97,10 @@ describe('Weapon', () => {
   });
 
   test('useWeapon decreases available uses by 1', () => {
-    const effect: WeaponEffects = { orc: () => 2 };
+    const [monsterName] = MonsterDouble.pickTypes(1);
+    const effect: WeaponEffects = { [monsterName]: () => 2 };
     const weapon = new Weapon(nameDummy, availableUsesDummy, effect);
-    const monsterDummy = monsterDummyBuilder.orc;
+    const monsterDummy = MonsterDouble.createSpecificDouble(monsterName);
     const previousAvailableUses = weapon.availableUses;
     
     weapon.useAgainst(monsterDummy);

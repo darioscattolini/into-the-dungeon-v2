@@ -1,6 +1,6 @@
 import { Protection } from './protection';
 import { ProtectionName } from '../equipment-name';
-import { pickRandomProtectionNames } from '../../test-doubles';
+import { ProtectionDouble } from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 describe('Protection', () => {
@@ -9,7 +9,7 @@ describe('Protection', () => {
   let hitPointsDummy: number;
 
   beforeEach(() => {
-    [nameDummy] = pickRandomProtectionNames(1);
+    [nameDummy] = ProtectionDouble.pickNames(1);
     hitPointsDummy = randomInteger(7);
     protection = new Protection(nameDummy, hitPointsDummy);
   });

@@ -4,7 +4,7 @@ import { OneDeviceComponent } from './one-device.component';
 import { UiMediatorService } from '../../services/ui-mediator.service';
 import { GameService } from '../../services/game.service';
 import { MatDialog } from '@angular/material/dialog';
-import { EventEmitter } from '@angular/core';
+import { Subject } from 'rxjs';
 import {
   BiddingEndNotification,
   ForcibleMonsterAdditionNotification,
@@ -31,23 +31,23 @@ describe('OneDeviceComponent', () => {
     uiMediator = TestBed.inject(UiMediatorService);
 
     Object.defineProperty(uiMediator, 'biddingEndNotification', {
-      value: new EventEmitter<BiddingEndNotification>()
+      value: new Subject<BiddingEndNotification>()
     });
 
     Object.defineProperty(uiMediator, 'bidParticipationRequest', {
-      value: new EventEmitter<BidParticipationRequest>()
+      value: new Subject<BidParticipationRequest>()
     });
 
     Object.defineProperty(uiMediator, 'forcibleMonsterAdditionNotification', {
-      value: new EventEmitter<ForcibleMonsterAdditionNotification>()
+      value: new Subject<ForcibleMonsterAdditionNotification>()
     });
 
     Object.defineProperty(uiMediator, 'heroChoiceRequest', {
-      value: new EventEmitter<HeroChoiceRequest>()
+      value: new Subject<HeroChoiceRequest>()
     });
 
     Object.defineProperty(uiMediator, 'playersRequest', {
-      value: new EventEmitter<PlayersRequest>()
+      value: new Subject<PlayersRequest>()
     });
   });
 

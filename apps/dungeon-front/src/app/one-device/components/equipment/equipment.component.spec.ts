@@ -3,6 +3,7 @@ import { MockBuilder, MockedDebugElement, MockRender, ngMocks } from 'ng-mocks';
 import { EquipmentComponent } from './equipment.component';
 import { OneDeviceModule } from '../../one-device.module';
 import { AnyEquipmentViewData } from '../../../models/models';
+import { EquipmentDouble } from '../../../models/test-doubles';
 
 describe('EquipmentViewComponent', () => {
   let component: MockedDebugElement<EquipmentComponent>;
@@ -13,13 +14,7 @@ describe('EquipmentViewComponent', () => {
 
   beforeEach(() => {
     smallComponentDummy = false;
-    equipmentViewDataDummy = {
-      name: 'chaperone',
-      type: 'protection',
-      description: 'blablabla',
-      image: '...',
-      hitPoints: 4
-    };
+    equipmentViewDataDummy = EquipmentDouble.buildViewDataDummy()[0];
 
     MockRender(EquipmentComponent, {
       'smallComponent': smallComponentDummy,

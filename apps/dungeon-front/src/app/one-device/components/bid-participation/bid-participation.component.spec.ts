@@ -4,7 +4,7 @@ import { BidParticipationComponent } from './bid-participation.component';
 import { OneDeviceModule } from '../../one-device.module';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BidParticipationRequest } from '../../../models/models';
-import { HeroDouble } from '../../../models/test-doubles';
+import { HeroDouble, MonsterDouble } from '../../../models/test-doubles';
 
 
 describe('BidParticipationComponent', () => {
@@ -17,7 +17,10 @@ describe('BidParticipationComponent', () => {
     dialogDataDummy = {
       player: 'John Myturn',
       state: {
-        dungeon: [],
+        dungeon: [
+          MonsterDouble.createViewDataDouble(),
+          MonsterDouble.createViewDataDouble()
+        ],
         hero: HeroDouble.createPlayingHeroViewDataDouble(),
         remainingMonsters: 5,
         remainingPlayers: 3

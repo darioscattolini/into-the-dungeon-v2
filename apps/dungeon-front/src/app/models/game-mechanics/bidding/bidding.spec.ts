@@ -18,7 +18,7 @@ import {
   HeroDouble,
   MonsterDouble,
   PlayerDouble,
-  pickRandomEquipmentNames
+  EquipmentDouble
 } from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
@@ -50,7 +50,7 @@ function dontAddMonsterDummy(): MonsterAdditionResponseContent {
 }
 
 function removeEquipmentDummy(): EquipmentRemovalResponseContent { 
-  return { action: 'remove-equipment', content: pickRandomEquipmentNames(1)[0] };
+  return { action: 'remove-equipment', content: EquipmentDouble.pickNames(1)[0] };
 }
 
 function buildAllResponseDummies(): BiddingActionResponseContent[] {
@@ -81,7 +81,7 @@ describe('Bidding', () => {
     ];
     currentPlayerDummy = PlayerDouble.createDouble();
     nextPlayerDummy = PlayerDouble.createDouble();
-    equipmentOptions = pickRandomEquipmentNames(6);
+    equipmentOptions = EquipmentDouble.pickNames(6);
     lastBiddingPlayerDummy = PlayerDouble.createDouble();
     
     Object.defineProperty(playersMock, 'remainingPlayersAmount', { value: 3 });
@@ -296,8 +296,7 @@ describe('Bidding', () => {
       // SCENARIO (2) IN bidding.ts
 
       beforeEach(() => {
-        jest.spyOn(heroMock, 'getMountedEquipment')
-          .mockReturnValue(pickRandomEquipmentNames(0));
+        jest.spyOn(heroMock, 'getMountedEquipment').mockReturnValue([]);
 
         monstersPackDummy = [ MonsterDouble.createDouble() ];
         [pickedMonster] = monstersPackDummy;
@@ -395,8 +394,7 @@ describe('Bidding', () => {
       // SCENARIO (1) IN bidding.ts
 
       beforeEach(() => {
-        jest.spyOn(heroMock, 'getMountedEquipment')
-          .mockReturnValue(pickRandomEquipmentNames(0));
+        jest.spyOn(heroMock, 'getMountedEquipment').mockReturnValue([]);
 
         monstersPackDummy = [];
 
@@ -526,7 +524,7 @@ describe('Bidding', () => {
 
       beforeEach(() => {
         jest.spyOn(heroMock, 'getMountedEquipment')
-          .mockReturnValue(pickRandomEquipmentNames(equipmentLeft));
+          .mockReturnValue(EquipmentDouble.pickNames(equipmentLeft));
 
         monstersPackDummy = [];
 
@@ -1401,7 +1399,7 @@ describe('Bidding', () => {
       // SCENARIO (10) IN bidding.ts
 
       beforeEach(() => {
-        equipmentOptions = pickRandomEquipmentNames(equipmentLeft);
+        equipmentOptions = EquipmentDouble.pickNames(equipmentLeft);
         
         jest.spyOn(heroMock, 'getMountedEquipment')
           .mockReturnValue(equipmentOptions);
@@ -1518,7 +1516,7 @@ describe('Bidding', () => {
       // SCENARIO (9) IN bidding.ts
 
       beforeEach(() => {
-        equipmentOptions = pickRandomEquipmentNames(equipmentLeft);
+        equipmentOptions = EquipmentDouble.pickNames(equipmentLeft);
         
         jest.spyOn(heroMock, 'getMountedEquipment')
           .mockReturnValue(equipmentOptions);
@@ -1737,7 +1735,7 @@ describe('Bidding', () => {
 
     beforeEach(() => {
       initialEquipmentSize = 10;
-      equipmentOptions = pickRandomEquipmentNames(initialEquipmentSize, true);
+      equipmentOptions = EquipmentDouble.pickNames(initialEquipmentSize, true);
       rounds = 8;
       monstersPackDummy = [];
       removals = [];

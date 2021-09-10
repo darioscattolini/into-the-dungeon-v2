@@ -18,11 +18,7 @@ import {
   weaponNames,
   monsterTypes
 } from '../../models/models';
-import {
-  buildWeaponEffects,
-  monsterDummyBuilder,
-  pickRandomMonsterTypes
-} from '../../models/test-doubles';
+import { WeaponDouble, MonsterDouble } from '../../models/test-doubles';
 
 /* 
   Some weapons produce complex effects that would require special testing. In
@@ -41,7 +37,7 @@ function buildFakeEquipmentData(): EquipmentDataMap {
       data[weaponName] = {
         classToBeUsed: Weapon,
         availableUses: 1 + randomInteger(4),
-        effects: buildWeaponEffects(pickRandomMonsterTypes(randomInteger(6)))
+        effects: WeaponDouble.buildEffectsDouble()
       }
     } else {
       const protectionName = name as ProtectionName;
@@ -130,7 +126,7 @@ describe('EquipmentService', () => {
       monsterTypes
     )('weapon has expected effect from equipmData against %s', monsterType => {
       weapon = equipmentService.createPiece(name);
-      const monsterDummy = monsterDummyBuilder[monsterType];
+      const monsterDummy = MonsterDouble.createSpecificDouble(monsterType);
       const expectedEffect = fakeEquipmentData[name].effects[monsterType];
 
       if (expectedEffect) {

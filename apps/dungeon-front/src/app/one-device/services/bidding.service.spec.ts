@@ -22,8 +22,8 @@ import {
   BiddingPlayersRoundDouble,
   HeroDouble,
   MonsterDouble,
-  pickRandomEquipmentNames,
-  pickRandomMonsterTypes
+  buildRequestStateDataDummy,
+  EquipmentDouble,
 } from '../../models/test-doubles';
 
 jest.mock('./ui-mediator.service');
@@ -94,25 +94,25 @@ describe('BiddingService', () => {
 
   describe('playBidding', () => {
     let playersDummy: BiddingPlayersRound;
+    let requestTargetDummy: Player;
     let monstersPackDummy: AnyMonster[];
+    let stateDataDummy: BiddingActionRequestData['state'];
     let actionRequestGenericDummy: BiddingActionRequestData;
 
     beforeEach(() => {
       playersDummy = BiddingPlayersRoundDouble.createDouble();
+      requestTargetDummy = PlayerDouble.createDouble();
       monstersPackDummy = [
+        MonsterDouble.createDouble(),
         MonsterDouble.createDouble(),
         MonsterDouble.createDouble()
       ];
+      stateDataDummy = buildRequestStateDataDummy();
       actionRequestGenericDummy = {
         action: 'play-bidding',
-        player: PlayerDouble.createDouble(),
+        player: requestTargetDummy,
         content: undefined,
-        state: { 
-          dungeon: [],
-          hero: heroDummy,
-          remainingMonsters: 2,
-          remainingPlayers: 2
-        }
+        state: stateDataDummy
       };
 
       jest.spyOn(uiMediator, 'requestHeroChoice').mockResolvedValue(heroDummy);
@@ -188,9 +188,9 @@ describe('BiddingService', () => {
       beforeEach(() => {
         requestDataDummy = {
           action: 'play-bidding',
-          player: PlayerDouble.createDouble(),
+          player: requestTargetDummy,
           content: undefined,
-          state: actionRequestGenericDummy.state
+          state: stateDataDummy
         };
 
         makeLoopRunTimes(1);
@@ -308,12 +308,10 @@ describe('BiddingService', () => {
     });
 
     describe('loop run for monster addition (add-monster)', () => {
-      let requestTargetDummy: Player;
       let monsterTypeDummy: MonsterType;
 
       beforeEach(() => {
-        requestTargetDummy = PlayerDouble.createDouble();
-        [monsterTypeDummy] = pickRandomMonsterTypes(1);
+        [monsterTypeDummy] = MonsterDouble.pickTypes(1);
 
         makeLoopRunTimes(1);
 
@@ -322,7 +320,7 @@ describe('BiddingService', () => {
             action: 'add-monster',
             player: requestTargetDummy,
             content: monsterTypeDummy,
-            state: actionRequestGenericDummy.state
+            state: stateDataDummy
           });
       });
 
@@ -445,14 +443,13 @@ describe('BiddingService', () => {
     });
 
     describe('loop run for equipment removal (remove-equipment)', () => {
-      let requestTargetDummy: Player;
       let equipmentOptionsDummy: EquipmentName[];
+      let chosenEquipmentDummy: EquipmentName;
 
       beforeEach(() => {
-        requestTargetDummy = PlayerDouble.createDouble();
-        equipmentOptionsDummy = pickRandomEquipmentNames(randomInteger(4) + 2);
+        equipmentOptionsDummy = EquipmentDouble.pickNames(4);
         const randomIndex = randomInteger(equipmentOptionsDummy.length, false);
-        const chosenEquipmentDummy = equipmentOptionsDummy[randomIndex];
+        chosenEquipmentDummy = equipmentOptionsDummy[randomIndex];
 
         makeLoopRunTimes(1);
 
@@ -461,7 +458,7 @@ describe('BiddingService', () => {
             action: 'remove-equipment',
             player: requestTargetDummy,
             content: equipmentOptionsDummy,
-            state: actionRequestGenericDummy.state
+            state: stateDataDummy
           });
 
         jest.spyOn(uiMediator, 'requestEquipmentRemoval')
@@ -512,7 +509,7 @@ describe('BiddingService', () => {
             action: 'remove-equipment',
             player: requestTargetDummy,
             content: optionsDummy,
-            state: actionRequestGenericDummy.state
+            state: stateDataDummy
           });
 
         jest.spyOn(uiMediator, 'requestEquipmentRemoval')
@@ -562,12 +559,6 @@ describe('BiddingService', () => {
       test(
         'bidding.onResponse is called with chosen equipment from uiMediator', 
         async () => {
-          const randomIndex = randomInteger(equipmentOptionsDummy.length, false);
-          const chosenEquipment = equipmentOptionsDummy[randomIndex];
-          
-          jest.spyOn(uiMediator, 'requestEquipmentRemoval')
-            .mockResolvedValue(chosenEquipment);
-
           expect.assertions(1);
 
           await biddingService.playBidding(playersDummy);
@@ -577,7 +568,7 @@ describe('BiddingService', () => {
           expect(biddingMock.onResponse)
             .toHaveBeenCalledWith(
               expect.toContainEntry(
-                ['content', chosenEquipment]
+                ['content', chosenEquipmentDummy]
               )
             );
         }

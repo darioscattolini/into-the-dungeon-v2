@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { randomInteger } from '@into-the-dungeon/util-testing';
 
 import { HeroesService } from './heroes.service';
 import { EquipmentService } from './equipment.service';
@@ -15,13 +14,15 @@ import {
   EquipmentName,
   AnyEquipmentViewData,
   equipmentViewDataMap,
-  Weapon,
   WeaponName,
   weaponNames,
-  Protection,
   ProtectionName
 } from '../../models/models';
-import { MonsterDouble, pickRandomWeaponNames } from '../../models/test-doubles';
+import { 
+  MonsterDouble, 
+  ProtectionDouble, 
+  WeaponDouble 
+} from '../../models/test-doubles';
 
 jest.mock('./equipment.service');
 
@@ -167,9 +168,10 @@ describe('HeroesService', () => {
           const weaponNamesList: EquipmentName[] = [...weaponNames];
 
           if (weaponNamesList.includes(pieceName)) {
-            piece = new Weapon(pieceName as WeaponName, randomInteger(5), {});
+            piece = WeaponDouble.createSpecificDouble(pieceName as WeaponName);
           } else {
-            piece = new Protection(pieceName as ProtectionName, randomInteger(5));
+            piece = ProtectionDouble
+              .createSpecificDouble(pieceName as ProtectionName);
           }
 
           provider[pieceName] = piece;
@@ -224,7 +226,7 @@ describe('HeroesService', () => {
 
     test('hero is ready to play', () => {
       hero = heroesService.createHero(type);
-      const [weaponDummy] = pickRandomWeaponNames(1);
+      const [weaponDummy] = WeaponDouble.pickNames(1);
       const enemyDummy = MonsterDouble.createDouble();
       const notReadyMessage = 'Mount 6 equipment pieces before using Hero.';
       

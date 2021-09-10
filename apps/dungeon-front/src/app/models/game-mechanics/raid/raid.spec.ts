@@ -3,8 +3,8 @@ import { Hero, AnyMonster, ChosenWeapon } from '../../models';
 import {
   HeroDouble,
   MonsterDouble,
-  pickRandomEquipmentNames,
-  pickRandomWeaponNames
+  EquipmentDouble,
+  WeaponDouble
 } from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
@@ -51,12 +51,8 @@ describe('Raid', () => {
       expect(raid.heroHitPoints).toBe(hitPoints);
     });
 
-    test.each([
-      [pickRandomEquipmentNames(3)], 
-      [pickRandomEquipmentNames(4)], 
-      [pickRandomEquipmentNames(4)], 
-      [pickRandomEquipmentNames(3)]
-    ])('heroEquipment equals hero\'s getMountedEquipment', equipment => {
+    test('heroEquipment equals hero\'s getMountedEquipment', () => {
+      const equipment = EquipmentDouble.pickNames(6);
       jest.spyOn(heroMock, 'getMountedEquipment')
         .mockReturnValue(equipment);
       
@@ -81,7 +77,7 @@ describe('Raid', () => {
 
     test('resolveCurrentEncounter cannot be called', () => {
       raid = new Raid(heroMock, enemiesDummy);
-      const [weaponDummy] = pickRandomWeaponNames(1);
+      const [weaponDummy] = WeaponDouble.pickNames(1);
 
       expect(() => { raid.resolveCurrentEncounter(weaponDummy); })
         .toThrowError(
@@ -221,7 +217,7 @@ describe('Raid', () => {
     ])('it returns weapons from hero.getWeaponsAgains', round => {
       playPreviousRounds(raid, round);
 
-      const expectedWeapons = pickRandomWeaponNames(3);
+      const expectedWeapons = WeaponDouble.pickNames(3);
 
       jest.spyOn(heroMock, 'getWeaponsAgainst')
         .mockImplementation(() => expectedWeapons);
@@ -244,7 +240,7 @@ describe('Raid', () => {
       jest.spyOn(heroMock, 'useWeaponAgainst').mockImplementation(jest.fn());
 
       raid = new Raid(heroMock, enemiesDummy);
-      chosenWeapon = useWeapon ? pickRandomWeaponNames(1)[0] : 'NO_WEAPON';
+      chosenWeapon = useWeapon ? WeaponDouble.pickNames(1)[0] : 'NO_WEAPON';
     });
 
     test('it cannot be called right after itself', () => {

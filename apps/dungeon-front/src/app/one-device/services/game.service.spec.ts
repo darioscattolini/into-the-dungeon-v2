@@ -18,7 +18,6 @@ import {
   BiddingPlayersRoundDouble,
   HeroDouble,
   MonsterDouble,
-  buildPlayerRequirementsDummy
 } from '../../models/test-doubles';
 
 jest.mock('./ui-mediator.service');
@@ -70,7 +69,7 @@ describe('GameService', () => {
     let playersDummy: Player[];
 
     beforeEach(() => {
-      requirementsDummy = buildPlayerRequirementsDummy();
+      requirementsDummy = PlayerDouble.buildRequirementsDouble();
   
       playersDummy = [PlayerDouble.createDouble(), PlayerDouble.createDouble()];
   

@@ -1,6 +1,6 @@
 import { Monster, AnyMonster } from './monster';
 import { MonsterType } from './monster-type';
-import { pickRandomMonsterTypes } from '../test-doubles';
+import { MonsterDouble } from '../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 
 describe('Monster', () => {
@@ -9,7 +9,7 @@ describe('Monster', () => {
   let damageDummy: number;
 
   beforeEach(() => {
-    [typeDummy] = pickRandomMonsterTypes(1);
+    [typeDummy] = MonsterDouble.pickTypes(1);
     damageDummy = randomInteger(10);
     monster = new Monster(typeDummy, damageDummy);
   });

@@ -3,6 +3,7 @@ import { MockBuilder, MockedDebugElement, MockRender, ngMocks } from 'ng-mocks';
 import { MonsterComponent } from './monster.component';
 import { OneDeviceModule } from '../../one-device.module';
 import { AnyMonsterViewData } from '../../../models/models';
+import { MonsterDouble } from '../../../models/test-doubles';
 
 describe('MonsterComponent', () => {
   let component: MockedDebugElement<MonsterComponent>;
@@ -11,12 +12,7 @@ describe('MonsterComponent', () => {
   beforeEach(() => MockBuilder(MonsterComponent, OneDeviceModule));
 
   beforeEach(() => {
-    monsterViewDataDummy = {
-      name: 'fairy',
-      damage: 3,
-      description: '......',
-      image: '...'
-    };
+    monsterViewDataDummy = MonsterDouble.createViewDataDouble();
 
     MockRender(MonsterComponent, {
       'monster': monsterViewDataDummy

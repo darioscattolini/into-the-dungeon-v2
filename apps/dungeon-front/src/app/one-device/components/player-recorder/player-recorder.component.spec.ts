@@ -1,10 +1,10 @@
 import { MockBuilder, MockedDebugElement, MockRender, ngMocks } from 'ng-mocks';
-import { randomInteger } from '@into-the-dungeon/util-testing';
 
 import { PlayerRecorderComponent } from './player-recorder.component';
 import { OneDeviceModule } from '../../one-device.module';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PlayersRequest } from '../../../models/models';
+import { PlayerDouble } from '../../../models/test-doubles';
 
 describe('PlayerRecorderComponent', () => {
   let component: MockedDebugElement<PlayerRecorderComponent>;
@@ -13,11 +13,8 @@ describe('PlayerRecorderComponent', () => {
   beforeEach(() => MockBuilder(PlayerRecorderComponent, OneDeviceModule));
 
   beforeEach(() => {
-    const randomStart = 1 + randomInteger(2);
-    const randomEnd = randomStart + 1 + randomInteger(2);
-    dialogDataDummy = {
-      range: [randomStart, randomEnd]
-    };
+    const requirements = PlayerDouble.buildRequirementsDouble();
+    dialogDataDummy = { range: [requirements.min, requirements.max] };
         
     MockRender(PlayerRecorderComponent, {}, {
       providers: [{
