@@ -1,16 +1,28 @@
 import { TestBed } from '@angular/core/testing';
+import { randomInteger } from '@into-the-dungeon/util-testing';
 
 import { EquipmentService } from './equipment.service';
-import { 
-  EquipmentName, equipmentNames, EquipmentDataMapIT, EquipmentDataMap, 
-  EquipmentViewDataMap, EquipmentViewDataMapIT, equipmentViewDataMap,
-  Protection, ProtectionName, protectionNames, 
-  Weapon, WeaponName, weaponNames, monsterTypes,
+import {
+  EquipmentName,
+  equipmentNames,
+  EquipmentDataMapIT,
+  EquipmentDataMap,
+  EquipmentViewDataMap,
+  EquipmentViewDataMapIT,
+  equipmentViewDataMap,
+  Protection,
+  ProtectionName,
+  protectionNames,
+  Weapon,
+  WeaponName,
+  weaponNames,
+  monsterTypes
 } from '../../models/models';
-import { 
-  buildWeaponEffects, monsterDummyBuilder, pickRandomMonsterTypes 
+import {
+  buildWeaponEffects,
+  monsterDummyBuilder,
+  pickRandomMonsterTypes
 } from '../../models/test-doubles';
-import { randomInteger } from '@into-the-dungeon/util-testing';
 
 /* 
   Some weapons produce complex effects that would require special testing. In

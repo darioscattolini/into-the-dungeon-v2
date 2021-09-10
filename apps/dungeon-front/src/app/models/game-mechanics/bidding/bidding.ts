@@ -1,7 +1,9 @@
 import { BiddingPlayersRound } from './bidding-players-round';
 import { BiddingState } from './bidding-state';
-import { 
-  BiddingAction, BiddingActionRequestData, BiddingActionResponseContent,
+import {
+  BiddingAction,
+  BiddingActionRequestData,
+  BiddingActionResponseContent,
   BiddingResponseNotificationData
 } from './bidding-action';
 import { BiddingEndReason, BiddingResult } from './bidding-result';

@@ -1,9 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { MonstersService } from './monsters.service';
-import { 
-  Monster, AnyMonster, monsterTypes, MonsterDataMapIT, monsterDataMap,
-  MonsterViewDataMap, MonsterViewDataMapIT, monsterViewDataMap
+import {
+  Monster,
+  AnyMonster,
+  monsterTypes,
+  MonsterDataMapIT,
+  monsterDataMap,
+  MonsterViewDataMap,
+  MonsterViewDataMapIT,
+  monsterViewDataMap
 } from '../../models/models';
 
 describe('MonstersService', () => {

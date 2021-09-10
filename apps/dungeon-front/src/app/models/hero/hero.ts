@@ -1,11 +1,18 @@
 import { HeroType } from './hero-type';
-import { 
-  Equipment, EquipmentName, Protection, Weapon, WeaponName, 
-  AnyMonster, EncounterOutcome
+import {
+  Equipment,
+  EquipmentName,
+  Protection,
+  Weapon,
+  WeaponName,
+  AnyMonster,
+  EncounterOutcome
 } from '../models';
 
 export class Hero {
-  public get hitPoints() { return this._hitPoints; }
+  public get hitPoints() {
+    return this._hitPoints;
+  }
   private _hitPoints: number;
 
   public readonly type: HeroType;
@@ -22,15 +29,15 @@ export class Hero {
   public discardEquipmentPiece(pieceName: EquipmentName): void {
     this.checkIfReady();
 
-    let pieceIndex = this.protection
-      .findIndex(piece => piece.name === pieceName);
-    
+    let pieceIndex = this.protection.findIndex(
+      (piece) => piece.name === pieceName
+    );
+
     if (pieceIndex >= 0) {
       const [piece] = this.protection.splice(pieceIndex, 1);
       this._hitPoints -= piece.hitPoints;
     } else {
-      pieceIndex = this.weapons
-        .findIndex(piece => piece.name === pieceName);
+      pieceIndex = this.weapons.findIndex((piece) => piece.name === pieceName);
 
       if (pieceIndex >= 0) {
         this.weapons.splice(pieceIndex, 1);
@@ -44,16 +51,16 @@ export class Hero {
     this.checkIfReady();
 
     const usefulWeapons = this.weapons
-      .filter(weapon => weapon.isUsefulAgainst(enemy))
-      .map(weapon => weapon.name);
+      .filter((weapon) => weapon.isUsefulAgainst(enemy))
+      .map((weapon) => weapon.name);
 
     return usefulWeapons;
   }
 
   public getMountedEquipment(): EquipmentName[] {
     const mountedEquipment = this.getAllEquipment();
-    
-    return mountedEquipment.map(piece => piece.name);
+
+    return mountedEquipment.map((piece) => piece.name);
   }
 
   public mountEquipmentPiece(piece: Equipment): void {
@@ -83,25 +90,26 @@ export class Hero {
     const damage = enemy.damage;
     this._hitPoints = Math.max(0, this._hitPoints - damage);
 
-    return { hitPointsChange: - damage };
+    return { hitPointsChange: -damage };
   }
 
   public useWeaponAgainst(
-    weaponName: WeaponName, enemy: AnyMonster
+    weaponName: WeaponName,
+    enemy: AnyMonster
   ): EncounterOutcome {
     this.checkIfReady();
 
-    const weapon = this.weapons.find(weapon => weapon.name === weaponName);
-    
+    const weapon = this.weapons.find((weapon) => weapon.name === weaponName);
+
     if (!weapon) {
       throw new Error(`${weaponName} not included in hero's equipment.`);
     }
-    
+
     const hitPointsChange = weapon.useAgainst(enemy);
     this._hitPoints = Math.max(0, this._hitPoints + hitPointsChange);
-    
+
     let discardedWeapon;
-    
+
     if (weapon.availableUses === 0) {
       discardedWeapon = weaponName;
       this.discardEquipmentPiece(discardedWeapon);
@@ -116,7 +124,7 @@ export class Hero {
 
   private checkIfReady(): void {
     if (!this.ready) {
-      throw new Error ('Mount 6 equipment pieces before using Hero.')
+      throw new Error('Mount 6 equipment pieces before using Hero.');
     }
   }
 }

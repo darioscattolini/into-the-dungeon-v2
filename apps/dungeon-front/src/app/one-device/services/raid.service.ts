@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { UiMediatorService } from './ui-mediator.service';
-import { 
-  Raid, RaidParticipants, ChosenWeapon, RaidResult, WeaponName 
+import {
+  Raid,
+  RaidParticipants,
+  ChosenWeapon,
+  RaidResult,
+  WeaponName
 } from '../../models/models';
 
 @Injectable()

@@ -1,5 +1,9 @@
-import { 
-  AfterContentChecked, ChangeDetectorRef, Component, Input, ViewChild 
+import {
+  AfterContentChecked,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  ViewChild
 } from '@angular/core';
 import { SwiperComponent } from 'swiper/angular';
 import SwiperCore, { Pagination } from "swiper";

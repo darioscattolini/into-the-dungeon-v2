@@ -5,9 +5,12 @@ import { UiMediatorService } from '../../services/ui-mediator.service';
 import { GameService } from '../../services/game.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventEmitter } from '@angular/core';
-import { 
-  BiddingEndNotification, ForcibleMonsterAdditionNotification,
-  BidParticipationRequest, HeroChoiceRequest, PlayersRequest 
+import {
+  BiddingEndNotification,
+  ForcibleMonsterAdditionNotification,
+  BidParticipationRequest,
+  HeroChoiceRequest,
+  PlayersRequest
 } from '../../../models/models';
 
 jest.mock('../../services/ui-mediator.service');
@@ -21,16 +24,12 @@ describe('OneDeviceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OneDeviceComponent ],
-      providers: [ 
-        UiMediatorService,
-        GameService,
-        MatDialog
-      ]
+      declarations: [OneDeviceComponent],
+      providers: [UiMediatorService, GameService, MatDialog]
     }).compileComponents();
-    
+
     uiMediator = TestBed.inject(UiMediatorService);
-    
+
     Object.defineProperty(uiMediator, 'biddingEndNotification', {
       value: new EventEmitter<BiddingEndNotification>()
     });

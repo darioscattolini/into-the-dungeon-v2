@@ -5,13 +5,25 @@ import { randomInteger } from '@into-the-dungeon/util-testing';
 import { BiddingService } from './bidding.service';
 import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
-import { 
-  Player, Hero, EquipmentName, Monster, AnyMonster, MonsterType,
-  Bidding, BiddingPlayersRound, BiddingEndReason, BiddingActionRequestData
+import {
+  Player,
+  Hero,
+  EquipmentName,
+  Monster,
+  AnyMonster,
+  MonsterType,
+  Bidding,
+  BiddingPlayersRound,
+  BiddingEndReason,
+  BiddingActionRequestData
 } from '../../models/models';
-import { 
-  PlayerDouble, BiddingPlayersRoundDouble, 
-  HeroDouble, pickRandomEquipmentNames, MonsterDouble, pickRandomMonsterTypes
+import {
+  PlayerDouble,
+  BiddingPlayersRoundDouble,
+  HeroDouble,
+  MonsterDouble,
+  pickRandomEquipmentNames,
+  pickRandomMonsterTypes
 } from '../../models/test-doubles';
 
 jest.mock('./ui-mediator.service');

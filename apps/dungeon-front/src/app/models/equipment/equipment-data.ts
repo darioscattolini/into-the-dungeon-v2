@@ -1,7 +1,9 @@
 import { ProtectionData } from './protection/data/protection-data';
 import { WeaponData } from './weapon/data/weapon-data';
-import { 
-  EquipmentName, ProtectionName, WeaponName 
+import {
+  EquipmentName,
+  ProtectionName,
+  WeaponName
 } from '../equipment/equipment-name';
 import { InjectionToken } from '@angular/core';
 import { ancientCrown } from './weapon/data/items/ancient-crown';

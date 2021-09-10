@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { UiMediatorService } from './ui-mediator.service';
 import { MonstersService } from './monsters.service';
-import { 
-  Bidding, BiddingPlayersRound, 
-  BiddingActionRequestData, BiddingActionResponseContent,
-  BidParticipationRequestData, BidParticipationResponseContent,
-  MonsterAdditionRequestData, MonsterAdditionResponseContent,
-  EquipmentRemovalRequestData, EquipmentRemovalResponseContent,
-  BiddingResult, RaidParticipants
+import {
+  Bidding,
+  BiddingPlayersRound,
+  BiddingActionRequestData,
+  BiddingActionResponseContent,
+  BidParticipationRequestData,
+  BidParticipationResponseContent,
+  MonsterAdditionRequestData,
+  MonsterAdditionResponseContent,
+  EquipmentRemovalRequestData,
+  EquipmentRemovalResponseContent,
+  BiddingResult,
+  RaidParticipants
 } from '../../models/models';
 
 @Injectable()

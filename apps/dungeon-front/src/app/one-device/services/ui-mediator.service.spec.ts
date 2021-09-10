@@ -1,28 +1,31 @@
 import { TestBed } from '@angular/core/testing';
 import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
-
 import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
-import { 
-  AnyHeroViewData, 
-  BiddingActionRequestData, 
-  BiddingEndReason, 
+import {
+  AnyHeroViewData,
+  BiddingActionRequestData,
+  BiddingEndReason,
   BiddingStateViewData,
-  EquipmentName, 
-  HeroType, 
-  heroTypes, 
+  EquipmentName,
+  HeroType,
+  heroTypes,
   heroViewDataMap,
   MonsterType,
-  Player, 
+  Player,
   PlayerRequirements,
   WeaponName
 } from '../../models/models';
-import { 
-  PlayerDouble, HeroDouble, MonsterDouble, 
-  pickRandomMonsterTypes, buildEquipmentViewDataDummy,
+import {
+  PlayerDouble,
+  HeroDouble,
+  MonsterDouble,
+  pickRandomMonsterTypes,
+  buildEquipmentViewDataDummy
 } from '../../models/test-doubles';
 import { Subject, Subscription } from 'rxjs';
+
 
 jest.mock('./heroes.service');
 jest.mock('./monsters.service');

@@ -1,7 +1,13 @@
 import { Injectable, Inject } from '@angular/core';
-import { 
-  Monster, AnyMonster, MonsterTypeSecret, monsterTypes, 
-  MonsterDataMap, MonsterDataMapIT, MonsterViewDataMap, MonsterViewDataMapIT
+import {
+  Monster,
+  AnyMonster,
+  MonsterTypeSecret,
+  monsterTypes,
+  MonsterDataMap,
+  MonsterDataMapIT,
+  MonsterViewDataMap,
+  MonsterViewDataMapIT
 } from '../../models/models';
 
 @Injectable()

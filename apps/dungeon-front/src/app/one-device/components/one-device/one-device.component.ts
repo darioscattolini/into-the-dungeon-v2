@@ -4,16 +4,13 @@ import { UiMediatorService } from '../../services/ui-mediator.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Request } from '../../../models/models';
 import { BiddingEndComponent } from '../bidding-end/bidding-end.component';
-import { 
-  BidParticipationComponent 
-} from '../bid-participation/bid-participation.component';
-import { 
-  ForcibleMonsterAdditionComponent 
-} from '../forcible-monster-addition/forcible-monster-addition.component';
+import { BidParticipationComponent } 
+  from '../bid-participation/bid-participation.component';
+import { ForcibleMonsterAdditionComponent } 
+  from '../forcible-monster-addition/forcible-monster-addition.component';
 import { HeroSelectComponent } from '../hero-select/hero-select.component';
-import { 
-  PlayerRecorderComponent 
-} from '../player-recorder/player-recorder.component';
+import { PlayerRecorderComponent } 
+  from '../player-recorder/player-recorder.component';
 
 @Component({
   selector: 'dungeon-one-device',

@@ -1,7 +1,10 @@
 import { Raid } from './raid';
 import { Hero, AnyMonster, ChosenWeapon } from '../../models';
-import { 
-  HeroDouble, MonsterDouble, pickRandomEquipmentNames, pickRandomWeaponNames 
+import {
+  HeroDouble,
+  MonsterDouble,
+  pickRandomEquipmentNames,
+  pickRandomWeaponNames
 } from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';
 

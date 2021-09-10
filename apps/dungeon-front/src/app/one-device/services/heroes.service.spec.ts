@@ -1,15 +1,27 @@
 import { TestBed } from '@angular/core/testing';
+import { randomInteger } from '@into-the-dungeon/util-testing';
 
 import { HeroesService } from './heroes.service';
 import { EquipmentService } from './equipment.service';
-import { 
-  Hero, heroTypes, HeroDataMapIT, heroDataMap, 
-  AnyHeroViewData, HeroViewDataMapIT, heroViewDataMap,
-  Equipment, EquipmentName, AnyEquipmentViewData, equipmentViewDataMap,
-  Weapon, WeaponName, weaponNames, Protection, ProtectionName
+import {
+  Hero,
+  heroTypes,
+  HeroDataMapIT,
+  heroDataMap,
+  AnyHeroViewData,
+  HeroViewDataMapIT,
+  heroViewDataMap,
+  Equipment,
+  EquipmentName,
+  AnyEquipmentViewData,
+  equipmentViewDataMap,
+  Weapon,
+  WeaponName,
+  weaponNames,
+  Protection,
+  ProtectionName
 } from '../../models/models';
 import { MonsterDouble, pickRandomWeaponNames } from '../../models/test-doubles';
-import { randomInteger } from '@into-the-dungeon/util-testing';
 
 jest.mock('./equipment.service');
 

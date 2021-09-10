@@ -1,5 +1,8 @@
-import { 
-  Player, PlayerRequirements, BiddingPlayersRound, RaidResult 
+import {
+  Player,
+  PlayerRequirements,
+  BiddingPlayersRound,
+  RaidResult
 } from '../models';
 
 interface RoundResult {

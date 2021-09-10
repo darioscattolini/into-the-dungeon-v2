@@ -1,5 +1,8 @@
-import { 
-  MonsterTypeSecret, AnyMonsterViewData, Hero, PlayingHeroViewData 
+import {
+  Hero,
+  MonsterTypeSecret,
+  AnyMonsterViewData,
+  PlayingHeroViewData
 } from '../../models';
 
 export interface BiddingState {

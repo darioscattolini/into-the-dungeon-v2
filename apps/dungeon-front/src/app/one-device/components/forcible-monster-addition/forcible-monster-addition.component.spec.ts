@@ -1,8 +1,7 @@
 import { MockBuilder, MockedDebugElement, MockRender, ngMocks } from 'ng-mocks';
 
-import { 
-  ForcibleMonsterAdditionComponent 
-} from './forcible-monster-addition.component';
+import { ForcibleMonsterAdditionComponent }
+  from './forcible-monster-addition.component';
 import { OneDeviceModule } from '../../one-device.module';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ForcibleMonsterAdditionNotification } from '../../../models/models';

@@ -1,11 +1,19 @@
 import { Hero } from './hero';
 import { HeroType } from './hero-type';
-import { 
-  Equipment, EquipmentName, Protection, Weapon, WeaponName, AnyMonster 
+import {
+  Equipment,
+  EquipmentName,
+  Protection,
+  Weapon,
+  WeaponName,
+  AnyMonster
 } from '../models';
-import { 
-  ProtectionDouble, WeaponDouble, 
-  pickRandomEquipmentNames, pickRandomWeaponNames, buildUniqueWeaponDoublesArray,
+import {
+  ProtectionDouble,
+  WeaponDouble,
+  pickRandomEquipmentNames,
+  pickRandomWeaponNames,
+  buildUniqueWeaponDoublesArray,
   MonsterDouble
 } from '../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';

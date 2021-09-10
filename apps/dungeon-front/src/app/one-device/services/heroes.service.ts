@@ -1,8 +1,16 @@
 import { Inject, Injectable } from '@angular/core';
 import { EquipmentService } from './equipment.service';
-import { 
-  Hero, HeroType, heroTypes, HeroDataMap, HeroDataMapIT, EquipmentName,
-  AnyHeroViewData, HeroViewDataMap, HeroViewDataMapIT, AnyEquipmentViewData, 
+import {
+  Hero,
+  HeroType,
+  heroTypes,
+  HeroDataMap,
+  HeroDataMapIT,
+  EquipmentName,
+  AnyHeroViewData,
+  HeroViewDataMap,
+  HeroViewDataMapIT,
+  AnyEquipmentViewData,
   PlayingHeroViewData
 } from '../../models/models';
 

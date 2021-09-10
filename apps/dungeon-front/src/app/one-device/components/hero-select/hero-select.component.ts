@@ -1,5 +1,9 @@
-import { 
-  Component, Inject, ViewChild, ChangeDetectorRef, AfterContentChecked 
+import {
+  Component,
+  Inject,
+  ViewChild,
+  ChangeDetectorRef,
+  AfterContentChecked
 } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SwiperComponent } from 'swiper/angular';

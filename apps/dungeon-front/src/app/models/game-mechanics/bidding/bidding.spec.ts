@@ -1,14 +1,23 @@
 import { Bidding } from './bidding';
 import { BiddingPlayersRound } from './bidding-players-round';
-import { 
-  BiddingActionResponseContent, BidParticipationResponseContent, 
-  MonsterAdditionResponseContent, EquipmentRemovalResponseContent
+import {
+  BiddingActionResponseContent,
+  BidParticipationResponseContent,
+  MonsterAdditionResponseContent,
+  EquipmentRemovalResponseContent
 } from './bidding-action';
-import { 
-  Player, Hero, AnyMonster, MonsterType, EquipmentName 
+import {
+  Player,
+  Hero,
+  AnyMonster,
+  MonsterType,
+  EquipmentName
 } from '../../models';
-import { 
-  BiddingPlayersRoundDouble, HeroDouble, MonsterDouble, PlayerDouble,
+import {
+  BiddingPlayersRoundDouble,
+  HeroDouble,
+  MonsterDouble,
+  PlayerDouble,
   pickRandomEquipmentNames
 } from '../../test-doubles';
 import { randomInteger } from '@into-the-dungeon/util-testing';

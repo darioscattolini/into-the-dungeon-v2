@@ -4,11 +4,20 @@ import { randomInteger } from '@into-the-dungeon/util-testing';
 
 import { RaidService } from './raid.service';
 import { UiMediatorService } from './ui-mediator.service';
-import { 
-  Raid, RaidParticipants, Player, Hero, WeaponName, AnyMonster, MonsterType 
+import {
+  Raid,
+  RaidParticipants,
+  Player,
+  Hero,
+  WeaponName,
+  AnyMonster,
+  MonsterType
 } from '../../models/models';
-import { 
-  PlayerDouble, HeroDouble, MonsterDouble, pickRandomWeaponNames
+import {
+  PlayerDouble,
+  HeroDouble,
+  MonsterDouble,
+  pickRandomWeaponNames
 } from '../../models/test-doubles';
 
 jest.mock('./ui-mediator.service');

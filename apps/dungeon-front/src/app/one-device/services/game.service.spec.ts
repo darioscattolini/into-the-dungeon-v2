@@ -5,13 +5,20 @@ import { GameService } from './game.service';
 import { UiMediatorService } from './ui-mediator.service';
 import { BiddingService } from './bidding.service';
 import { RaidService } from './raid.service';
-import { 
-  Game, BiddingPlayersRound, RaidParticipants, RaidResult,
-  Player, PlayerRequirements
+import {
+  Game,
+  BiddingPlayersRound,
+  RaidParticipants,
+  RaidResult,
+  Player,
+  PlayerRequirements
 } from '../../models/models';
-import { 
-  PlayerDouble, BiddingPlayersRoundDouble, 
-  HeroDouble, MonsterDouble, buildPlayerRequirementsDummy 
+import {
+  PlayerDouble,
+  BiddingPlayersRoundDouble,
+  HeroDouble,
+  MonsterDouble,
+  buildPlayerRequirementsDummy
 } from '../../models/test-doubles';
 
 jest.mock('./ui-mediator.service');

@@ -1,14 +1,38 @@
-import { 
-  Player, PlayerRequirements, BiddingPlayersRound, 
-  Hero, HeroType, heroTypes, AnyHeroViewData, PlayingHeroViewData,
-  EquipmentName, equipmentNames, AnyEquipmentViewData, equipmentViewDataMap,
-  Weapon, WeaponName, weaponNames, WeaponEffects,
-  Protection, ProtectionName, protectionNames,
-  Monster, AnyMonster, MonsterType, monsterTypes, MonsterViewData
+import {
+  Player,
+  PlayerRequirements,
+  BiddingPlayersRound,
+  Hero,
+  HeroType,
+  heroTypes,
+  AnyHeroViewData,
+  PlayingHeroViewData,
+  EquipmentName,
+  equipmentNames,
+  AnyEquipmentViewData,
+  equipmentViewDataMap,
+  Weapon,
+  WeaponName,
+  weaponNames,
+  WeaponEffects,
+  Protection,
+  ProtectionName,
+  protectionNames,
+  Monster,
+  AnyMonster,
+  MonsterType,
+  monsterTypes,
+  MonsterViewData
 } from './models';
-import { 
-  TestDouble, TestDoubleClass, Identified, randomInteger, randomString
+
+import {
+  TestDouble,
+  TestDoubleClass,
+  Identified,
+  randomInteger,
+  randomString
 } from '@into-the-dungeon/util-testing';
+
 import { staticImplements } from '@into-the-dungeon/util-common';
 
 // this appears no have no effect on modules importing doubles

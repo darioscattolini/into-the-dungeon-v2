@@ -1,8 +1,17 @@
 import { Injectable, Inject } from '@angular/core';
-import { 
-  Equipment, EquipmentName, EquipmentDataMap, EquipmentDataMapIT, 
-  EquipmentViewDataMap, EquipmentViewDataMapIT,
-  Protection, ProtectionName, protectionNames, Weapon, WeaponName, weaponNames
+import {
+  Equipment,
+  EquipmentName,
+  EquipmentDataMap,
+  EquipmentDataMapIT,
+  EquipmentViewDataMap,
+  EquipmentViewDataMapIT,
+  Protection,
+  ProtectionName,
+  protectionNames,
+  Weapon,
+  WeaponName,
+  weaponNames
 } from '../../models/models';
 
 type EquipmentConditional<T extends EquipmentName> = T extends ProtectionName

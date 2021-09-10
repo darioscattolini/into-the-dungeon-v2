@@ -1,5 +1,8 @@
-import { 
-  ComponentFixture, TestBed, fakeAsync, flush 
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  flush
 } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
