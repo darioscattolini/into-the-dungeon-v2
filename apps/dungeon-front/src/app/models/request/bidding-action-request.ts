@@ -2,7 +2,6 @@ import { HasTarget, TargetedRequest } from './request';
 import { 
   BiddingStateViewData, MonsterType, MonsterViewData, EquipmentName
 } from '../models';
-import { AnyEquipmentViewData } from '../equipment/equipment-view-data';
 
 interface BiddingActionRequestContent extends HasTarget {
   state: BiddingStateViewData;
@@ -10,10 +9,6 @@ interface BiddingActionRequestContent extends HasTarget {
 
 interface MonsterAdditionRequestContent extends BiddingActionRequestContent {
   monster: MonsterViewData<MonsterType>;
-}
-
-interface EquipmentRemovalRequestContent extends BiddingActionRequestContent {
-  options: AnyEquipmentViewData[];
 }
 
 type BiddingActionRequest<Response, Content extends BiddingActionRequestContent> 
@@ -26,5 +21,5 @@ export type MonsterAdditionRequest
   = BiddingActionRequest<boolean, MonsterAdditionRequestContent>;
 
 export type EquipmentRemovalRequest 
-  = BiddingActionRequest<EquipmentName, EquipmentRemovalRequestContent>;
+  = BiddingActionRequest<EquipmentName, BiddingActionRequestContent>;
   

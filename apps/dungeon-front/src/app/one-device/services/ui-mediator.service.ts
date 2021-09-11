@@ -96,7 +96,6 @@ export class UiMediatorService {
 
     const content: EquipmentRemovalRequest['content'] = {
       player: player.name,
-      options: Array.from(stateViewData.hero.equipment),
       state: stateViewData
     };
 
