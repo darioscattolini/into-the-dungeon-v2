@@ -9,6 +9,7 @@ import {
   BidParticipationRequest,
   ChosenWeapon,
   EquipmentName,
+  EquipmentRemovalRequest,
   ForcibleMonsterAdditionNotification, 
   Hero,
   HeroChoiceRequest,
@@ -18,11 +19,12 @@ import {
   PlayersRequest,
   PlayerRequirements,
   Request,
-  WeaponName
+  WeaponName,
 } from '../../models/models';
 
 
 import { Subject } from 'rxjs';
+import { state } from '@angular/animations';
 @Injectable()
 export class UiMediatorService {
   public readonly biddingEndNotification 
@@ -30,6 +32,9 @@ export class UiMediatorService {
 
   public readonly bidParticipationRequest 
     = new Subject<BidParticipationRequest>();
+
+  public readonly equipmentRemovalRequest
+    = new Subject<EquipmentRemovalRequest>();
 
   public readonly forcibleMonsterAdditionNotification 
     = new Subject<ForcibleMonsterAdditionNotification>();
@@ -85,10 +90,20 @@ export class UiMediatorService {
   }
 
   public async requestEquipmentRemoval(
-    player: Player, options: EquipmentName[]
+    player: Player, state: BiddingState
   ): Promise<EquipmentName> {
-    // minimum required implementation
-    return 'chaperone';
+    const stateViewData = this.getStateViewDataFor(state);
+
+    const content: EquipmentRemovalRequest['content'] = {
+      player: player.name,
+      options: Array.from(stateViewData.hero.equipment),
+      state: stateViewData
+    };
+
+    const response 
+      = await this.requestResponse(content, this.equipmentRemovalRequest);
+    
+    return response;
   }
 
   public async requestHeroChoice(player: Player): Promise<Hero> {

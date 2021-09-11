@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { randomString } from '@into-the-dungeon/util-testing';
+import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
 
 import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
@@ -9,12 +9,14 @@ import {
   BiddingActionRequestData,
   BiddingEndReason,
   BiddingStateViewData,
+  EquipmentName,
   HeroType,
   MonsterType,
   monsterTypes,
   MonsterViewData,
   Player,
   PlayerRequirements,
+  PlayingHeroViewData,
   WeaponName
 } from '../../models/models';
 import {
@@ -72,6 +74,13 @@ describe('UiMediatorService', () => {
       
       expect(uiMediator.bidParticipationRequest).toBeInstanceOf(Subject);
       expect(uiMediator.bidParticipationRequest.next).not.toHaveBeenCalled();
+    });
+
+    test('equipmentRemovalRequest is a Subject but has not emitted yet', () => {
+      jest.spyOn(uiMediator.equipmentRemovalRequest, 'next');
+      
+      expect(uiMediator.equipmentRemovalRequest).toBeInstanceOf(Subject);
+      expect(uiMediator.equipmentRemovalRequest.next).not.toHaveBeenCalled();
     });
 
     test(
@@ -300,7 +309,7 @@ describe('UiMediatorService', () => {
 
       expect(returnedPromise).not.toResolve();
 
-      uiMediator.biddingEndNotification.subscribe(request => {
+      uiMediator.bidParticipationRequest.subscribe(request => {
         request.resolve(true);
       });
 
@@ -318,15 +327,101 @@ describe('UiMediatorService', () => {
   });
 
   describe('requestEquipmentRemoval', () => {
-    test('it returns a string', async () => {
-      const optionsDummy = EquipmentDouble.pickNames(4);
+    let stateDummy: BiddingActionRequestData['state'];
+    let chosenPiece: EquipmentName;
+    let heroViewDataDummy: PlayingHeroViewData;  
 
+    beforeEach(() => {
+      stateDummy = buildRequestStateDataDummy();
+      [chosenPiece] = EquipmentDouble.pickNames(1);
+      heroViewDataDummy = HeroDouble.createPlayingHeroViewDataDouble();
+      
+      jest.spyOn(heroesServiceMock, 'getPlayingHeroViewData')
+          .mockReturnValue(heroViewDataDummy);
+
+      // fake equipment choice
+      subscription = uiMediator.equipmentRemovalRequest.subscribe(request => {
+        request.resolve(chosenPiece);
+      });
+    });
+
+    test('it asks HeroesService for Hero view data', async () => {
+      expect.assertions(2);
+
+      await uiMediator.requestEquipmentRemoval(playerDummy, stateDummy);
+
+      expect(heroesServiceMock.getPlayingHeroViewData).toHaveBeenCalledTimes(1);
+      expect(heroesServiceMock.getPlayingHeroViewData)
+        .toHaveBeenCalledWith(stateDummy.hero);
+    });
+
+    test('it asks MonsterService for Monster view data', async () => {   
+      expect.assertions(1 + stateDummy.dungeon.length);
+
+      await uiMediator.requestEquipmentRemoval(playerDummy, stateDummy);
+
+      expect(monstersServiceMock.getViewDataFor)
+        .toHaveBeenCalledTimes(stateDummy.dungeon.length);
+      stateDummy.dungeon.forEach((monster, index) => {
+        expect(monstersServiceMock.getViewDataFor)
+          .toHaveBeenNthCalledWith(index + 1, monster);
+      });
+    });
+
+    test('it emits EquipmentRemovalRequest with expected properties', async () => {
+      jest.spyOn(uiMediator.equipmentRemovalRequest, 'next');
+      
+      const getMonsterViewDataSpy = jest
+        .spyOn(monstersServiceMock, 'getViewDataFor')
+        .mockImplementation(() => MonsterDouble.createViewDataDouble());
+
+      expect.assertions(2);
+
+      await uiMediator.requestEquipmentRemoval(playerDummy, stateDummy);
+
+      // works because there are no other calls to getMonsterView
+      const dungeonViewDataDummy = getMonsterViewDataSpy.mock.results
+        .map(result => result.value);
+
+      const expectedState: BiddingStateViewData = {
+        dungeon: dungeonViewDataDummy,
+        hero: heroViewDataDummy,
+        remainingMonsters: stateDummy.remainingMonsters,
+        remainingPlayers: stateDummy.remainingPlayers
+      };
+
+      expect(uiMediator.equipmentRemovalRequest.next).toHaveBeenCalledTimes(1);
+      expect(uiMediator.equipmentRemovalRequest.next)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          content: expect.objectContaining({
+            player: playerDummy.name,
+            state: expectedState,
+          }),
+          resolve: expect.toBeFunction()
+        }));
+    });
+
+    test('request.resolve makes method resolve', () => {
+      subscription.unsubscribe();
+      const returnedPromise = uiMediator
+        .requestEquipmentRemoval(playerDummy, stateDummy);
+
+      expect(returnedPromise).not.toResolve();
+
+      uiMediator.equipmentRemovalRequest.subscribe(request => {
+        request.resolve(chosenPiece);
+      });
+
+      expect(returnedPromise).toResolve();
+    });
+
+    test('it returns response to request', async () => {
       expect.assertions(1);
 
-      const itemName = 
-        await uiMediator.requestEquipmentRemoval(playerDummy, optionsDummy);
+      const response 
+        = await uiMediator.requestEquipmentRemoval(playerDummy, stateDummy);
 
-      expect(itemName).toBeString();
+      expect(response).toBe(chosenPiece);
     });
   });
 

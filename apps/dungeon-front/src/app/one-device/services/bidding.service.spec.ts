@@ -445,11 +445,13 @@ describe('BiddingService', () => {
 
         makeLoopRunTimes(1);
 
+        jest.spyOn(stateDataDummy.hero, 'getMountedEquipment')
+          .mockReturnValue(equipmentOptionsDummy);
+
         jest.spyOn(Bidding.prototype, 'getActionRequestData')
           .mockReturnValue({
             action: 'remove-equipment',
             player: requestTargetDummy,
-            content: equipmentOptionsDummy,
             state: stateDataDummy
           });
 
@@ -469,38 +471,28 @@ describe('BiddingService', () => {
       });
 
       test(
-        'equipment removal is requested to player from getActionRequestData', 
-        async () => {       
+        'equipment removal is requested with data from getActionRequestData', 
+        async () => {
           expect.assertions(1);
 
           await biddingService.playBidding(playersDummy);
       
           expect(uiMediator.requestEquipmentRemoval)
-            .toHaveBeenCalledWith(requestTargetDummy, expect.toBeArray());
-        }
-      );
-
-      test(
-        'equipment removal is requested with options from getActionRequestData', 
-        async () => {       
-          expect.assertions(1);
-
-          await biddingService.playBidding(playersDummy);
-      
-          expect(uiMediator.requestEquipmentRemoval)
-            .toHaveBeenCalledWith(expect.toBeObject(), equipmentOptionsDummy);
+            .toHaveBeenCalledWith(requestTargetDummy, stateDataDummy);
         }
       );
 
       test('it throws error if chosen equipment wasnt in options', async () => {
         const optionsDummy: EquipmentName[] = ['chaperone', 'katana', 'suitor'];
         const wrongChoice: EquipmentName = 'royal sceptre';
+
+        jest.spyOn(stateDataDummy.hero, 'getMountedEquipment')
+          .mockReturnValue(optionsDummy);
         
         jest.spyOn(Bidding.prototype, 'getActionRequestData')
           .mockReturnValue({
             action: 'remove-equipment',
             player: requestTargetDummy,
-            content: optionsDummy,
             state: stateDataDummy
           });
 

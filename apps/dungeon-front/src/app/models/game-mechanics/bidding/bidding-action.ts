@@ -3,6 +3,11 @@ import { MonsterType, EquipmentName, Player } from '../../models';
 
 export type BiddingAction = 'play-bidding' | 'add-monster' | 'remove-equipment';
 
+/*
+  REFACTORING PROPOSAL: add-monster and remove-equipment should be dealt with in
+  the same action
+ */
+
 interface BiddingActionRequestDataBase {
   action: BiddingAction;
   player: Player;
@@ -25,7 +30,7 @@ export interface MonsterAdditionRequestData
 export interface EquipmentRemovalRequestData 
   extends BiddingActionRequestDataBase {
     action: 'remove-equipment';
-    content: EquipmentName[];
+    // content: EquipmentName[]; This is included in state
   }
 
 export interface BidParticipationResponseContent {

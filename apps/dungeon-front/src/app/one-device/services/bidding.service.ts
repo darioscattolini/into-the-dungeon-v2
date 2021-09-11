@@ -89,12 +89,12 @@ export class BiddingService {
     request: EquipmentRemovalRequestData
   ): Promise<EquipmentRemovalResponseContent> {
     const player = request.player
-    const options = request.content;
+    const state = request.state;
         
     const response
-      = await this.uiMediator.requestEquipmentRemoval(player, options);
+      = await this.uiMediator.requestEquipmentRemoval(player, state);
     
-    if (!options.includes(response)) {
+    if (!state.hero.getMountedEquipment().includes(response)) {
       throw new Error('Chosen equipment not included among eligible options');
     }
 
