@@ -109,9 +109,10 @@ export class BiddingService {
   ): Promise<MonsterAdditionResponseContent> {
     const player = request.player;
     const monster = request.content;
+    const state = request.state;
     
     const response 
-      = await this.uiMediator.requestMonsterAddition(player, monster);
+      = await this.uiMediator.requestMonsterAddition(player, monster, state);
     
     return { 
       action: request.action, 

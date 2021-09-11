@@ -11,6 +11,8 @@ import {
   BiddingStateViewData,
   HeroType,
   MonsterType,
+  monsterTypes,
+  MonsterViewData,
   Player,
   PlayerRequirements,
   WeaponName
@@ -49,6 +51,10 @@ describe('UiMediatorService', () => {
     playerDummy = PlayerDouble.createDouble();
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('instantiation and initial state', () => {
     test('it is created', () => {
       expect(uiMediator).toBeTruthy();
@@ -83,6 +89,13 @@ describe('UiMediatorService', () => {
       
       expect(uiMediator.heroChoiceRequest).toBeInstanceOf(Subject);
       expect(uiMediator.heroChoiceRequest.next).not.toHaveBeenCalled();
+    });
+
+    test('monsterAdditionRequest is a Subject but has not emitted yet', () => {
+      jest.spyOn(uiMediator.monsterAdditionRequest, 'next');
+      
+      expect(uiMediator.monsterAdditionRequest).toBeInstanceOf(Subject);
+      expect(uiMediator.monsterAdditionRequest.next).not.toHaveBeenCalled();
     });
     
     test('playersRequest is a Subject but has not emitted yet', () => {
@@ -257,6 +270,7 @@ describe('UiMediatorService', () => {
 
         await uiMediator.requestBidParticipation(playerDummy, stateDummy);
 
+        // works because there are no other calls to getMonsterView
         const dungeonViewDataDummy = getMonsterViewDataSpy.mock.results
           .map(result => result.value);
 
@@ -396,16 +410,103 @@ describe('UiMediatorService', () => {
     });
   });
 
-  describe('requestMonsterAddition', () => {
-    test('it returns a boolean', async () => {
-      const [monsterNameDummy] = MonsterDouble.pickTypes(1);
+  describe.each([
+    true, false
+  ])('requestMonsterAddition (accepted: %s)', decisionDummy => {
+    let playerDummy: Player;
+    let monsterDummy: MonsterType;
+    let stateDummy: BiddingActionRequestData['state'];
 
+    beforeEach(() => {
+      playerDummy = PlayerDouble.createDouble();
+      [monsterDummy] = MonsterDouble.pickTypes(1);
+      stateDummy = buildRequestStateDataDummy();
+
+      // fake monster addition acceptance/rejection
+      subscription = uiMediator.monsterAdditionRequest
+        .subscribe(notification => {
+          notification.resolve(decisionDummy);
+        });
+    });
+
+    test('it asks monstersService for view data of added monster', async () => {
       expect.assertions(1);
 
-      const response = 
-        await uiMediator.requestMonsterAddition(playerDummy, monsterNameDummy);
+      await uiMediator
+        .requestMonsterAddition(playerDummy, monsterDummy, stateDummy);
 
-      expect(response).toBeBoolean();
+      expect(monstersServiceMock.getViewDataFor)
+        .toHaveBeenCalledWith(monsterDummy);
+    });
+
+    test('it emits MonsterAdditionRequest with expected properties', async () => {
+      const heroViewDataDummy = HeroDouble.createPlayingHeroViewDataDouble();
+      
+      // guarantees that the same double is returned for each type
+      const monsterViewDataProvider = monsterTypes.reduce((provider, type) => {
+        Object.defineProperty(provider, type, { 
+          value: MonsterDouble.createViewDataDouble() 
+        });
+
+        return provider;
+      }, {} as Record<MonsterType | 'secret', MonsterViewData<MonsterType>>);
+      
+      jest.spyOn(uiMediator.monsterAdditionRequest, 'next');
+      jest.spyOn(heroesServiceMock, 'getPlayingHeroViewData')
+        .mockReturnValue(heroViewDataDummy);
+      jest.spyOn(monstersServiceMock, 'getViewDataFor')
+        .mockImplementation(type => {
+          return monsterViewDataProvider[type];
+        });
+      
+      expect.assertions(2);
+
+      await uiMediator
+        .requestMonsterAddition(playerDummy, monsterDummy, stateDummy);
+
+      const dungeonViewDataDummy = stateDummy.dungeon
+        .map(monster => monsterViewDataProvider[monster]);
+    
+      const expectedState: BiddingStateViewData = {
+          dungeon: dungeonViewDataDummy,
+          hero: heroViewDataDummy,
+          remainingMonsters: stateDummy.remainingMonsters,
+          remainingPlayers: stateDummy.remainingPlayers
+        };
+
+      expect(uiMediator.monsterAdditionRequest.next).toHaveBeenCalledTimes(1);
+      expect(uiMediator.monsterAdditionRequest.next)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          content: expect.objectContaining({
+            player: playerDummy.name,
+            monster: monsterViewDataProvider[monsterDummy],
+            state: expectedState,
+          }),
+          resolve: expect.toBeFunction()
+        }));
+    });
+
+    test('request.resolve makes method resolve', () => {
+      subscription.unsubscribe();
+      const returnedPromise = uiMediator
+        .requestMonsterAddition(playerDummy, monsterDummy, stateDummy);
+
+      expect(returnedPromise).not.toResolve();
+
+      uiMediator.monsterAdditionRequest.subscribe(request => {
+        request.resolve(true);
+      });
+
+      expect(returnedPromise).toResolve();
+    });
+
+    test('it returns response to request', async () => {
+      expect.assertions(1);
+
+      const response = await uiMediator
+        .requestMonsterAddition(playerDummy, monsterDummy, stateDummy);
+
+      expect(response).toBe(decisionDummy);
     });
   });
 

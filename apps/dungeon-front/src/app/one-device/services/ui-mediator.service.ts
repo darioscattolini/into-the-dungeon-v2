@@ -5,12 +5,14 @@ import {
   BiddingEndNotification,
   BiddingEndReason,
   BiddingState,
+  BiddingStateViewData,
   BidParticipationRequest,
   ChosenWeapon,
   EquipmentName,
   ForcibleMonsterAdditionNotification, 
   Hero,
   HeroChoiceRequest,
+  MonsterAdditionRequest,
   MonsterType,
   Player,
   PlayersRequest,
@@ -34,6 +36,9 @@ export class UiMediatorService {
 
   public readonly heroChoiceRequest 
     = new Subject<HeroChoiceRequest>();
+  
+  public readonly monsterAdditionRequest
+    = new Subject<MonsterAdditionRequest>();
 
   public readonly playersRequest 
     = new Subject<PlayersRequest>();
@@ -67,19 +72,10 @@ export class UiMediatorService {
 
   public async requestBidParticipation(
     player: Player, state: BiddingState
-  ): Promise<boolean> {
-    const heroViewData = this.heroesService.getPlayingHeroViewData(state.hero);
-    const dungeonViewData = state.dungeon
-      .map(monster => this.monstersService.getViewDataFor(monster));
-
+  ): Promise<boolean> {   
     const content: BidParticipationRequest['content'] = {
       player: player.name,
-      state: {
-        dungeon: dungeonViewData,
-        hero: heroViewData, 
-        remainingMonsters: state.remainingMonsters,
-        remainingPlayers: state.remainingPlayers
-      }
+      state: this.getStateViewDataFor(state)
     };
 
     const response 
@@ -109,10 +105,20 @@ export class UiMediatorService {
   }
 
   public async requestMonsterAddition(
-    player: Player, monster: MonsterType
+    player: Player, 
+    monster: MonsterType, 
+    state: BiddingState
   ): Promise<boolean> {
-    // minimum required implementation
-    return true;
+    const content: MonsterAdditionRequest['content'] = {
+      player: player.name,
+      monster: this.monstersService.getViewDataFor(monster),
+      state: this.getStateViewDataFor(state)
+    };
+
+    const response 
+      = await this.requestResponse(content, this.monsterAdditionRequest);
+    
+    return response;
   }
 
   public async requestPlayers(range: PlayerRequirements): Promise<Player[]> {
@@ -132,6 +138,19 @@ export class UiMediatorService {
   ): Promise<ChosenWeapon> {
     // minimum required implementation
     return 'katana';
+  }
+
+  private getStateViewDataFor(state: BiddingState): BiddingStateViewData {
+    const heroViewData = this.heroesService.getPlayingHeroViewData(state.hero);
+    const dungeonViewData = state.dungeon
+      .map(monster => this.monstersService.getViewDataFor(monster));
+    
+    return {
+      dungeon: dungeonViewData,
+      hero: heroViewData, 
+      remainingMonsters: state.remainingMonsters,
+      remainingPlayers: state.remainingPlayers
+    };
   }
 
   private requestResponse<Response, Content>(

@@ -17,7 +17,6 @@ import { OneDeviceComponent }
 import { PlayerRecorderComponent } 
   from './components/player-recorder/player-recorder.component';
 
-
 export const oneDeviceModuleDeclarations = [
   BiddingEndComponent,
   BiddingStateComponent,

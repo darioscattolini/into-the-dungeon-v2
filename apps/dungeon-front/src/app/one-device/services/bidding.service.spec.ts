@@ -336,26 +336,18 @@ describe('BiddingService', () => {
       });
 
       test(
-        'monster addition is requested to player from getActionRequestData', 
-        async () => {       
+        'monster addition is requested with data from getActionRequestData', 
+        async () => {
           expect.assertions(1);
 
           await biddingService.playBidding(playersDummy);
       
           expect(uiMediator.requestMonsterAddition)
-            .toHaveBeenCalledWith(requestTargetDummy, expect.toBeString());
-        }
-      );
-
-      test(
-        'monster addition is requested for monster from getActionRequestData', 
-        async () => {       
-          expect.assertions(1);
-
-          await biddingService.playBidding(playersDummy);
-      
-          expect(uiMediator.requestMonsterAddition)
-            .toHaveBeenCalledWith(expect.toBeObject(), monsterTypeDummy);
+            .toHaveBeenCalledWith(
+              requestTargetDummy, 
+              monsterTypeDummy, 
+              stateDataDummy
+            );
         }
       );
 
