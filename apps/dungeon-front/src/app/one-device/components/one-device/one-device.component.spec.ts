@@ -10,6 +10,7 @@ import {
   ForcibleMonsterAdditionNotification,
   BidParticipationRequest,
   HeroChoiceRequest,
+  MonsterAdditionRequest,
   PlayersRequest
 } from '../../../models/models';
 
@@ -44,6 +45,10 @@ describe('OneDeviceComponent', () => {
 
     Object.defineProperty(uiMediator, 'heroChoiceRequest', {
       value: new Subject<HeroChoiceRequest>()
+    });
+
+    Object.defineProperty(uiMediator, 'monsterAdditionRequest', {
+      value: new Subject<MonsterAdditionRequest>()
     });
 
     Object.defineProperty(uiMediator, 'playersRequest', {

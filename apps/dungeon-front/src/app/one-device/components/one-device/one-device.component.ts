@@ -8,6 +8,8 @@ import { BidParticipationComponent }
   from '../bid-participation/bid-participation.component';
 import { ForcibleMonsterAdditionComponent } 
   from '../forcible-monster-addition/forcible-monster-addition.component';
+import { MonsterAdditionComponent } 
+  from '../monster-addition/monster-addition.component';
 import { HeroSelectComponent } from '../hero-select/hero-select.component';
 import { PlayerRecorderComponent } 
   from '../player-recorder/player-recorder.component';
@@ -39,6 +41,10 @@ export class OneDeviceComponent implements OnInit {
     
     this.uiMediator.heroChoiceRequest.subscribe(request => {
       this.triggerDialogComponent(HeroSelectComponent, request);
+    });
+
+    this.uiMediator.monsterAdditionRequest.subscribe(request => {
+      this.triggerDialogComponent(MonsterAdditionComponent, request);
     });
 
     this.uiMediator.playersRequest.subscribe(request => {

@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Add monster?</h2>
+
+<div
+  *ngIf="!playerNotified; then notifyPlayer; else showMonster"
+></div>
+
+<ng-template #notifyPlayer>
+  <mat-dialog-content>
+    <p>
+      {{ data.player }}, a new monster has been picked. You will see it and 
+      decide if you add it to the dungeon or if you discard a piece of equipment.
+    </p>
+    <p>
+      If you are {{ data.player }}, click the button to see the monster,
+      and don't show it to other players.
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="playerNotified = true">
+      See monster
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #showMonster>
+  <mat-dialog-content>
+    <dungeon-monster [monster]="data.monster">
+    </dungeon-monster>
+
+    <mat-expansion-panel class="state-container">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Check situation
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <dungeon-bidding-state
+        [dungeon]="data.state.dungeon"
+        [hero]="data.state.hero"
+        [remainingMonsters]="data.state.remainingMonsters"
+        [remainingPlayers]="data.state.remainingPlayers"
+      ></dungeon-bidding-state>
+    </mat-expansion-panel>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions>
+    <button mat-raised-button color="accent" [mat-dialog-close]="true">
+      Add
+    </button>
+    <button mat-raised-button color="accent" [mat-dialog-close]="false">
+      Don't add
+    </button>
+  </mat-dialog-actions>
+</ng-template>

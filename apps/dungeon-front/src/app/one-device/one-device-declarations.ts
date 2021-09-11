@@ -10,6 +10,8 @@ import { ForcibleMonsterAdditionComponent }
   from './components/forcible-monster-addition/forcible-monster-addition.component';
 import { HeroSelectComponent } 
   from './components/hero-select/hero-select.component';
+import { MonsterAdditionComponent } 
+  from './components/monster-addition/monster-addition.component';
 import { MonsterComponent } 
   from './components/monster/monster.component';
 import { OneDeviceComponent } 
@@ -24,6 +26,7 @@ export const oneDeviceModuleDeclarations = [
   EquipmentComponent,
   ForcibleMonsterAdditionComponent,
   HeroSelectComponent,
+  MonsterAdditionComponent,
   MonsterComponent,
   OneDeviceComponent, 
   PlayerRecorderComponent
