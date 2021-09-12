@@ -21,10 +21,8 @@ import {
   Request,
   WeaponName,
 } from '../../models/models';
-
-
 import { Subject } from 'rxjs';
-import { state } from '@angular/animations';
+
 @Injectable()
 export class UiMediatorService {
   public readonly biddingEndNotification 
