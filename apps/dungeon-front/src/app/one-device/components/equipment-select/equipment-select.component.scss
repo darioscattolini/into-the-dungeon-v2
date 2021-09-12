@@ -1,0 +1,22 @@
+.bidding-state-container {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.bidding-state-container mat-divider{
+  margin-top: 16px;
+}
+
+.piece-container {
+  padding: 4px;
+}
+
+.equipment-select-actions {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.equipment-select-actions .navigation {
+  flex-grow: 1;
+  text-align: center;
+}

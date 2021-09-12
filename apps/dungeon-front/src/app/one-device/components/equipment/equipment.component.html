@@ -16,7 +16,7 @@
 
 <ng-template #normalTemplate>
   <mat-card [ngClass]="{ 'container-spacing-small': smallComponent }">
-    <mat-card-title-group *ngIf="!smallComponent">
+    <mat-card-title-group *ngIf="!smallComponent" class="title-group-normal">
       <mat-card-title>{{ name | titlecase }}</mat-card-title>
       <img mat-card-sm-image src="{{ image }}">
     </mat-card-title-group>

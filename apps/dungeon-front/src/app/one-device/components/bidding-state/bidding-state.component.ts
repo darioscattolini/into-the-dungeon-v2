@@ -19,8 +19,9 @@ SwiperCore.use([Pagination]);
 export class BiddingStateComponent implements AfterContentChecked {
   @Input() dungeon!: BiddingStateViewData['dungeon'];
   @Input() hero!: BiddingStateViewData['hero'];
-  @Input() remainingMonsters!: BiddingStateViewData['remainingMonsters'];
-  @Input() remainingPlayers!: BiddingStateViewData['remainingPlayers'];
+  @Input() hideEquipment?: boolean;
+  @Input() remainingMonsters?: BiddingStateViewData['remainingMonsters'];
+  @Input() remainingPlayers?: BiddingStateViewData['remainingPlayers'];
 
   @ViewChild('equipmentSwiper') equipmemtSwiper?: SwiperComponent;
   @ViewChild('monsterSwiper') monsterSwiper?: SwiperComponent;

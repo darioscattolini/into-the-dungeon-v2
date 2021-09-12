@@ -7,8 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import {
   BiddingEndNotification,
-  ForcibleMonsterAdditionNotification,
   BidParticipationRequest,
+  EquipmentRemovalRequest,
+  ForcibleMonsterAdditionNotification,
   HeroChoiceRequest,
   MonsterAdditionRequest,
   PlayersRequest
@@ -37,6 +38,10 @@ describe('OneDeviceComponent', () => {
 
     Object.defineProperty(uiMediator, 'bidParticipationRequest', {
       value: new Subject<BidParticipationRequest>()
+    });
+
+    Object.defineProperty(uiMediator, 'equipmentRemovalRequest', {
+      value: new Subject<EquipmentRemovalRequest>()
     });
 
     Object.defineProperty(uiMediator, 'forcibleMonsterAdditionNotification', {

@@ -6,6 +6,8 @@ import { BidParticipationComponent }
   from './components/bid-participation/bid-participation.component';
 import { EquipmentComponent } 
   from './components/equipment/equipment.component';
+import { EquipmentSelectComponent } 
+  from './components/equipment-select/equipment-select.component';
 import { ForcibleMonsterAdditionComponent } 
   from './components/forcible-monster-addition/forcible-monster-addition.component';
 import { HeroSelectComponent } 
@@ -24,6 +26,7 @@ export const oneDeviceModuleDeclarations = [
   BiddingStateComponent,
   BidParticipationComponent,
   EquipmentComponent,
+  EquipmentSelectComponent,
   ForcibleMonsterAdditionComponent,
   HeroSelectComponent,
   MonsterAdditionComponent,

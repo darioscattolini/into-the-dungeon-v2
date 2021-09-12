@@ -6,7 +6,9 @@ import { Request } from '../../../models/models';
 import { BiddingEndComponent } from '../bidding-end/bidding-end.component';
 import { BidParticipationComponent } 
   from '../bid-participation/bid-participation.component';
-import { ForcibleMonsterAdditionComponent } 
+import { EquipmentSelectComponent }
+  from '../equipment-select/equipment-select.component';
+  import { ForcibleMonsterAdditionComponent } 
   from '../forcible-monster-addition/forcible-monster-addition.component';
 import { MonsterAdditionComponent } 
   from '../monster-addition/monster-addition.component';
@@ -33,7 +35,11 @@ export class OneDeviceComponent implements OnInit {
 
     this.uiMediator.bidParticipationRequest.subscribe(request => {
       this.triggerDialogComponent(BidParticipationComponent, request);
-    });  
+    });
+
+    this.uiMediator.equipmentRemovalRequest.subscribe(request => {
+      this.triggerDialogComponent(EquipmentSelectComponent, request);
+    });
     
     this.uiMediator.forcibleMonsterAdditionNotification.subscribe(request => {
       this.triggerDialogComponent(ForcibleMonsterAdditionComponent, request);

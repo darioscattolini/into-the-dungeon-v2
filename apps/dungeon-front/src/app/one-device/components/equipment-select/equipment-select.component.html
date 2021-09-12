@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>Discard equipment</h2>
+
+<div 
+  *ngIf="!playerNotified; then notifyPlayer; else selectEquipment"
+></div>
+
+<ng-template #notifyPlayer>
+  <mat-dialog-content>
+    {{ data.player }} must discard a piece of the {{ data.state.hero.type }}'s
+    equipment.
+  </mat-dialog-content>
+  
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="playerNotified = true">
+      OK
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #selectEquipment>
+  <mat-dialog-content>
+    <div class="bidding-state-container">
+      <h4 class="mat-h3">Situation summary</h4>
+
+      <dungeon-bidding-state
+        [dungeon]="data.state.dungeon"
+        [hero]="data.state.hero"
+        [hideEquipment]="true"
+      ></dungeon-bidding-state>
+      
+      <mat-divider></mat-divider>
+    </div>
+    
+    <swiper class="piece-container"
+      [slidesPerView]="1" 
+      [spaceBetween]="50" 
+      [setWrapperSize]="true"
+    >
+      <ng-template swiperSlide *ngFor="let piece of data.state.hero.equipment">
+        <dungeon-equipment [piece]="piece"></dungeon-equipment>
+      </ng-template>
+    </swiper>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions class="equipment-select-actions">
+    <span class="navigation">
+      <button mat-icon-button color="primary" 
+        (click)="previousPiece()"
+        [disabled]=" swiper ? swiper.swiperRef?.isBeginning : true"
+      >
+        <mat-icon>arrow_back_ios_new</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" 
+        (click)="nextPiece()"
+        [disabled]="swiper ? swiper.swiperRef?.isEnd : true"
+      >
+        <mat-icon>arrow_forward_ios</mat-icon>
+      </button>
+    </span>
+  
+    <button mat-raised-button color="accent" 
+      [mat-dialog-close]="swiper ? currentPiece : undefined"
+    >
+      Choose
+    </button>
+  </mat-dialog-actions>
+</ng-template>

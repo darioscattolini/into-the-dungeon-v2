@@ -3,49 +3,51 @@
   <p>{{ hero.hitPoints }} hit points</p>
 </div>
 
-<div class="tabular-flex">
-  <p class="mat-body-strong mat-caption">Equipment</p>
-  <p class="mat-caption" [ngPlural]="hero.equipment.length">
-    <ng-template ngPluralCase="=0">No pieces</ng-template>
-    <ng-template ngPluralCase="=1">1 piece</ng-template>
-    <ng-template ngPluralCase="other">
-      {{ hero.equipment.length }} pieces
-    </ng-template>
+<div *ngIf="!hideEquipment">
+  <div class="tabular-flex">
+    <p class="mat-body-strong mat-caption">Equipment</p>
+    <p class="mat-caption" [ngPlural]="hero.equipment.length">
+      <ng-template ngPluralCase="=0">No pieces</ng-template>
+      <ng-template ngPluralCase="=1">1 piece</ng-template>
+      <ng-template ngPluralCase="other">
+        {{ hero.equipment.length }} pieces
+      </ng-template>
+    </p>
+  </div>
+  
+  <p *ngIf="hero.equipment.length === 0" class="warning mat-caption">
+    No equipment: you're forced to add monster in dungeon if you stay.
   </p>
-</div>
-
-<p *ngIf="hero.equipment.length === 0" class="warning mat-caption">
-  No equipment: you're forced to add monster in dungeon if you stay.
-</p>
-
-<div *ngIf="hero.equipment.length > 0" class="swiper-container">
-  <div>
-    <button mat-icon-button color="primary" 
-      (click)="previousEquipment()"
-      [disabled]="equipmentSwiper?.swiperRef?.isBeginning"
-    >
-      <mat-icon>chevron_left</mat-icon>
-    </button>
+  
+  <div *ngIf="hero.equipment.length > 0" class="swiper-container">
+    <div>
+      <button mat-icon-button color="primary" 
+        (click)="previousEquipment()"
+        [disabled]="equipmentSwiper?.swiperRef?.isBeginning"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+    </div>
+  
+    <swiper [slidesPerView]="1" [spaceBetween]="50" #equipmentSwiper>
+      <ng-template swiperSlide *ngFor="let piece of hero.equipment">
+        <dungeon-equipment [miniComponent]="true" [piece]="piece">
+        </dungeon-equipment>
+      </ng-template>
+    </swiper>
+  
+    <div>
+      <button mat-icon-button color="primary" 
+        (click)="nextEquipment()"
+        [disabled]="equipmentSwiper?.swiperRef?.isEnd"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
   </div>
-
-  <swiper [slidesPerView]="1" [spaceBetween]="50" #equipmentSwiper>
-    <ng-template swiperSlide *ngFor="let piece of hero.equipment">
-      <dungeon-equipment [miniComponent]="true" [piece]="piece">
-      </dungeon-equipment>
-    </ng-template>
-  </swiper>
-
-  <div>
-    <button mat-icon-button color="primary" 
-      (click)="nextEquipment()"
-      [disabled]="equipmentSwiper?.swiperRef?.isEnd"
-    >
-      <mat-icon>chevron_right</mat-icon>
-    </button>
-  </div>
+  
+  <mat-divider></mat-divider>
 </div>
-
-<mat-divider></mat-divider>
 
 <div class="tabular-flex">
   <p class="mat-body-strong">Dungeon</p>
@@ -83,20 +85,24 @@
   </div>
 </div>
 
-<mat-divider></mat-divider>
+<div *ngIf="remainingMonsters">
+  <mat-divider></mat-divider>
 
-<div class="tabular-flex">
-  <p class="mat-body-strong">Monsters to add</p>
-  <p>{{ remainingMonsters }}</p>
+  <div class="tabular-flex">
+    <p class="mat-body-strong">Monsters to add</p>
+    <p>{{ remainingMonsters }}</p>
+  </div>
+
+  <p *ngIf="remainingMonsters === 1" class="warning mat-caption">
+    Last monster: you will be the raider if you stay.
+  </p>
 </div>
 
-<p *ngIf="remainingMonsters === 1" class="warning mat-caption">
-  Last monster: you will be the raider if you stay.
-</p>
+<div *ngIf="remainingPlayers">
+  <mat-divider></mat-divider>
 
-<mat-divider></mat-divider>
-
-<div class="tabular-flex">
-  <p class="mat-body-strong">Bidding players</p>
-  <p>{{ remainingPlayers }}</p>
+  <div class="tabular-flex">
+    <p class="mat-body-strong">Bidding players</p>
+    <p>{{ remainingPlayers }}</p>
+  </div>
 </div>
