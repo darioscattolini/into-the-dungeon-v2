@@ -1,5 +1,5 @@
 // BARD
-const bardProtectionNames = ['fancy tunic', 'sophisticated hat'] as const;
+const bardProtectionNames = ['big plumed hat', 'fancy tunic',] as const;
 
 const bardWeaponNames = [ 
   'eardrum smasher', 'charming flute', 'dancing sword', 'coin of luck'

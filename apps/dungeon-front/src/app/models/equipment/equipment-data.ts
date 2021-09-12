@@ -25,7 +25,7 @@ import { ninjaPack } from './weapon/data/items/ninja-pack';
 import { powerDrainer } from './weapon/data/items/power-drainer';
 import { royalSceptre } from './weapon/data/items/royal-sceptre';
 import { smokeBomb } from './weapon/data/items/smoke-bomb';
-import { sophisticatedHat } from './protection/data/items/sophisticated-hat';
+import { bigPlumedHat } from './protection/data/items/big-plumed-hat';
 import { suitor } from './protection/data/items/suitor';
 import { wandOfBlood } from './weapon/data/items/wand-of-blood';
 import { woodenShuriken } from './weapon/data/items/wooden-shuriken';
@@ -64,7 +64,7 @@ export const equipmentDataMap: EquipmentDataMap = {
   'power drainer': powerDrainer,
   'royal sceptre': royalSceptre,
   'smoke bomb': smokeBomb,
-  'sophisticated hat': sophisticatedHat,
+  'big plumed hat': bigPlumedHat,
   'suitor': suitor,
   'wand of blood': wandOfBlood,
   'wooden shuriken': woodenShuriken,
