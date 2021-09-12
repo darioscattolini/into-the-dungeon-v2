@@ -4,7 +4,7 @@ export const bard: HeroData = {
   hitPoints: 3,
   equipment: [
     'fancy tunic',
-    'sophisticated hat',
+    'big plumed hat',
     'charming flute',
     'coin of luck',
     'dancing sword',
