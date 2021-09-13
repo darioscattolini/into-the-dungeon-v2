@@ -1,10 +1,11 @@
 import { HasTarget, TargetedRequest } from './request';
-import { 
+import {
+  ChosenWeapon,
   MonsterType, 
   MonsterViewData,
   PlayingHeroViewData,
   WeaponName,
-  WeaponViewData 
+  WeaponViewData
 } from '../models';
 
 interface EncounterResolutionRequestContent extends HasTarget {
@@ -19,4 +20,4 @@ interface EncounterResolutionRequestContent extends HasTarget {
 }
 
 export type EncounterResolutionRequest 
-  = TargetedRequest<WeaponName, EncounterResolutionRequestContent>;
+  = TargetedRequest<ChosenWeapon, EncounterResolutionRequestContent>;
