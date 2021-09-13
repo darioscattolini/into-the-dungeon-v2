@@ -8,7 +8,10 @@
     matTooltipPosition="above"
   >
     <img [src]="image" class="avatar">
-    <a class="mat-caption piece-name" (click)="pieceTooltip.toggle()">
+    <a class="piece-name"
+      [ngClass]="{ 'mat-caption': !encounterWeapon }"
+      (click)="pieceTooltip.toggle()"
+    >
       {{ name | titlecase }}
     </a>
   </div>

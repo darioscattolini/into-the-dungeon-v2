@@ -6,6 +6,7 @@ import { Request } from '../../../models/models';
 import { BiddingEndComponent } from '../bidding-end/bidding-end.component';
 import { BidParticipationComponent } 
   from '../bid-participation/bid-participation.component';
+import { EncounterComponent } from '../encounter/encounter.component';
 import { EquipmentSelectComponent }
   from '../equipment-select/equipment-select.component';
   import { ForcibleMonsterAdditionComponent } 
@@ -29,12 +30,22 @@ export class OneDeviceComponent implements OnInit {
   ) { }
 
   public ngOnInit() {
+    this.subscribeToRequestEmitters();
+
+    this.gameService.play(); // no await?
+  }
+
+  private subscribeToRequestEmitters(): void {
     this.uiMediator.biddingEndNotification.subscribe(request => {
       this.triggerDialogComponent(BiddingEndComponent, request);
     });
 
     this.uiMediator.bidParticipationRequest.subscribe(request => {
       this.triggerDialogComponent(BidParticipationComponent, request);
+    });
+
+    this.uiMediator.encounterResolutionRequest.subscribe(request => {
+      this.triggerDialogComponent(EncounterComponent, request);
     });
 
     this.uiMediator.equipmentRemovalRequest.subscribe(request => {
@@ -56,8 +67,6 @@ export class OneDeviceComponent implements OnInit {
     this.uiMediator.playersRequest.subscribe(request => {
       this.triggerDialogComponent(PlayerRecorderComponent, request);
     });
-
-    this.gameService.play(); // no await?
   }
 
   private triggerDialogComponent(Component: Type<any>, request: Request<any, any>) {

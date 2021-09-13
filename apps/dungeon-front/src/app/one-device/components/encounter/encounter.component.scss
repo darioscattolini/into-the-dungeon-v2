@@ -1,0 +1,30 @@
+.tabular-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabular-flex p {
+  margin-bottom: 0;
+}
+
+mat-divider {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.weapon-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.weapon-options mat-button-toggle {
+  display: flex;
+  height: 48px;
+  line-height: 100%;
+}
+
+.weapon-options mat-button-toggle + mat-button-toggle {
+  border-left: unset;
+  border-top: solid 1px rgba(0, 0, 0, 0.12);
+}

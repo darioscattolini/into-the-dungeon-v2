@@ -33,8 +33,19 @@ export class EquipmentComponent {
     this.displayData(piece);
   }
 
+  public get encounterWeapon() {
+    return this._encounterWeapon;
+  }
+
+  @Input() set encounterWeapon(encounterWeapon: boolean) {
+    this.miniComponent = true;
+    this._encounterWeapon = encounterWeapon;
+  }
+
   @Input() miniComponent = false;
   @Input() smallComponent = false;
+  
+  private _encounterWeapon = false;
 
   private displayData(data: AnyEquipmentViewData) {
     this.name = data.name;

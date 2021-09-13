@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>Fight the {{ data.encounter.enemy.name }}</h2>
+<mat-dialog-content>
+  {{ data.player }} must choose a weapon to defeat the 
+  {{ data.encounter.enemy.name }} or take all the monster's damage. 
+
+  <mat-divider></mat-divider>
+
+  <div class="tabular-flex">
+    <p class="mat-body-strong">{{ data.state.hero.type | titlecase }}</p>
+    <p>{{ data.state.hero.hitPoints }} hit points</p>
+  </div>
+
+  <div class="tabular-flex">
+    <p class="mat-body-strong">Remaining enemies</p>
+    <p>{{ data.state.remainingEnemies }}</p>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div>
+    <h3 class="mat-h3">Enemy</h3>
+    <dungeon-monster 
+      [monster]="data.encounter.enemy" 
+      [miniComponent]="true"
+    ></dungeon-monster>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div>
+    <h3 class="mat-h3">Options</h3>
+    <mat-button-toggle-group class="weapon-options" 
+      #weaponOptions="matButtonToggleGroup"
+    >
+      <mat-button-toggle 
+        *ngFor="let piece of data.encounter.weapons"
+        [value]="piece.name"
+      >
+        <dungeon-equipment class="option-content"
+          [piece]="piece" 
+          [encounterWeapon]="true"
+        >
+        </dungeon-equipment>
+      </mat-button-toggle>
+      <mat-button-toggle 
+        value="NO_WEAPON"
+        #noWeaponTooltip="matTooltip"
+        [matTooltip]="'Save your weapons but take all the monster\'s damage'"
+        matTooltipPosition="above"
+        (click)="noWeaponTooltip.toggle()"
+      >
+        No weapon
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="accent" 
+    [mat-dialog-close]="weaponOptions.value"
+  >
+    Choose
+  </button>
+</mat-dialog-actions>

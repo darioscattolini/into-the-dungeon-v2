@@ -4,6 +4,8 @@ import { BiddingStateComponent }
   from './components/bidding-state/bidding-state.component';
 import { BidParticipationComponent } 
   from './components/bid-participation/bid-participation.component';
+import { EncounterComponent } 
+  from './components/encounter/encounter.component'; 
 import { EquipmentComponent } 
   from './components/equipment/equipment.component';
 import { EquipmentSelectComponent } 
@@ -25,6 +27,7 @@ export const oneDeviceModuleDeclarations = [
   BiddingEndComponent,
   BiddingStateComponent,
   BidParticipationComponent,
+  EncounterComponent,
   EquipmentComponent,
   EquipmentSelectComponent,
   ForcibleMonsterAdditionComponent,

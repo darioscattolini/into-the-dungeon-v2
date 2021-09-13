@@ -7,6 +7,7 @@ import { OneDeviceRoutingModule } from './one-device-routing.module';
 
 // Material Design modules
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle'; 
 import { MatCardModule } from '@angular/material/card'; 
 import { MatDialogModule } from '@angular/material/dialog'; 
 import { MatDividerModule } from '@angular/material/divider';
@@ -25,6 +26,7 @@ export const oneDeviceModuleImports = [
   ReactiveFormsModule,
   OneDeviceRoutingModule,
   MatButtonModule,
+  MatButtonToggleModule,
   MatCardModule,
   MatDialogModule,
   MatDividerModule,
