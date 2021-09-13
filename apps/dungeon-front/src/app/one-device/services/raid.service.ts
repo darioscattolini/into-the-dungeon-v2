@@ -26,7 +26,6 @@ export class RaidService {
       if (encounter.weapons.length > 0) {
         response = await this.uiMediator
           .requestEncounterResolution(raider, encounter, state);
-        console.log(response);
         this.validateResponse(response, encounter.weapons);
       } 
     
