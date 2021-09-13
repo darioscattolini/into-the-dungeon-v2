@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EquipmentService } from './equipment.service';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
 import {
@@ -8,6 +9,8 @@ import {
   BiddingStateViewData,
   BidParticipationRequest,
   ChosenWeapon,
+  Encounter,
+  EncounterResolutionRequest,
   EquipmentName,
   EquipmentRemovalRequest,
   ForcibleMonsterAdditionNotification, 
@@ -18,10 +21,10 @@ import {
   Player,
   PlayersRequest,
   PlayerRequirements,
-  Request,
-  WeaponName,
+  Request
 } from '../../models/models';
 import { Subject } from 'rxjs';
+import { RaidState } from '../../models/game-mechanics/raid/raid-state';
 
 @Injectable()
 export class UiMediatorService {
@@ -30,6 +33,9 @@ export class UiMediatorService {
 
   public readonly bidParticipationRequest 
     = new Subject<BidParticipationRequest>();
+
+  public readonly encounterResolutionRequest
+    = new Subject<EncounterResolutionRequest>();
 
   public readonly equipmentRemovalRequest
     = new Subject<EquipmentRemovalRequest>();
@@ -47,6 +53,7 @@ export class UiMediatorService {
     = new Subject<PlayersRequest>();
 
   constructor(
+    private equipmentService: EquipmentService,
     private heroesService: HeroesService,
     private monstersService: MonstersService
   ) { }
@@ -78,7 +85,7 @@ export class UiMediatorService {
   ): Promise<boolean> {   
     const content: BidParticipationRequest['content'] = {
       player: player.name,
-      state: this.getStateViewDataFor(state)
+      state: this.getBiddingStateViewDataFor(state)
     };
 
     const response 
@@ -87,10 +94,34 @@ export class UiMediatorService {
     return response;
   }
 
+  public async requestEncounterResolution(
+    raider: Player,
+    encounter: Encounter, 
+    state: RaidState
+  ): Promise<ChosenWeapon> {
+    const player = raider.name;
+    const enemy = this.monstersService.getViewDataFor(encounter.enemy);
+    const weapons = encounter.weapons
+      .map(weapon => this.equipmentService.getViewDataFor(weapon));
+    const hero = this.heroesService.getPlayingHeroViewData(state.hero);
+    const remainingEnemies = state.remainingEnemies;
+    
+    const content: EncounterResolutionRequest['content'] = {
+      player,
+      encounter: { enemy, weapons },
+      state: { hero, remainingEnemies }
+    };
+
+    const chosenPiece 
+      = await this.requestResponse(content, this.encounterResolutionRequest);
+
+    return chosenPiece;
+  }
+
   public async requestEquipmentRemoval(
     player: Player, state: BiddingState
   ): Promise<EquipmentName> {
-    const stateViewData = this.getStateViewDataFor(state);
+    const stateViewData = this.getBiddingStateViewDataFor(state);
 
     const content: EquipmentRemovalRequest['content'] = {
       player: player.name,
@@ -124,7 +155,7 @@ export class UiMediatorService {
     const content: MonsterAdditionRequest['content'] = {
       player: player.name,
       monster: this.monstersService.getViewDataFor(monster),
-      state: this.getStateViewDataFor(state)
+      state: this.getBiddingStateViewDataFor(state)
     };
 
     const response 
@@ -145,14 +176,7 @@ export class UiMediatorService {
     return players;
   }
 
-  public async requestWeaponChoice(
-    player: Player, options: WeaponName[]
-  ): Promise<ChosenWeapon> {
-    // minimum required implementation
-    return 'katana';
-  }
-
-  private getStateViewDataFor(state: BiddingState): BiddingStateViewData {
+  private getBiddingStateViewDataFor(state: BiddingState): BiddingStateViewData {
     const heroViewData = this.heroesService.getPlayingHeroViewData(state.hero);
     const dungeonViewData = state.dungeon
       .map(monster => this.monstersService.getViewDataFor(monster));

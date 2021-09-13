@@ -23,6 +23,7 @@ import {
   BiddingEndReason
 } from './game-mechanics/bidding/bidding-result';
 import { Raid } from './game-mechanics/raid/raid';
+import { RaidState } from './game-mechanics/raid/raid-state';
 import { RaidParticipants } from './game-mechanics/raid/raid-participants';
 import { Encounter, EncounterOutcome } from './game-mechanics/raid/encounter';
 import { ChosenWeapon } from './game-mechanics/raid/encounter';
@@ -47,6 +48,7 @@ export {
   EquipmentRemovalRequestData,
   EquipmentRemovalResponseContent,
   Raid,
+  RaidState,
   RaidParticipants,
   Encounter,
   EncounterOutcome,
@@ -107,8 +109,9 @@ import {
   AnyEquipmentViewData,
   EquipmentViewDataMap,
   EquipmentViewDataMapIT,
-  equipmentViewDataMap
+  equipmentViewDataMap,
 } from './equipment/equipment-view-data';
+import { WeaponViewData } from './equipment/weapon/view-data/weapon-view-data';
 
 export {
   Equipment,
@@ -127,7 +130,8 @@ export {
   AnyEquipmentViewData,
   EquipmentViewDataMap,
   EquipmentViewDataMapIT,
-  equipmentViewDataMap
+  equipmentViewDataMap,
+  WeaponViewData
 };
 
 // MONSTER
@@ -174,6 +178,8 @@ import {
   EquipmentRemovalRequest
 } from './request/bidding-action-request';
 import { BiddingEndNotification } from './request/bidding-end-notification';
+import { EncounterResolutionRequest } 
+  from './request/encounter-resolution-request';
 import { ForcibleMonsterAdditionNotification } 
   from './request/forcible-monster-addition-notification';
 import { HeroChoiceRequest } from './request/hero-choice-request';
@@ -185,6 +191,7 @@ export {
   PlayersRequest,
   BidParticipationRequest,
   MonsterAdditionRequest,
+  EncounterResolutionRequest,
   EquipmentRemovalRequest,
   ForcibleMonsterAdditionNotification,
   BiddingEndNotification

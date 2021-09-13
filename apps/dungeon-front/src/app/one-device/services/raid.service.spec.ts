@@ -5,18 +5,20 @@ import { randomInteger } from '@into-the-dungeon/util-testing';
 import { RaidService } from './raid.service';
 import { UiMediatorService } from './ui-mediator.service';
 import {
+  AnyMonster,
+  Encounter,
+  Hero,
+  MonsterType,
+  Player,
   Raid,
   RaidParticipants,
-  Player,
-  Hero,
-  WeaponName,
-  AnyMonster,
-  MonsterType
+  RaidState,
+  WeaponName
 } from '../../models/models';
 import {
-  PlayerDouble,
   HeroDouble,
   MonsterDouble,
+  PlayerDouble,
   WeaponDouble
 } from '../../models/test-doubles';
 
@@ -136,12 +138,12 @@ describe('RaidService', () => {
           });        
       });
 
-      test('it does not request weaponChoice', async () => {
+      test('it does not request encounter resolution', async () => {
         expect.assertions(1);
 
         await raidService.playRaid(participantsDummy);
     
-        expect(uiMediator.requestWeaponChoice)
+        expect(uiMediator.requestEncounterResolution)
           .not.toHaveBeenCalled();
       });
 
@@ -172,56 +174,50 @@ describe('RaidService', () => {
     });
 
     describe('loop run with weapons to choose', () => {
-      let enemyDummy: MonsterType;
-      let weaponOptionsDummy: WeaponName[];
+      let encounterDummy: Encounter;
 
       beforeEach(() => {
-        weaponOptionsDummy = WeaponDouble.pickNames(4);
-        const chosenWeaponDummy = weaponOptionsDummy[2];
+        encounterDummy = {
+          enemy: MonsterDouble.pickTypes(1)[0],
+          weapons: WeaponDouble.pickNames(4)
+        }
+        const chosenWeaponDummy = encounterDummy.weapons[2];
 
         makeLoopRunTimes(1);
 
         jest.spyOn(Raid.prototype, 'getCurrentEncounter')
-          .mockReturnValue({
-            enemy: enemyDummy,
-            weapons: weaponOptionsDummy
-          });
+          .mockReturnValue(encounterDummy);
         
-        jest.spyOn(uiMediator, 'requestWeaponChoice')
+        jest.spyOn(uiMediator, 'requestEncounterResolution')
           .mockResolvedValue(chosenWeaponDummy);
       });
 
-      test('it requests weaponChoice after getCurrentEncounter', async () => {
+      test('it requests resolution after getCurrentEncounter', async () => {
         expect.assertions(1);
 
         await raidService.playRaid(participantsDummy);
 
         const [raidMock] = RaidMock.mock.instances;
     
-        expect(uiMediator.requestWeaponChoice)
+        expect(uiMediator.requestEncounterResolution)
           .toHaveBeenCalledAfter(raidMock.getCurrentEncounter as jest.Mock);
       });
 
-      test('weapon choice is requested to raider player', async () => {       
+      test('resolution is requested with expected parameters', async () => {
+        const stateDummy: RaidState = {
+          hero: heroDummy,
+          remainingEnemies: 1 + randomInteger(5)
+        };
+
+        Object.defineProperty(Raid.prototype, 'state', { value: stateDummy });
+
         expect.assertions(1);
 
         await raidService.playRaid(participantsDummy);
       
-        expect(uiMediator.requestWeaponChoice)
-          .toHaveBeenCalledWith(raiderDummy, expect.toBeArray());
+        expect(uiMediator.requestEncounterResolution)
+          .toHaveBeenCalledWith(raiderDummy, encounterDummy, stateDummy);
       });
-
-      test(
-        'weapon choice is requested with options from getCurrentEncounter', 
-        async () => {       
-          expect.assertions(1);
-
-          await raidService.playRaid(participantsDummy);
-      
-          expect(uiMediator.requestWeaponChoice)
-            .toHaveBeenCalledWith(expect.toBeObject(), weaponOptionsDummy);
-        }
-      );
 
       test('it throws error if chosen weapon was not in options', async () => {
         const optionsDummy: WeaponName[] = ['smoke bomb', 'katana', 'dark stone'];
@@ -233,7 +229,7 @@ describe('RaidService', () => {
             weapons: optionsDummy
           });
 
-        jest.spyOn(uiMediator, 'requestWeaponChoice')
+        jest.spyOn(uiMediator, 'requestEncounterResolution')
           .mockResolvedValue(wrongChoice);
           
         expect.assertions(1);
@@ -253,17 +249,19 @@ describe('RaidService', () => {
           const [raidMock] = RaidMock.mock.instances;
       
           expect(raidMock.resolveCurrentEncounter)
-            .toHaveBeenCalledAfter(uiMediator.requestWeaponChoice as jest.Mock);
+            .toHaveBeenCalledAfter(
+              uiMediator.requestEncounterResolution as jest.Mock
+            );
         }
       );
 
       test(
         'raid.resolveEncounter is called with chosen weapon from uiMediator', 
         async () => {
-          const randomIndex = randomInteger(weaponOptionsDummy.length, false);
-          const chosenWeapon = weaponOptionsDummy[randomIndex];
+          const randomIndex = randomInteger(encounterDummy.weapons.length, false);
+          const chosenWeapon = encounterDummy.weapons[randomIndex];
           
-          jest.spyOn(uiMediator, 'requestWeaponChoice')
+          jest.spyOn(uiMediator, 'requestEncounterResolution')
             .mockResolvedValue(chosenWeapon);
 
           expect.assertions(1);

@@ -75,6 +75,14 @@ describe('Raid', () => {
       expect(raid.enemiesLeft).toBe(enemiesLeft);
     });
 
+    test('state returns expected Raid state', () => {
+      raid = new Raid(heroMock, enemiesDummy);
+
+      expect(raid.state).toContainAllKeys(['hero', 'remainingEnemies']);
+      expect(raid.state.hero).toBe(heroMock);
+      expect(raid.state.remainingEnemies).toBe(enemiesDummy.length);
+    });
+
     test('resolveCurrentEncounter cannot be called', () => {
       raid = new Raid(heroMock, enemiesDummy);
       const [weaponDummy] = WeaponDouble.pickNames(1);

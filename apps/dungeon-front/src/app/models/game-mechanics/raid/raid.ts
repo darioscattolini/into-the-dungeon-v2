@@ -1,7 +1,14 @@
 import { Encounter, EncounterOutcome } from './encounter';
-import { Hero, EquipmentName, AnyMonster, ChosenWeapon } from '../../models';
+import { 
+  AnyMonster, 
+  ChosenWeapon,
+  EquipmentName, 
+  Hero,  
+  RaidState
+} from '../../models';
 
 export class Raid {
+  /* Redundant getters should be removed  */
   public get heroHitPoints(): number {
     return this.hero.hitPoints;
   }
@@ -12,7 +19,14 @@ export class Raid {
 
   public get enemiesLeft(): number {
     return this.enemies.length + (this.currentEnemy ? 1 : 0);
-  } 
+  }
+
+  public get state(): RaidState {
+    return {
+      hero: this.hero,
+      remainingEnemies: this.enemies.length
+    }
+  }
 
   private currentEnemy?: AnyMonster;
   private enemies: AnyMonster[];

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { randomInteger, randomString } from '@into-the-dungeon/util-testing';
 
+import { EquipmentService } from './equipment.service';
 import { UiMediatorService } from './ui-mediator.service';
 import { HeroesService } from './heroes.service';
 import { MonstersService } from './monsters.service';
@@ -9,6 +10,8 @@ import {
   BiddingActionRequestData,
   BiddingEndReason,
   BiddingStateViewData,
+  Encounter,
+  EncounterResolutionRequest,
   EquipmentName,
   HeroType,
   MonsterType,
@@ -17,22 +20,26 @@ import {
   Player,
   PlayerRequirements,
   PlayingHeroViewData,
+  RaidState,
   WeaponName
 } from '../../models/models';
 import {
-  PlayerDouble,
+  buildRequestStateDataDummy,
+  EquipmentDouble,
   HeroDouble,
   MonsterDouble,
-  EquipmentDouble,
-  buildRequestStateDataDummy
+  PlayerDouble,
+  WeaponDouble
 } from '../../models/test-doubles';
 import { Subject, Subscription } from 'rxjs';
 
+jest.mock('./equipment.service');
 jest.mock('./heroes.service');
 jest.mock('./monsters.service');
 
 describe('UiMediatorService', () => {
   let uiMediator: UiMediatorService;
+  let equipmentServiceMock: EquipmentService;
   let heroesServiceMock: HeroesService;
   let monstersServiceMock: MonstersService;
   let playerDummy: Player;
@@ -42,11 +49,13 @@ describe('UiMediatorService', () => {
     TestBed.configureTestingModule({
       providers: [
         UiMediatorService,
+        EquipmentService,
         HeroesService,
         MonstersService
       ]
     });
     uiMediator = TestBed.inject(UiMediatorService);
+    equipmentServiceMock = TestBed.inject(EquipmentService);
     heroesServiceMock = TestBed.inject(HeroesService);
     monstersServiceMock = TestBed.inject(MonstersService);
 
@@ -323,6 +332,140 @@ describe('UiMediatorService', () => {
         = await uiMediator.requestBidParticipation(playerDummy, stateDummy);
 
       expect(response).toBe(decisionDummy);
+    });
+  });
+
+  describe('requestEncounterResolution', () => {
+    let raiderDummy: Player;
+    let encounterDummy: Encounter;
+    let stateDummy: RaidState;
+    let chosenEquipmentDummy: WeaponName;
+
+    beforeEach(() => {
+      raiderDummy = playerDummy;
+      encounterDummy = {
+        enemy: MonsterDouble.pickTypes(1)[0],
+        weapons: WeaponDouble.pickNames(4)
+      };
+      stateDummy = {
+        hero: HeroDouble.createDouble(),
+        remainingEnemies: randomInteger(5)
+      };
+      [chosenEquipmentDummy] = WeaponDouble.pickNames(1);
+
+      // fake equipment choice
+      subscription = uiMediator.encounterResolutionRequest.subscribe(request => {
+        request.resolve(chosenEquipmentDummy);
+      });
+    });
+    
+    test('it asks MonstersService for enemy view data', async () => {   
+      expect.assertions(2);
+
+      await uiMediator
+        .requestEncounterResolution(raiderDummy, encounterDummy, stateDummy);
+
+      expect(monstersServiceMock.getViewDataFor).toHaveBeenCalledTimes(1);
+      expect(monstersServiceMock.getViewDataFor)
+        .toHaveBeenCalledWith(encounterDummy.enemy);
+    });
+
+    test('it asks EquipmentService for weapons view data', async () => {   
+
+      expect.assertions(1 + encounterDummy.weapons.length);
+
+      await uiMediator
+        .requestEncounterResolution(raiderDummy, encounterDummy, stateDummy);
+
+      expect(equipmentServiceMock.getViewDataFor)
+        .toHaveBeenCalledTimes(encounterDummy.weapons.length);
+      encounterDummy.weapons.forEach((weapon, index) => {
+        expect(equipmentServiceMock.getViewDataFor)
+          .toHaveBeenNthCalledWith(index + 1, weapon);
+      });
+    });
+
+    test('it asks HeroesService for hero view data', async () => {   
+      expect.assertions(2);
+
+      await uiMediator
+        .requestEncounterResolution(raiderDummy, encounterDummy, stateDummy);
+
+      expect(heroesServiceMock.getPlayingHeroViewData).toHaveBeenCalledTimes(1);
+      expect(heroesServiceMock.getPlayingHeroViewData)
+        .toHaveBeenCalledWith(stateDummy.hero);
+    });
+
+    test(
+      'it emits EncounterResolutionRequest with expected properties', 
+      async () => {
+        const heroViewDataDummy = HeroDouble.createPlayingHeroViewDataDouble();
+        const monsterViewDataDummy = MonsterDouble.createViewDataDouble();
+
+        jest.spyOn(uiMediator.encounterResolutionRequest, 'next');
+        jest.spyOn(heroesServiceMock, 'getPlayingHeroViewData')
+          .mockReturnValue(heroViewDataDummy);
+        jest.spyOn(monstersServiceMock, 'getViewDataFor')
+          .mockReturnValue(monsterViewDataDummy);
+        const getEquipmentViewDataSpy = jest
+          .spyOn(equipmentServiceMock, 'getViewDataFor')
+          .mockImplementation(() => WeaponDouble.buildViewDataDummy());
+
+        expect.assertions(2);
+
+        await uiMediator
+          .requestEncounterResolution(raiderDummy, encounterDummy, stateDummy);
+
+        // works because there are no other calls to getEquipmentView
+        const weaponsViewDataDummy = getEquipmentViewDataSpy.mock.results
+          .map(result => result.value);
+
+        const expectedEncounter: 
+          EncounterResolutionRequest['content']['encounter'] = {
+            enemy: monsterViewDataDummy,
+            weapons: weaponsViewDataDummy
+          };
+        
+        const expectedState: EncounterResolutionRequest['content']['state'] = {
+          hero: heroViewDataDummy,
+          remainingEnemies: stateDummy.remainingEnemies
+        };
+        
+        expect(uiMediator.encounterResolutionRequest.next)
+          .toHaveBeenCalledTimes(1);
+        expect(uiMediator.encounterResolutionRequest.next)
+          .toHaveBeenCalledWith(expect.objectContaining({
+            content: expect.objectContaining({
+              player: raiderDummy.name,
+              encounter: expectedEncounter,
+              state: expectedState
+            }),
+            resolve: expect.toBeFunction()
+          }));
+      }
+    );
+
+    test('request.resolve makes method resolve', () => {
+      subscription.unsubscribe();
+      const returnedPromise = uiMediator
+        .requestEncounterResolution(raiderDummy, encounterDummy, stateDummy);
+
+      expect(returnedPromise).not.toResolve();
+
+      uiMediator.encounterResolutionRequest.subscribe(request => {
+        request.resolve(chosenEquipmentDummy);
+      });
+
+      expect(returnedPromise).toResolve();
+    });
+
+    test('it returns response to request', async () => {
+      expect.assertions(1);
+
+      const response = await uiMediator
+        .requestEncounterResolution(raiderDummy, encounterDummy, stateDummy);
+
+      expect(response).toBe(chosenEquipmentDummy);
     });
   });
 
@@ -656,19 +799,6 @@ describe('UiMediatorService', () => {
       const playerNames = players.map(player => player.name);
 
       expect(playerNames).toIncludeSameMembers(addedPlayersDummy);
-    });
-  });
-
-  describe('requestWeaponChoice', () => {
-    test('it returns a string', async () => {
-      const optionsDummy: WeaponName[] = [];
-
-      expect.assertions(1);
-
-      const itemName = 
-        await uiMediator.requestWeaponChoice(playerDummy, optionsDummy);
-
-      expect(itemName).toBeString();
     });
   });
 });

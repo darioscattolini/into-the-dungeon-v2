@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { UiMediatorService } from './ui-mediator.service';
 import {
+  ChosenWeapon,
   Raid,
   RaidParticipants,
-  ChosenWeapon,
   RaidResult,
   WeaponName
 } from '../../models/models';
@@ -19,13 +19,13 @@ export class RaidService {
 
     while (raid.goesOn()) {
       const encounter = raid.getCurrentEncounter();
-      // notify enemy
+      const state = raid.state;
           
       let response: ChosenWeapon = 'NO_WEAPON';
 
       if (encounter.weapons.length > 0) {
-        response = 
-          await this.uiMediator.requestWeaponChoice(raider, encounter.weapons);
+        response = await this.uiMediator
+          .requestEncounterResolution(raider, encounter, state);
         
         this.validateResponse(response, encounter.weapons);
       } 

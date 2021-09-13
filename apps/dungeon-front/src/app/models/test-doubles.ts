@@ -16,6 +16,7 @@ import {
   WeaponName,
   weaponNames,
   WeaponEffects,
+  WeaponViewData,
   Protection,
   ProtectionName,
   protectionNames,
@@ -140,6 +141,10 @@ class EquipmentDouble {
 class WeaponDouble {
   private constructor() {
     //
+  }
+
+  public static buildViewDataDummy(): WeaponViewData<WeaponName> {
+    return equipmentViewDataMap[this.pickNames(1)[0]];
   }
 
   public static buildEffectsDouble(): WeaponEffects {
