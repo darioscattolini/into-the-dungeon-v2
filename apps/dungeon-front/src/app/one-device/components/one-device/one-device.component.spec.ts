@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import {
   BiddingEndNotification,
   BidParticipationRequest,
+  EncounterOutcomeNotification,
   EncounterResolutionRequest,
   EquipmentRemovalRequest,
   ForcibleMonsterAdditionNotification,
@@ -39,6 +40,10 @@ describe('OneDeviceComponent', () => {
 
     Object.defineProperty(uiMediator, 'bidParticipationRequest', {
       value: new Subject<BidParticipationRequest>()
+    });
+
+    Object.defineProperty(uiMediator, 'encounterOutcomeNotification', {
+      value: new Subject<EncounterOutcomeNotification>()
     });
 
     Object.defineProperty(uiMediator, 'encounterResolutionRequest', {

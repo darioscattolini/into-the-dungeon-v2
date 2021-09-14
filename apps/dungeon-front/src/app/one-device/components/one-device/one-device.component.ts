@@ -7,6 +7,8 @@ import { BiddingEndComponent } from '../bidding-end/bidding-end.component';
 import { BidParticipationComponent } 
   from '../bid-participation/bid-participation.component';
 import { EncounterComponent } from '../encounter/encounter.component';
+import { EncounterOutcomeComponent } 
+  from '../encounter-outcome/encounter-outcome.component';
 import { EquipmentSelectComponent }
   from '../equipment-select/equipment-select.component';
   import { ForcibleMonsterAdditionComponent } 
@@ -36,12 +38,16 @@ export class OneDeviceComponent implements OnInit {
   }
 
   private subscribeToRequestEmitters(): void {
-    this.uiMediator.biddingEndNotification.subscribe(request => {
-      this.triggerDialogComponent(BiddingEndComponent, request);
+    this.uiMediator.biddingEndNotification.subscribe(notification => {
+      this.triggerDialogComponent(BiddingEndComponent, notification);
     });
 
     this.uiMediator.bidParticipationRequest.subscribe(request => {
       this.triggerDialogComponent(BidParticipationComponent, request);
+    });
+
+    this.uiMediator.encounterOutcomeNotification.subscribe(notification => {
+      this.triggerDialogComponent(EncounterOutcomeComponent, notification)
     });
 
     this.uiMediator.encounterResolutionRequest.subscribe(request => {
@@ -52,8 +58,8 @@ export class OneDeviceComponent implements OnInit {
       this.triggerDialogComponent(EquipmentSelectComponent, request);
     });
     
-    this.uiMediator.forcibleMonsterAdditionNotification.subscribe(request => {
-      this.triggerDialogComponent(ForcibleMonsterAdditionComponent, request);
+    this.uiMediator.forcibleMonsterAdditionNotification.subscribe(notification => {
+      this.triggerDialogComponent(ForcibleMonsterAdditionComponent, notification);
     });
     
     this.uiMediator.heroChoiceRequest.subscribe(request => {

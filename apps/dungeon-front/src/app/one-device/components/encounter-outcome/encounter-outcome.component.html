@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Encounter outcome</h2>
+
+<mat-dialog-content>
+  <div *ngIf="data.hitPoints.total > 0; then notifySuccess; else notifyEnd">
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true">
+    Continue
+  </button>
+</mat-dialog-actions>
+
+<ng-template #notifySuccess>
+  <p>Congratulations, {{ data.player }}: enemy defeated!</p>
+  <p>
+    Remaining hit points: {{ data.hitPoints.total }} ({{ getHitPointsChange() }})
+  </p>
+  <p *ngIf="data.discardedWeapon">
+    No more available uses for {{ data.discardedWeapon | titlecase }}. 
+    Weapon discarded.
+  </p>
+</ng-template>
+
+<ng-template #notifyEnd>
+  <p *ngIf="data.hitPoints.total === 0">
+    This is the end, {{ data.player }}: your hero has not survived.
+  </p>
+</ng-template>
