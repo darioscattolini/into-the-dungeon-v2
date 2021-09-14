@@ -56,7 +56,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button color="accent" 
+  <button mat-raised-button color="accent"
+    [disabled]="!weaponOptions.value"
     [mat-dialog-close]="weaponOptions.value"
   >
     Choose
