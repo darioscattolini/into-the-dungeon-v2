@@ -23,12 +23,10 @@ export class RaidService {
           
       let response: ChosenWeapon = 'NO_WEAPON';
 
-      if (encounter.weapons.length > 0) {
-        response = await this.uiMediator
-          .requestEncounterResolution(raider, encounter, state);
-        this.validateResponse(response, encounter.weapons);
-      } 
-    
+      response = await this.uiMediator
+        .requestEncounterResolution(raider, encounter, state);
+      this.validateResponse(response, encounter.weapons);
+      
       const outcome = raid.resolveCurrentEncounter(response);
       await this.uiMediator.notifyEncounterOutcome(raider, outcome);
     }
