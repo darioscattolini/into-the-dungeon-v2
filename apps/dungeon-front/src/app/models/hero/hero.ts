@@ -90,7 +90,12 @@ export class Hero {
     const damage = enemy.damage;
     this._hitPoints = Math.max(0, this._hitPoints - damage);
 
-    return { hitPointsChange: -damage };
+    return { 
+      hitPoints: {
+        total: this._hitPoints,
+        change: -damage 
+      }
+    };
   }
 
   public useWeaponAgainst(
@@ -108,6 +113,11 @@ export class Hero {
     const hitPointsChange = weapon.useAgainst(enemy);
     this._hitPoints = Math.max(0, this._hitPoints + hitPointsChange);
 
+    const hitPoints = {
+      total: this._hitPoints,
+      change: hitPointsChange 
+    };
+
     let discardedWeapon;
 
     if (weapon.availableUses === 0) {
@@ -115,7 +125,7 @@ export class Hero {
       this.discardEquipmentPiece(discardedWeapon);
     }
 
-    return { hitPointsChange, discardedWeapon };
+    return { hitPoints, discardedWeapon };
   }
 
   private getAllEquipment(): Equipment[] {

@@ -8,6 +8,9 @@ export interface Encounter {
 export type ChosenWeapon = WeaponName | 'NO_WEAPON';
 
 export interface EncounterOutcome {
-  hitPointsChange: number,
-  discardedWeapon?: WeaponName
+  hitPoints: {
+    total: number;
+    change: number;
+  };
+  discardedWeapon?: WeaponName;
 }

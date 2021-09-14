@@ -10,6 +10,7 @@ import {
   BidParticipationRequest,
   ChosenWeapon,
   Encounter,
+  EncounterOutcome,
   EncounterResolutionRequest,
   EquipmentName,
   EquipmentRemovalRequest,
@@ -21,7 +22,8 @@ import {
   Player,
   PlayersRequest,
   PlayerRequirements,
-  Request
+  Request,
+  EncounterOutcomeNotification
 } from '../../models/models';
 import { Subject } from 'rxjs';
 import { RaidState } from '../../models/game-mechanics/raid/raid-state';
@@ -33,6 +35,9 @@ export class UiMediatorService {
 
   public readonly bidParticipationRequest 
     = new Subject<BidParticipationRequest>();
+
+  public readonly encounterOutcomeNotification
+    = new Subject<EncounterOutcomeNotification>();
 
   public readonly encounterResolutionRequest
     = new Subject<EncounterResolutionRequest>();
@@ -67,6 +72,17 @@ export class UiMediatorService {
     };
 
     await this.requestResponse(content, this.biddingEndNotification);
+  }
+
+  public async notifyEncounterOutcome(
+    raider: Player, outcome: EncounterOutcome
+  ): Promise<void> {
+    const content: EncounterOutcomeNotification['content'] = {
+      player: raider.name,
+      ...outcome
+    };
+
+    await this.requestResponse(content, this.encounterOutcomeNotification);
   }
 
   public async notifyForcibleMonsterAddition(

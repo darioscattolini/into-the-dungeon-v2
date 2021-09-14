@@ -171,6 +171,29 @@ describe('RaidService', () => {
         expect(raidMock.resolveCurrentEncounter)
           .toHaveBeenCalledWith('NO_WEAPON');
       });
+
+      test(
+        'uiMediator.notifyOutcome is called with EncounterOutcome from Raid', 
+        async () => {
+          const stubbedOutcome = {
+            hitPoints: {
+              total: randomInteger(10),
+              change: -randomInteger(4)
+            }
+          };
+          
+          jest.spyOn(Raid.prototype, 'resolveCurrentEncounter')
+            .mockReturnValue(stubbedOutcome);
+
+          expect.assertions(2);
+
+          await raidService.playRaid(participantsDummy);
+
+          expect(uiMediator.notifyEncounterOutcome).toHaveBeenCalledTimes(1);
+          expect(uiMediator.notifyEncounterOutcome)
+            .toHaveBeenCalledWith(raiderDummy, stubbedOutcome);
+        }
+      );
     });
 
     describe('loop run with weapons to choose', () => {
@@ -272,6 +295,29 @@ describe('RaidService', () => {
         
           expect(raidMock.resolveCurrentEncounter)
             .toHaveBeenCalledWith(chosenWeapon);
+        }
+      );
+
+      test(
+        'uiMediator.notifyOutcome is called with EncounterOutcome from Raid', 
+        async () => {
+          const stubbedOutcome = {
+            hitPoints: {
+              total: randomInteger(10),
+              change: -randomInteger(4)
+            }
+          };
+          
+          jest.spyOn(Raid.prototype, 'resolveCurrentEncounter')
+            .mockReturnValue(stubbedOutcome);
+
+          expect.assertions(2);
+
+          await raidService.playRaid(participantsDummy);
+
+          expect(uiMediator.notifyEncounterOutcome).toHaveBeenCalledTimes(1);
+          expect(uiMediator.notifyEncounterOutcome)
+            .toHaveBeenCalledWith(raiderDummy, stubbedOutcome);
         }
       );
     });

@@ -178,6 +178,8 @@ import {
   EquipmentRemovalRequest
 } from './request/bidding-action-request';
 import { BiddingEndNotification } from './request/bidding-end-notification';
+import { EncounterOutcomeNotification } 
+  from './request/encounter-outcome-notification';
 import { EncounterResolutionRequest } 
   from './request/encounter-resolution-request';
 import { ForcibleMonsterAdditionNotification } 
@@ -191,6 +193,7 @@ export {
   PlayersRequest,
   BidParticipationRequest,
   MonsterAdditionRequest,
+  EncounterOutcomeNotification,
   EncounterResolutionRequest,
   EquipmentRemovalRequest,
   ForcibleMonsterAdditionNotification,

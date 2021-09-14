@@ -30,7 +30,7 @@ export class RaidService {
       } 
     
       const outcome = raid.resolveCurrentEncounter(response);
-      // notify outcome
+      await this.uiMediator.notifyEncounterOutcome(raider, outcome);
     }
     
     const survived = raid.heroHitPoints > 0;

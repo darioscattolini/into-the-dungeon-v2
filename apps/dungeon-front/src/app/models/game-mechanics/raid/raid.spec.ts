@@ -298,7 +298,13 @@ describe('Raid', () => {
     });
 
     test('it returns EncounterOutcome from appropriate Hero method', () => {
-      const outcomeDummy = { hitPointsChange: randomInteger(10) };
+      const outcomeDummy = { 
+        hitPoints: {
+          total: randomInteger(10),
+          change: -randomInteger(5)
+        } 
+      };
+      
       jest.spyOn(heroMock, 'useWeaponAgainst').mockReturnValue(outcomeDummy);
       jest.spyOn(heroMock, 'takeDamageFrom').mockReturnValue(outcomeDummy);
 

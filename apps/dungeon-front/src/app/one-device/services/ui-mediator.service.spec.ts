@@ -11,6 +11,7 @@ import {
   BiddingEndReason,
   BiddingStateViewData,
   Encounter,
+  EncounterOutcome,
   EncounterResolutionRequest,
   EquipmentName,
   HeroType,
@@ -166,6 +167,62 @@ describe('UiMediatorService', () => {
       expect(returnedPromise).not.toResolve();
 
       uiMediator.biddingEndNotification.subscribe(notification => {
+        notification.resolve(true);
+      });
+
+      expect(returnedPromise).toResolve();
+    });
+  });
+
+  describe('notifyEncounterOutcome', () => {
+    let raiderDummy: Player;
+    let outcomeDummy: EncounterOutcome;
+
+    beforeEach(() => {
+      raiderDummy = PlayerDouble.createDouble();
+      outcomeDummy = {
+        hitPoints: {
+          total: randomInteger(6),
+          change: -randomInteger(4)
+        },
+        discardedWeapon: WeaponDouble.pickNames(1)[0]
+      };
+
+      // fake reception confirmation
+      subscription = uiMediator.encounterOutcomeNotification
+        .subscribe(notification => {
+          notification.resolve(true);
+        });
+    });
+
+    test('it emits notification with expected properties', async () => {
+      jest.spyOn(uiMediator.encounterOutcomeNotification, 'next');
+      
+      expect.assertions(2);
+
+      await uiMediator.notifyEncounterOutcome(raiderDummy, outcomeDummy);
+
+      expect(uiMediator.encounterOutcomeNotification.next)
+        .toHaveBeenCalledTimes(1);
+      expect(uiMediator.encounterOutcomeNotification.next)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          content: expect.objectContaining({
+            player: raiderDummy.name,
+            hitPoints: outcomeDummy.hitPoints,
+            discardedWeapon: outcomeDummy.discardedWeapon
+          }),
+          resolve: expect.toBeFunction()
+        }));
+    });
+
+    test('notification.resolve makes method resolve', () => {
+      subscription.unsubscribe();
+      const returnedPromise = uiMediator
+        .notifyEncounterOutcome(raiderDummy, outcomeDummy);
+
+      expect(returnedPromise).not.toResolve();
+
+      uiMediator.encounterOutcomeNotification.subscribe(notification => {
         notification.resolve(true);
       });
 

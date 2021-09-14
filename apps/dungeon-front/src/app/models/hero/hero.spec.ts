@@ -267,7 +267,7 @@ describe('Hero', () => {
     });
 
     test.each([-5, -2, 0, 4, 6])(
-      'useWeaponAgainst applies and returns hitPointsChange from weapon.use', 
+      'useWeaponAgainst returns hitPoints changed as required by weapon.use', 
       hitPointsChange => {
         const weaponStub = weaponDoubles[3];
         jest.spyOn(weaponStub, 'useAgainst').mockReturnValue(hitPointsChange);
@@ -275,8 +275,10 @@ describe('Hero', () => {
 
         const outcome = hero.useWeaponAgainst(weaponStub.name, enemyDummy);
 
-        expect(hero.hitPoints).toBe(previousHitpoints + hitPointsChange);
-        expect(outcome.hitPointsChange).toBe(hitPointsChange);
+        expect(outcome.hitPoints.total).toBe(hero.hitPoints);
+        expect(outcome.hitPoints.total)
+          .toBe(previousHitpoints + hitPointsChange);
+        expect(outcome.hitPoints.change).toBe(hitPointsChange);
       }
     );
 
@@ -316,7 +318,8 @@ describe('Hero', () => {
 
       const outcome = hero.useWeaponAgainst(weaponStub.name, enemyDummy);
 
-      expect(outcome).toContainAllKeys(['hitPointsChange', 'discardedWeapon']);
+      expect(outcome).toContainAllKeys(['hitPoints', 'discardedWeapon']);
+      expect(outcome.hitPoints).toContainAllKeys(['total', 'change']);
     });
 
     test.each([[5, 2], [4, 4], [2, 5]])(
@@ -333,9 +336,10 @@ describe('Hero', () => {
         const expectedHitPoints = Math.max(0, hitPoints - damage);
         const outcome = hero.takeDamageFrom(enemyDummy);
 
-        expect(hero.hitPoints).toBe(expectedHitPoints);
-        expect(outcome.hitPointsChange).toBe(-damage);
-        expect(outcome).toContainAllKeys(['hitPointsChange']);
+        expect(outcome.hitPoints.total).toBe(hero.hitPoints);
+        expect(outcome.hitPoints.total).toBe(expectedHitPoints);
+        expect(outcome.hitPoints.change).toBe(-damage);
+        expect(outcome).toContainAllKeys(['hitPoints']);
       }
     );
   });
