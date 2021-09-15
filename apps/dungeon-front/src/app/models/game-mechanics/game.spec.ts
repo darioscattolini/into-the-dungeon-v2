@@ -3,13 +3,14 @@ import { mocked } from 'ts-jest/utils';
 import { Game } from './game';
 import { Player, RaidResult, BiddingPlayersRound } from '../models';
 import { BiddingPlayersRoundDouble, PlayerDouble } from '../test-doubles';
+import { RoundResult } from './round-result';
 
 jest.mock('./bidding/bidding-players-round');
 const BiddingPlayersRoundMock = mocked(BiddingPlayersRound);
 
-function addRaidResult(game: Game, raider: Player, survived: boolean): void {
+function addRaidResult(game: Game, raider: Player, survived: boolean) {
   const raidResult: RaidResult = { raider, survived };
-  game.endRound(raidResult);
+  return game.endRound(raidResult);
 }
 
 function buildPlayersDummy(amount: number): Player[] {
@@ -266,8 +267,8 @@ describe('Game', () => {
   describe('endRound', () => {
     /*
       This method changes Game private state, and some of its side effects are
-      tested through values returned by getBiddingPlayersRound and getWinner in
-      these methods' tests.
+      tested through values returned by getBiddingPlayersRound in this method's 
+      tests.
     */
 
     const unexpectedCall = () => {
@@ -300,83 +301,89 @@ describe('Game', () => {
         `${playerDummy2.name} had lost, should not have been raider`
       );
     });
+    
+    test.each(
+      [[[1, true]], [[1, false]]] as [number, boolean][][]
+    )('it returns correct points representation', lastRaidResult => {
+      const raidResults: [number, boolean][] = [
+        [0, true], [1, true], [0, false], [2, false], [2, true], [1, false]
+      ];
+      raidResults.push(lastRaidResult);
 
-    test('it returns empty object for 1st successful raid', () => {      
-      const roundResult = game.endRound({ 
-        raider: playerDummy2, 
-        survived: true
+      const expectedPoints: RoundResult['points'] = [];
+      playersDummy.forEach(player => {
+        expectedPoints.push({
+          player,
+          successfulRaids: 0,
+          failedRaids: 0
+        });
       });
-
-      expect(roundResult).toEqual({});
-    });
-
-    test('it returns empty object for 2nd successful raid', () => {
-      addRaidResult(game, playerDummy2, true);
-  
-      const roundResult = game.endRound({ 
-        raider: playerDummy2, 
-        survived: true
-      });
-
-      expect(roundResult).toEqual({});
-    });
-
-    test('it returns empty object for 1st unsuccessful raid', () => {  
-      const roundResult = game.endRound({ 
-        raider: playerDummy2, 
-        survived: false
-      });
-
-      expect(roundResult).toEqual({});
-    });
-
-    test('it returns out-of-game notification for 2nd unsuccessful raid', () => {
-      addRaidResult(game, playerDummy2, false);
-  
-      const roundResult = game.endRound({ 
-        raider: playerDummy2, 
-        survived: false
-      });
-
-      expect(roundResult).toEqual({ outOfGame: playerDummy2 });
-    });
-  });
-  
-  describe('getWinner as affected by endRound', () => {
-    test('it returns undefined if there is no winner', () => {
-      addRaidResult(game, playerDummy1, true);  // Player 1: 1 success
-      addRaidResult(game, playerDummy2, false); // Player 2: 1 failure
-      addRaidResult(game, playerDummy3, true);  // Player 3: 1 success + 1 failure
-      addRaidResult(game, playerDummy3, false);
-
-      expect(game.getWinner()).toBeUndefined();
-    });
-  
-    test('it returns a twice-successful winning player', () => {
-      addRaidResult(game, playerDummy1, true);  // Player 1: 1 success
-      addRaidResult(game, playerDummy2, false); // Player 2: 1 failure
-      addRaidResult(game, playerDummy3, false); // Player 3: 1 failure + 2 success
-      addRaidResult(game, playerDummy3, true);
       
-      expect(game.getWinner()).toBeUndefined();
+      for (const result of raidResults) {
+        const player = playersDummy[result[0]];
+        const raidWasSuccessful = result[1];
+        const playerPoints = expectedPoints
+          .find(points => points.player === player) as 
+          RoundResult['points'][number];
+        
+        if (raidWasSuccessful) playerPoints.successfulRaids++;
+        else playerPoints.failedRaids++;
 
-      addRaidResult(game, playerDummy3, true);
+        const roundResult = game.endRound({
+          raider: player,
+          survived: raidWasSuccessful
+        });
 
-      expect(game.getWinner()).toBe(playerDummy3);
+        expect(roundResult.points).toIncludeSameMembers(expectedPoints);
+      }
     });
-  
-    test('it returns a last-standing winning player', () => {
-      addRaidResult(game, playerDummy1, true);  // Player 1: 1 success
-      addRaidResult(game, playerDummy2, false); // Player 2: 2 failures
-      addRaidResult(game, playerDummy2, false);
-      addRaidResult(game, playerDummy3, true);  // Player 3: 1 success + 2 failures
-      addRaidResult(game, playerDummy3, false);
 
-      expect(game.getWinner()).toBeUndefined();
+    test('roundResult.winner is undefined if there is no winner', () => {
+      const raidResults: [number, boolean][] = [
+        [0, true], [1, true], [0, false], [2, false], [2, true], [1, false]
+      ];
 
-      addRaidResult(game, playerDummy3, false);
+      for (const result of raidResults) {
+        const roundResult 
+          = addRaidResult(game, playersDummy[result[0]], result[1]);
 
-      expect(game.getWinner()).toBe(playerDummy1);
+        expect(roundResult.winner).toBeUndefined();
+      }
+    });
+
+    test('roundResult.winner contains a twice-successful winning player', () => {
+      const raidResults: [number, boolean][] = [
+        [0, true], [1, true], [0, false], [2, false]
+      ];
+      
+      for (const result of raidResults) {
+        addRaidResult(game, playersDummy[result[0]], result[1]);
+      }
+
+      const winningRaid = {
+        raider: playersDummy[1],
+        survived: true
+      };
+      const result = game.endRound(winningRaid);
+
+      expect(result.winner).toBe(winningRaid.raider);
+    });
+
+    test('roundResult.winner contains a last-standing winning player', () => {
+      const raidResults: [number, boolean][] = [
+        [0, true], [1, false], [0, false], [0, false],
+      ];
+
+      for (const result of raidResults) {
+        addRaidResult(game, playersDummy[result[0]], result[1]);
+      }
+
+      const result = game.endRound({
+        raider: playersDummy[1],
+        survived: false
+      });
+
+      expect(result.winner).toBe(playersDummy[2]);
     });
   });
 });

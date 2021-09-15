@@ -11,7 +11,8 @@ import {
   RaidParticipants,
   RaidResult,
   Player,
-  PlayerRequirements
+  PlayerRequirements,
+  RoundResult
 } from '../../models/models';
 import {
   PlayerDouble,
@@ -35,7 +36,7 @@ describe('GameService', () => {
   let biddingService: BiddingService;
   let raidService: RaidService;
 
-  const roundLoopController = jest.spyOn(GameMock.prototype, 'getWinner');
+  const roundLoopController = jest.spyOn(GameMock.prototype, 'endRound');
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -52,7 +53,10 @@ describe('GameService', () => {
     raidService = TestBed.inject(RaidService);
 
     // set up return value making round loop end (runs once by default)
-    roundLoopController.mockReturnValue(PlayerDouble.createDouble());
+    roundLoopController.mockReturnValue({
+      points: [],
+      winner: PlayerDouble.createDouble()
+    });
   });
 
   afterEach(() => {
@@ -110,7 +114,7 @@ describe('GameService', () => {
     beforeEach(() => {
       // make round loop run loopRuns times
       for (let i = 0; i < loopRuns - 1; i++) {
-        roundLoopController.mockReturnValueOnce(undefined);
+        roundLoopController.mockReturnValueOnce({ points: [] });
       }
     });
 
@@ -123,7 +127,7 @@ describe('GameService', () => {
 
       expect(biddingService.playBidding).toHaveBeenCalledTimes(loopRuns);
       expect(raidService.playRaid).toHaveBeenCalledTimes(loopRuns);
-      expect(gameMock.getWinner).toHaveBeenCalledTimes(loopRuns);
+      expect(gameMock.endRound).toHaveBeenCalledTimes(loopRuns);
     });
   });
 
@@ -134,6 +138,8 @@ describe('GameService', () => {
     let biddingResultDummy2: RaidParticipants;
     let raidResultDummy1: RaidResult;
     let raidResultDummy2: RaidResult;
+    let roundResultDummy1: RoundResult;
+    let roundResultDummy2: RoundResult;
 
     beforeEach(() => {
       biddingPlayersDummy1 = BiddingPlayersRoundDouble.createDouble();
@@ -159,8 +165,22 @@ describe('GameService', () => {
         survived: false
       };
 
-      // make round loop run twice
-      roundLoopController.mockReturnValueOnce(undefined);
+      // make round loop run twice by returning winner in second round
+      roundResultDummy1 = {
+        points: [{
+          player: PlayerDouble.createDouble(),
+          successfulRaids: 1,
+          failedRaids: 0
+        }]
+      };
+      roundResultDummy2 = {
+        points: [{
+          player: PlayerDouble.createDouble(),
+          successfulRaids: 1,
+          failedRaids: 2
+        }],
+        winner: PlayerDouble.createDouble()
+      };
 
       jest.spyOn(Game.prototype, 'getBiddingPlayersRound')
         .mockReturnValueOnce(biddingPlayersDummy1)
@@ -173,6 +193,10 @@ describe('GameService', () => {
       jest.spyOn(raidService, 'playRaid')
         .mockResolvedValueOnce(raidResultDummy1)
         .mockResolvedValueOnce(raidResultDummy2);
+
+      jest.spyOn(Game.prototype, 'endRound')
+        .mockReturnValueOnce(roundResultDummy1)
+        .mockReturnValueOnce(roundResultDummy2);
     });
 
     test('bidding is called with starting values provided by Game', async () => {
@@ -209,17 +233,17 @@ describe('GameService', () => {
       expect(game.endRound).toHaveBeenNthCalledWith(1, raidResultDummy1);
       expect(game.endRound).toHaveBeenNthCalledWith(2, raidResultDummy2);
     });
-  });
 
-  describe('end of game handling', () => {
-    let winner: Player;
-    
-    beforeEach(() => {
-      winner = PlayerDouble.createDouble();
-    });
+    test('it sends notification of round result', async () => {
+      expect.assertions(3);
+      
+      await gameService.play();
 
-    test('if notification is send with game.winner', async () => {
-      //
+      expect(uiMediator.notifyRoundResult).toHaveBeenCalledTimes(2);
+      expect(uiMediator.notifyRoundResult)
+        .toHaveBeenNthCalledWith(1, roundResultDummy1);
+      expect(uiMediator.notifyRoundResult)
+        .toHaveBeenNthCalledWith(2, roundResultDummy2);
     });
   });
 });

@@ -1,13 +1,10 @@
+import { RoundResult } from './round-result';
 import {
   Player,
   PlayerRequirements,
   BiddingPlayersRound,
   RaidResult
 } from '../models';
-
-interface RoundResult {
-  outOfGame?: Player;
-}
 
 type RaidResultTracker = [Player[], Player[], Player[]];
 
@@ -38,16 +35,15 @@ export class Game {
       throw new Error('Unexpected call: game should have ended');
     }
 
-    const player = raidResult.raider;
+    this.lastRaider = raidResult.raider;
     
-    if (raidResult.survived) this.addRaidSuccess(player);
-    else this.addRaidFailure(player);
+    if (raidResult.survived) this.addRaidSuccess(this.lastRaider);
+    else this.addRaidFailure(this.lastRaider);
 
-    const outOfGame = this.getRaidFailures(player) >= 2;
-
-    this.lastRaider = player;
-
-    return outOfGame ? { outOfGame: player } : {};
+    const points = this.getPlayersPoints();
+    const winner = this.getWinner();
+    
+    return { points, winner };
   }
 
   public getBiddingPlayersRound(): BiddingPlayersRound {
@@ -65,16 +61,6 @@ export class Game {
     }
 
     return new BiddingPlayersRound(activePlayers, randomStarter);
-  }
-
-  public getWinner(): Player | undefined {
-    let winner: Player | undefined;
-
-    winner = this.getTwiceSuccessfulRaider();
-    
-    if (!winner) winner = this.getLastSurvivingPlayer();
-
-    return winner;
   }
 
   private addRaidFailure(player: Player): void {
@@ -99,16 +85,6 @@ export class Game {
     this.raidSuccessTracker[successes + 1].push(player);
   }
 
-  private getTwiceSuccessfulRaider(): Player | undefined {
-    let player: Player | undefined;
-
-    if (this.raidSuccessTracker[2].length === 1) {
-      [player] = this.raidSuccessTracker[2];
-    }
-
-    return player;
-  }
-
   private getActivePlayers(): Player[] {
     return this.orderedPlayers
       .filter(player => this.getRaidFailures(player) < 2);
@@ -126,6 +102,18 @@ export class Game {
     return player;
   }
 
+  private getPlayersPoints(): RoundResult['points'] {
+    const points: RoundResult['points'] = [];
+
+    for (const player of this.orderedPlayers) {
+      const successfulRaids = this.getRaidSuccesses(player);
+      const failedRaids = this.getRaidFailures(player);
+      points.push({ player, successfulRaids, failedRaids });
+    }
+
+    return points;
+  }
+
   private getRaidFailures(player: Player): number {
     return this.raidFailureTracker
       .findIndex(position => position.includes(player));
@@ -134,6 +122,26 @@ export class Game {
   private getRaidSuccesses(player: Player): number {
     return this.raidSuccessTracker
       .findIndex(position => position.includes(player));
+  }
+
+  private getTwiceSuccessfulRaider(): Player | undefined {
+    let player: Player | undefined;
+
+    if (this.raidSuccessTracker[2].length === 1) {
+      [player] = this.raidSuccessTracker[2];
+    }
+
+    return player;
+  }
+
+  private getWinner(): Player | undefined {
+    let winner: Player | undefined;
+
+    winner = this.getTwiceSuccessfulRaider();
+    
+    if (!winner) winner = this.getLastSurvivingPlayer();
+
+    return winner;
   }
 
   private startTrackers(): void {

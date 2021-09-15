@@ -20,15 +20,17 @@ export class GameService {
 
     while(!winner) {
       const biddingPlayers = game.getBiddingPlayersRound();
+      
       const raidParticipants 
         = await this.biddingService.playBidding(biddingPlayers);
+      
       const raidResult = await this.raidService.playRaid(raidParticipants);        
+      
       const roundResult = game.endRound(raidResult);
-      // NOTIFY PLAYER OUT OF GAME
-      winner = game.getWinner();
+      winner = roundResult.winner;
+      
+      this.uiMediator.notifyRoundResult(roundResult);
     }
-    
-    // NOTIFY WINNER
   }
 
   private async buildNewGame(): Promise<Game> {

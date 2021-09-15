@@ -22,6 +22,7 @@ import {
   PlayerRequirements,
   PlayingHeroViewData,
   RaidState,
+  RoundResult,
   WeaponName
 } from '../../models/models';
 import {
@@ -285,6 +286,52 @@ describe('UiMediatorService', () => {
       expect(returnedPromise).not.toResolve();
 
       uiMediator.forcibleMonsterAdditionNotification.subscribe(notification => {
+        notification.resolve(true);
+      });
+
+      expect(returnedPromise).toResolve();
+    });
+  });
+
+  describe('notifyRoundResult', () => {
+    let resultDummy: RoundResult;
+
+    beforeEach(() => {
+      resultDummy = {
+        points: [],
+        winner: PlayerDouble.createDouble()
+      };
+
+      // fake reception confirmation
+      subscription = uiMediator.roundResultNotification
+        .subscribe(notification => {
+          notification.resolve(true);
+        });
+    });
+
+    test('it emits notification with expected properties', async () => {
+      jest.spyOn(uiMediator.roundResultNotification, 'next');
+      
+      expect.assertions(2);
+
+      await uiMediator.notifyRoundResult(resultDummy);
+
+      expect(uiMediator.roundResultNotification.next)
+        .toHaveBeenCalledTimes(1);
+      expect(uiMediator.roundResultNotification.next)
+        .toHaveBeenCalledWith(expect.objectContaining({
+          content: resultDummy,
+          resolve: expect.toBeFunction()
+        }));
+    });
+
+    test('notification.resolve makes method resolve', () => {
+      subscription.unsubscribe();
+      const returnedPromise = uiMediator.notifyRoundResult(resultDummy);
+
+      expect(returnedPromise).not.toResolve();
+
+      uiMediator.roundResultNotification.subscribe(notification => {
         notification.resolve(true);
       });
 

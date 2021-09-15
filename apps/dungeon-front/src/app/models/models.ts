@@ -1,6 +1,7 @@
 // GAME MECHANICS
 import { Game } from './game-mechanics/game';
 import { PlayerRequirements } from './game-mechanics/player-requirements';
+import { RoundResult } from './game-mechanics/round-result';
 import { Bidding } from './game-mechanics/bidding/bidding';
 import { BiddingPlayersRound } from './game-mechanics/bidding/bidding-players-round';
 import {
@@ -53,7 +54,8 @@ export {
   Encounter,
   EncounterOutcome,
   ChosenWeapon,
-  RaidResult
+  RaidResult,
+  RoundResult
 };
 
 // PLAYER
@@ -186,6 +188,7 @@ import { ForcibleMonsterAdditionNotification }
   from './request/forcible-monster-addition-notification';
 import { HeroChoiceRequest } from './request/hero-choice-request';
 import { PlayersRequest } from './request/players-request';
+import { RoundResultNotification } from './request/round-result-notification';
 
 export {
   Request,
@@ -197,5 +200,6 @@ export {
   EncounterResolutionRequest,
   EquipmentRemovalRequest,
   ForcibleMonsterAdditionNotification,
-  BiddingEndNotification
+  BiddingEndNotification,
+  RoundResultNotification
 };

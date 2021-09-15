@@ -11,6 +11,7 @@ import {
   ChosenWeapon,
   Encounter,
   EncounterOutcome,
+  EncounterOutcomeNotification,
   EncounterResolutionRequest,
   EquipmentName,
   EquipmentRemovalRequest,
@@ -23,7 +24,8 @@ import {
   PlayersRequest,
   PlayerRequirements,
   Request,
-  EncounterOutcomeNotification
+  RoundResult,
+  RoundResultNotification
 } from '../../models/models';
 import { Subject } from 'rxjs';
 import { RaidState } from '../../models/game-mechanics/raid/raid-state';
@@ -56,6 +58,9 @@ export class UiMediatorService {
 
   public readonly playersRequest 
     = new Subject<PlayersRequest>();
+
+  public readonly roundResultNotification 
+    = new Subject<RoundResultNotification>();
 
   constructor(
     private equipmentService: EquipmentService,
@@ -94,6 +99,10 @@ export class UiMediatorService {
     };
 
     await this.requestResponse(content, this.forcibleMonsterAdditionNotification);
+  }
+
+  public async notifyRoundResult(roundResult: RoundResult): Promise<void> {
+    await this.requestResponse(roundResult, this.roundResultNotification);
   }
 
   public async requestBidParticipation(
