@@ -15,6 +15,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table'; 
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip'; 
 
@@ -34,6 +35,7 @@ export const oneDeviceModuleImports = [
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
+  MatTableModule,
   MatTabsModule,
   MatTooltipModule,
   SwiperModule

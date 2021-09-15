@@ -24,6 +24,8 @@ import { OneDeviceComponent }
   from './components/one-device/one-device.component';
 import { PlayerRecorderComponent } 
   from './components/player-recorder/player-recorder.component';
+import { RoundResultComponent } 
+  from './components/round-result/round-result.component';
 
 export const oneDeviceModuleDeclarations = [
   BiddingEndComponent,
@@ -38,5 +40,6 @@ export const oneDeviceModuleDeclarations = [
   MonsterAdditionComponent,
   MonsterComponent,
   OneDeviceComponent, 
-  PlayerRecorderComponent
+  PlayerRecorderComponent,
+  RoundResultComponent
 ];
