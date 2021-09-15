@@ -29,7 +29,7 @@ export class GameService {
       const roundResult = game.endRound(raidResult);
       winner = roundResult.winner;
       
-      this.uiMediator.notifyRoundResult(roundResult);
+      await this.uiMediator.notifyRoundResult(roundResult);
     }
   }
 
