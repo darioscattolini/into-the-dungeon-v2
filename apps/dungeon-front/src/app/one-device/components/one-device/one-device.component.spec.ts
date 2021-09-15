@@ -14,7 +14,8 @@ import {
   ForcibleMonsterAdditionNotification,
   HeroChoiceRequest,
   MonsterAdditionRequest,
-  PlayersRequest
+  PlayersRequest,
+  RoundResultNotification
 } from '../../../models/models';
 
 jest.mock('../../services/ui-mediator.service');
@@ -68,6 +69,10 @@ describe('OneDeviceComponent', () => {
 
     Object.defineProperty(uiMediator, 'playersRequest', {
       value: new Subject<PlayersRequest>()
+    });
+
+    Object.defineProperty(uiMediator, 'roundResultNotification', {
+      value: new Subject<RoundResultNotification>()
     });
   });
 

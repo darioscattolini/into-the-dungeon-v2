@@ -11,13 +11,14 @@ import { EncounterOutcomeComponent }
   from '../encounter-outcome/encounter-outcome.component';
 import { EquipmentSelectComponent }
   from '../equipment-select/equipment-select.component';
-  import { ForcibleMonsterAdditionComponent } 
+import { ForcibleMonsterAdditionComponent } 
   from '../forcible-monster-addition/forcible-monster-addition.component';
 import { MonsterAdditionComponent } 
   from '../monster-addition/monster-addition.component';
 import { HeroSelectComponent } from '../hero-select/hero-select.component';
 import { PlayerRecorderComponent } 
   from '../player-recorder/player-recorder.component';
+import { RoundResultComponent } from '../round-result/round-result.component';
 
 @Component({
   selector: 'dungeon-one-device',
@@ -72,6 +73,10 @@ export class OneDeviceComponent implements OnInit {
 
     this.uiMediator.playersRequest.subscribe(request => {
       this.triggerDialogComponent(PlayerRecorderComponent, request);
+    });
+
+    this.uiMediator.roundResultNotification.subscribe(notification => {
+      this.triggerDialogComponent(RoundResultComponent, notification);
     });
   }
 
