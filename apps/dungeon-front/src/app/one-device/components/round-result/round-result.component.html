@@ -1,0 +1,62 @@
+<div *ngIf="data.winner; then declareWinner; else notifyRoundResult"></div>
+
+<ng-template #declareWinner>
+  <h2 mat-dialog-title>{{ data.winner }} has won</h2>
+  
+  <mat-dialog-content>
+    <ng-container *ngTemplateOutlet="pointsTable"></ng-container>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">
+      Close
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #notifyRoundResult>
+  <h2 mat-dialog-title>Raid has ended</h2>
+
+  <mat-dialog-content>
+    <p>The raid has ended, and a new bidding phase starts.</p>
+
+    <ng-container *ngTemplateOutlet="pointsTable"></ng-container>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">
+      Continue
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #pointsTable>
+  <h3 mat-h3></h3>
+  
+  <div class="table-container">
+    <table mat-table [dataSource]="data.points">
+      <ng-container matColumnDef="player">
+        <th mat-header-cell *matHeaderCellDef> Player </th>
+        <td mat-cell *matCellDef="let player"> {{ player.player.name }} </td>
+      </ng-container>
+      
+      <ng-container matColumnDef="successfulRaids">
+        <th mat-header-cell *matHeaderCellDef> Victories </th>
+        <td mat-cell *matCellDef="let player"> {{ player.successfulRaids }} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="failedRaids">
+        <th mat-header-cell *matHeaderCellDef> Defeats </th>
+        <td mat-cell *matCellDef="let player"> {{ player.failedRaids }} </td>
+      </ng-container>
+  
+      <tr mat-header-row 
+        *matHeaderRowDef="['player', 'successfulRaids', 'failedRaids']"
+      ></tr>
+  
+      <tr mat-row 
+        *matRowDef="let row; columns: ['player', 'successfulRaids', 'failedRaids'];"
+      ></tr>
+    </table>
+  </div>
+</ng-template>
