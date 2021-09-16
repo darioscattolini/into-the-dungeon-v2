@@ -15,13 +15,28 @@
   </ol>
 </div>
 
+<div class="mat-caption">
+  <p>
+    This game is a prototype: 
+    <a href="https://github.com/darioscattolini/into-the-dungeon-v2#readme">
+      Find out more about its current state and expected improvements.
+    </a>
+  </p>
+  <p>
+    The design fits only mobile devices for now: if your screen is larger, use 
+    your browser's dev tols to set the viewport size at 360x640px.
+  </p>
+</div>
+
 <div>
   <h2>Choose how to play</h2>
   <div class="buttons">
     <button mat-raised-button color="accent" routerLink="{{ paths.oneDevice }}">
       One Device
     </button>
-    <button mat-raised-button color="accent" routerLink="{{ paths.online }}">
+    <button mat-raised-button color="accent" disabled 
+      routerLink="{{ paths.online }}"
+    >
       Online
     </button>
   </div>
