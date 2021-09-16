@@ -1,5 +1,4 @@
-@use '~@angular/material' as mat;
-@use '../../../../styles' as theme;
+@use '../../../../variables' as vars;
 
 mat-divider {
   margin-top: 12px;
@@ -28,6 +27,6 @@ mat-divider {
 }
 
 .warning {
-  color: mat.get-color-from-palette(theme.$dungeon-front-warn);
+  color: vars.$warn;
   line-height: 1.1;
 }

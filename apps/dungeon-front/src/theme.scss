@@ -1,0 +1,6 @@
+@use '~@angular/material' as mat;
+@use '_variables' as vars;
+
+@include mat.core();
+
+@include mat.all-component-themes(vars.$dungeon-front-theme);

@@ -1,0 +1,84 @@
+@use '~@angular/material' as mat;
+
+$primary-palette: (
+  50 : #f0f2eb,
+  100 : #d8e0cd,
+  200 : #bfcbac,
+  300 : #a5b68a,
+  400 : #91a671,
+  500 : #7e9658,
+  600 : #768e50,
+  700 : #6b8347,
+  800 : #61793d,
+  900 : #4e682d,
+  A100 : #dcffb1,
+  A200 : #c5ff7e,
+  A400 : #aeff4b,
+  A700 : #a3ff31,
+  contrast: (
+      50 : #000000,
+      100 : #000000,
+      200 : #000000,
+      300 : #000000,
+      400 : #000000,
+      500 : #000000,
+      600 : #ecedee,
+      700 : #ecedee,
+      800 : #ecedee,
+      900 : #ecedee,
+      A100 : #000000,
+      A200 : #000000,
+      A400 : #000000,
+      A700 : #000000,
+  )
+);
+
+$accent-palette: (
+    50 : #edeaf2,
+    100 : #d2cbdd,
+    200 : #b4a8c7,
+    300 : #9685b1,
+    400 : #806ba0,
+    500 : #69518f,
+    600 : #614a87,
+    700 : #56407c,
+    800 : #4c3772,
+    900 : #3b2760,
+    A100 : #c3a6ff,
+    A200 : #a173ff,
+    A400 : #7e40ff,
+    A700 : #6d26ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ecedee,
+        500 : #ecedee,
+        600 : #ecedee,
+        700 : #ecedee,
+        800 : #ecedee,
+        900 : #ecedee,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ecedee,
+        A700 : #ecedee,
+    )
+);
+
+$dungeon-front-primary: mat.define-palette($primary-palette);
+$dungeon-front-accent: mat.define-palette($accent-palette);
+$dungeon-front-warn: mat.define-palette(mat.$red-palette);
+
+$dungeon-front-theme: mat.define-light-theme((
+  color: (
+    primary: $dungeon-front-primary,
+    accent: $dungeon-front-accent,
+    warn: $dungeon-front-warn,
+  )
+));
+
+// colors
+$primary: mat.get-color-from-palette($dungeon-front-primary);
+$accent: mat.get-color-from-palette($dungeon-front-accent);
+$warn: mat.get-color-from-palette($dungeon-front-warn);

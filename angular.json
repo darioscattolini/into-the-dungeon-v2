@@ -71,7 +71,10 @@
               "apps/dungeon-front/src/favicon.ico",
               "apps/dungeon-front/src/assets"
             ],
-            "styles": ["apps/dungeon-front/src/styles.scss"],
+            "styles": [
+              "apps/dungeon-front/src/styles.scss", 
+              "apps/dungeon-front/src/theme.scss"
+            ],
             "scripts": []
           },
           "configurations": {
