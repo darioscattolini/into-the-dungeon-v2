@@ -80,14 +80,15 @@ consistent.
 
 ## Play
 
-A prototype of the single-device version of the game [](can be played here).
+A prototype of the single-device version of the game
+[is deployed in Heroku and can be played here](https://into-the-dungeon.herokuapp.com/).
 
 ## Inspiration
 
 This project serves only a learning purpose: to deepen my knowledge of Angular,
 become acquainted with unit testing and with back-end development.
 The game is closely inspired by a board game I played with my housemates, so I
-claim no originality with regard to its rules and content. 
+claim no originality with regard to its rules and content.
 
 ## Contact
 
