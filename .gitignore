@@ -1,7 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/dist
+#/dist    Expose dist for deployment in Heroku. Better solution needed
 /tmp
 /out-tsc
 
