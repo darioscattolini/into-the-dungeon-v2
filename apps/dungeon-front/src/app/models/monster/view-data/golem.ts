@@ -7,6 +7,6 @@ const description = `
 export const golem: MonsterViewData<'golem'> = {
   name: 'golem',
   damage: 5,
-  image: '...',
+  image: '/assets/images/golem-avatar.png',
   description
 } as const;

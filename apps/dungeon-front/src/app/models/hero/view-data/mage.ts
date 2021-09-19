@@ -8,7 +8,7 @@ const description = `
 
 export const mage: PartialHeroViewData<'mage'> = {
   type: 'mage',
-  image: '...',
+  image: '/assets/images/mage-avatar.png',
   description: description,
   baseHitPoints: 2
 } as const;

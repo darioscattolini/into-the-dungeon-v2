@@ -7,6 +7,6 @@ const description = `
 export const dragon: MonsterViewData<'dragon'> = {
   name: 'dragon',
   damage: 9,
-  image: '...',
+  image: '/assets/images/dragon-avatar.png',
   description
 } as const;

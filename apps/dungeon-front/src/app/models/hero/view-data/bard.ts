@@ -8,7 +8,7 @@ const description = `
 
 export const bard: PartialHeroViewData<'bard'> = {
   type: 'bard',
-  image: '...',
+  image: '/assets/images/bard-avatar.png',
   description: description,
   baseHitPoints: 3
 } as const;

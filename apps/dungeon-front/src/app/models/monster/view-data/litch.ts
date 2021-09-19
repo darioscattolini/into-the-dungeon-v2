@@ -7,6 +7,6 @@ const description = `
 export const litch: MonsterViewData<'litch'> = {
   name: 'litch',
   damage: 6,
-  image: '...',
+  image: '/assets/images/litch-avatar.png',
   description
 } as const;

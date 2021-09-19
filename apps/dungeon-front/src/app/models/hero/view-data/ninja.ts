@@ -8,7 +8,7 @@ const description = `
 
 export const ninja: PartialHeroViewData<'ninja'> = {
   type: 'ninja',
-  image: '...',
+  image: '/assets/images/ninja-avatar.png',
   description: description,
   baseHitPoints: 3
 } as const;
